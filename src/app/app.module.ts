@@ -12,7 +12,7 @@ import { DiscoveryAudioguides } from './app.component';
 import { TabsModule } from "../pages/tabs/tabs.module";
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, '../assets/i18n/','.json');
+  return new TranslateHttpLoader(http, 'assets/i18n/','.json');
 }
 
 @NgModule({

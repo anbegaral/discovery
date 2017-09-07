@@ -1,8 +1,29 @@
+.ios,
+.md {
   .language {
     align-self: flex-start;
     border: 0;
     margin: 0;
-    max-width: 25%;
+    // width: 100%;
     height: 40px;
-  }
+  
+    ion-label {
+      margin: 0;
+      display: block;
+      flex: none;
+    }
 
+    ion-select {
+      max-width: 100%;
+    }
+
+    .select-md {
+      padding: 0;
+    }
+
+    .label-md {
+      margin: 0px 5px 0px 0px;
+      width: 32px;
+    }
+  }
+}

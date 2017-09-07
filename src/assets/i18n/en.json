@@ -2,10 +2,11 @@
     "tabs": {
         "home": "Home",
         "guides": "My guides",
-        "walk": "Walk",
+        "walk": "Discover",
         "settings": "Settings"
     },
     "home": {
-        "welcome": "Welcome to Discovery Audioguides"
+        "welcome": "Welcome to Discovery Audioguides",
+        "search": "Search by place"
     }
 }
