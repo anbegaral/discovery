@@ -1,0 +1,12 @@
+{
+        "tabs": {
+            "home": "Home",
+            "guides": "Mon guides",
+            "walk": "Caminando",
+            "settings": "Settings"
+        },
+        "home": {
+            "welcome": "Bienvenue a Discovery Audioguides",
+            "search": "Search by place"
+        }
+    }

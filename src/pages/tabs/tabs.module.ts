@@ -12,6 +12,7 @@ import { DiscoverPageModule } from "../discover/discover.module";
 import { SettingsPageModule } from "../settings/settings.module";
 
 @NgModule({
+  declarations:[TabsPage],
   imports:[
     IonicModule,
     TranslateModule,
@@ -20,7 +21,6 @@ import { SettingsPageModule } from "../settings/settings.module";
     DiscoverPageModule,
     SettingsPageModule,
   ],
-  declarations:[TabsPage],
   exports:[TabsPage],
   entryComponents:[
     TabsPage,
