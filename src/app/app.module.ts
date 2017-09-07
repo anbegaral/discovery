@@ -1,37 +1,40 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { DiscoveryAudioguides } from './app.component';
-
-import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
-import { TabsPage } from '../pages/tabs/tabs';
-
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule,  TranslateLoader} from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { MyguidesPage } from "../pages/myguides/myguides";
-import { HomePageModule } from "../pages/home/home.module";
+
+import { DiscoveryAudioguides } from './app.component';
+
+import { TabsModule } from "../pages/tabs/tabs.module";
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/i18n/','.json');
+}
 
 @NgModule({
   declarations: [
     DiscoveryAudioguides,
-    AboutPage,
-    ContactPage,
-    TabsPage,
-    MyguidesPage
   ],
   imports: [
     BrowserModule,
-    HomePageModule,
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+    TabsModule,
     IonicModule.forRoot(DiscoveryAudioguides)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     DiscoveryAudioguides,
-    AboutPage,
-    ContactPage,
-    TabsPage,
-    MyguidesPage
   ],
   providers: [
     StatusBar,
