@@ -1,3 +1,4 @@
+import { Storage } from '@ionic/storage';
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 
@@ -7,15 +8,24 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class LanguageComponent implements OnInit {
   @Input('srcFlag') srcFlag: string; 
-  
-  constructor(public translate: TranslateService) { }
 
-  ngOnInit() {
-    this.srcFlag = this.translate.getDefaultLang();
+  constructor(public translate: TranslateService,
+        private storage: Storage) {
+    this.storage.get('lang').then(
+      (data) => this.srcFlag = data
+    );
   }
 
-  onChange(e) {
-    this.translate.use(e);
-    this.srcFlag = e;
+  ngOnInit() {
+    this.storage.get('lang').then(
+      (data) => this.srcFlag = data
+    );
+  }
+
+  onChange(lang) {
+    this.translate.use(lang);
+    this.srcFlag = lang;
+    this.storage.remove('lang');
+    this.storage.set('lang', lang);
   }
 }

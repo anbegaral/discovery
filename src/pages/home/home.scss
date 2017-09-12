@@ -1,13 +1,52 @@
-page-home {
+.ios,
+.md {
+  page-home {
 
-  .toolbar-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .searchbar {
-    width: 60%;
-    align-self: flex-end;
-    margin: 0;
+    .toolbar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .searchbar {
+      width: 60%;
+      align-self: flex-end;
+      margin: 0;
+      
+      .searchbar-input {
+        font-size: 14px;
+      }
+    }
+
+    .list {
+      margin: 0px;
+    }
+
+    .label {
+      font-size: 14px;
+    }
+    
+    .select {
+      font-size: 14px;
+    }
+
+    .combos {
+      border: 1px solid #c3c3c3;
+      border-radius: 15px;
+      background-color: #f3f3f3;
+      padding: 10px;
+      margin: 10px;
+      
+      .item {
+        background-color: #f3f3f3;  
+      }
+    }
+
+    .cards {
+      img {
+        width: 320px;
+        height: 240px;
+      }
+    }
+    
   }
 }

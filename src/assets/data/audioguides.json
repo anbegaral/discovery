@@ -1,0 +1,26 @@
+[
+        { 
+                "id": "1",
+                "placeId": "madrid",
+                "title": "Madrid de los Austrias",
+                "image": "el-madrid-con-los-austrias.jpg",
+                "lang": "es",
+                "idAuthor": "author1",
+                "pois": 10,
+                "price": 4.95,
+                "description": " texto largo",
+                "duration": 35
+        },
+        { 
+                "id": "2",
+                "placeId": "madrid",
+                "title": "Madrid de museos",
+                "image": "madrid_640x480.jpg",
+                "lang": "es",
+                "idAuthor": "author2",
+                "pois": 7,
+                "price": 4.95,
+                "description": " texto largo",
+                "duration": 35
+        }
+]

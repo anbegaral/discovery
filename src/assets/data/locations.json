@@ -1,0 +1,32 @@
+[
+        {
+                "idCountry": "551b71d0-d585-3073-5c1e-cf469d9e6840",
+                "language": [
+                        {
+                                "en": "Madrid",
+                                "es": "Madrid",
+                                "fr": "Madrid"
+                        }
+                ]
+        },
+        {
+                "idCountry": "551b71d0-d585-3073-5c1e-cf469d9e6840",
+                "language": [
+                    {
+                        "en": "Barcelona",
+                        "es": "Barcelona",
+                        "fr": "Barcelona"
+                    }
+                ]  
+        },
+        {
+                "idCountry": "1efb3491-d80a-4270-76d6-5843c062c244",
+                "language": [
+                    {
+                        "en": "London",
+                        "es": "Londres",
+                        "fr": "Londres"
+                    }
+                ]  
+        }
+]

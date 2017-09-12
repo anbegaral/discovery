@@ -6,5 +6,54 @@
 </ion-header>
 
 <ion-content padding>
-  {{ 'home.welcome' | translate }}
+  
+  <h3>{{ 'home.welcome' | translate }}</h3>
+  <h6>{{ 'home.description' | translate }}</h6>
+
+  <div class="combos">
+
+    <ion-list no-lines>
+      <ion-item>
+        <ion-label>{{ 'home.country' | translate }}</ion-label>
+        <ion-select (ionChange)="getLocations($event)">
+          <ion-option value="{{country.$key}}" *ngFor="let country of countries | async" >
+            <ng-container *ngFor="let language of country.language">
+              <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
+            </ng-container>
+          </ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+
+    <ion-list no-lines>
+      <ion-item>
+        <ion-label>{{ 'home.place' | translate }}</ion-label>
+        <ion-select (ionChange)="getGuides($event)" [disabled]="placesDisabled">
+            <ion-option value="{{location.$key}}" *ngFor="let location of locations | async" >
+              <ng-container *ngFor="let language of location.language">
+                <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
+              </ng-container>
+            </ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div class="cards">
+    <ion-list no-lines>
+      <ion-item>
+        <ion-card *ngFor="let audioguide of audioguides | async">
+          <img src="{{audioguide.image}}"/>
+          <ion-card-content>
+            <ion-card-title>
+              {{ audioguide.title }}
+              </ion-card-title>
+            <p>
+              {{ 'home.pois' | translate }}: {{audioguide.pois}}
+            </p>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>

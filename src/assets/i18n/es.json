@@ -7,6 +7,12 @@
     },
     "home": {
         "welcome": "Bienvenido a Discovery Audioguides",
-        "search": "Busca tu lugar"
+        "description": "Con esta app, podras descargarte la audioguia que estas buscando y, ademas, contribuir creando y subiendo tus propias audioguias.",
+        "search": "Busca tu lugar",
+        "continent": "Continente",
+        "country": "Pais",
+        "place": "Lugar",
+        "select": "Selecciona de la lista",
+        "pois": "Puntos de interes"
     }
 }
