@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { IonicModule } from 'ionic-angular';
+import { IonicPageModule } from 'ionic-angular';
 import { SettingsPage } from './settings';
 
 @NgModule({
@@ -7,7 +7,7 @@ import { SettingsPage } from './settings';
     SettingsPage,
   ],
   imports: [
-    IonicModule,
+    IonicPageModule.forChild(SettingsPage),
   ],
 })
 export class SettingsPageModule {}

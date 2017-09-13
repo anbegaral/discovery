@@ -7,6 +7,14 @@
     },
     "home": {
         "welcome": "Welcome to Discovery Audioguides",
-        "search": "Search by place"
+        "description": "With this app you will be able to download the audioguide you are looking for and, as well, to contribute creating and uploading your own audioguides.",
+        "search": "Search by place",
+        "continent": "Continent",
+        "country": "Country",
+        "place": "Place",
+        "select": "Select from list",
+        "pois": "Points of interest: ",
+        "duration": "Total audio duration: ",
+        "language": "Available languages: "
     }
 }
