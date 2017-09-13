@@ -39,20 +39,20 @@
     </ion-list>
   </div>
 
-  <div class="cards">
+  <div>
     <ion-list no-lines>
-      <ion-item>
-        <ion-card *ngFor="let audioguide of audioguides | async">
+      <ion-item *ngFor="let audioguide of audioguides | async">
+        <ion-thumbnail item-start class="thumbnail">
           <img src="{{audioguide.image}}"/>
-          <ion-card-content>
-            <ion-card-title>
-              {{ audioguide.title }}
-              </ion-card-title>
-            <p>
-              {{ 'home.pois' | translate }}: {{audioguide.pois}}
-            </p>
-          </ion-card-content>
-        </ion-card>
+        </ion-thumbnail>
+        <h2>{{ audioguide.title }}</h2>
+        <p>
+          {{ 'home.pois' | translate }}{{audioguide.pois}}
+        </p>
+        <p>
+          {{ 'home.duration' | translate }}{{audioguide.duration}} mins
+        </p>
+        <button ion-button clear item-end (click)="viewGuide(audioguide.$key)">View</button>
       </ion-item>
     </ion-list>
   </div>

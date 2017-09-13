@@ -17,7 +17,7 @@ export class MyguidesPage {
       private alertCtrl: AlertController, 
       private afDB: AngularFireDatabase, 
       public actionSheetCtrl: ActionSheetController) {
-    this.songs = this.afDB.list('/audioguides');
+    this.songs = this.afDB.list('discounts');
   }
 
   ionViewDidLoad() {
@@ -52,15 +52,9 @@ export class MyguidesPage {
           text: 'Save',
           handler: data => {
             this.songs.push({
-              idLocation: '-Ktqkb-kCiwJh3cQ9uoK',
-              title: "Madrid de museos",
-              image: "madrid_640x480.jpg",
-              lang: "es",
-              idAuthor: "author2",
-              pois: 7,
-              price: 2.95,
-              description: " texto largo",
-              duration: 50
+              idUser: "1",
+              percentage: 10,
+              isUsed: false,
             });
           }
         }

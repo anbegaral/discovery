@@ -1,8 +1,16 @@
 import { Storage } from '@ionic/storage';
 import { Component, OnInit } from '@angular/core';
-import { NavController, IonicPage } from 'ionic-angular';
+import { NavController, IonicPage, NavParams } from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
 
+declare var firebase: any;
+
+interface Image {
+    path: string;
+    filename: string;
+    downloadURL?: string;
+    $key?: string;
+}
 
 @IonicPage()
 @Component({
@@ -20,6 +28,7 @@ export class HomePage implements OnInit {
   placesDisabled = true;
 
   constructor(public navCtrl: NavController, 
+    public navParams: NavParams,
     private storage: Storage, 
     private afDB: AngularFireDatabase) {
     
@@ -60,7 +69,6 @@ export class HomePage implements OnInit {
   }
 
   getGuides(idLocation?: string) {
-    console.log(idLocation)
     this.audioguides = this.afDB.list('audioguides', {
         query: {
           orderByChild: 'idLocation',
@@ -70,12 +78,7 @@ export class HomePage implements OnInit {
     );
   }
 
-  // getImages() {
-  //   let storage = firebase.storage();
-  //   var storageRef = storage.ref();
-  //   // Create a reference to the file we want to download
-  //   var starsRef = storageRef.child('images/IMG_0956 (1).JPG');
-  //   // Get the download URL      
-  //    starsRef.getDownloadURL().then(url => this.image = url  ); 
-  // }
+  viewGuide(idGuide: string) {
+    this.navCtrl.push('GuidesPage', idGuide);
+  }
 }

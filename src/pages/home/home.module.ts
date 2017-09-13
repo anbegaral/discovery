@@ -1,4 +1,4 @@
-import { PlacesProvider } from './../../providers/places/places.provider';
+
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { HomePage } from "./home";
@@ -13,8 +13,6 @@ import { IonicPageModule } from "ionic-angular";
     LanguageComponentModule,
   ],
   exports: [HomePage],
-  providers: [
-    PlacesProvider,
-  ]
+  providers: []
 })
 export class HomePageModule {}

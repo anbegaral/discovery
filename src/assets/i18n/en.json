@@ -13,6 +13,8 @@
         "country": "Country",
         "place": "Place",
         "select": "Select from list",
-        "pois": "Points of interest"
+        "pois": "Points of interest: ",
+        "duration": "Total audio duration: ",
+        "language": "Available languages: "
     }
 }

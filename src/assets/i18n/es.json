@@ -13,6 +13,8 @@
         "country": "Pais",
         "place": "Lugar",
         "select": "Selecciona de la lista",
-        "pois": "Puntos de interes"
+        "pois": "Puntos de inter&ecute;s: ",
+        "duration": "Total duraci&ocute;n: ",
+        "language": "Idiomas disponibles: "
     }
 }
