@@ -1,12 +1,32 @@
 {
-        "tabs": {
-            "home": "Home",
-            "guides": "Mon guides",
-            "walk": "Caminando",
-            "settings": "Settings"
-        },
-        "home": {
-            "welcome": "Bienvenue a Discovery Audioguides",
-            "search": "Search by place"
-        }
+    "tabs": {
+        "home": "Home",
+        "guides": "Mon guides",
+        "walk": "Caminando",
+        "settings": "Settings"
+    },
+    "home": {
+        "welcome": "Bienvenue a Discovery Audioguides",
+        "description": "Con esta app, podras descargarte la audioguia que estas buscando y, ademas, contribuir creando y subiendo tus propias audioguias.",
+        "search": "Rechercher",
+        "continent": "Continente",
+        "country": "Pais",
+        "place": "Lugar",
+        "select": "Selecciona de la lista",
+        "pois": "Puntos de inter&ecute;s: ",
+        "price": "Precio: ",
+        "duration": "Total duraci&ocute;n: "
+    },
+    "guides": {
+        "download": "Download",
+        "language": "Idiomas disponibles: "
+    },
+    "login": {
+        "signin": "Sign in",
+        "signText": "Please, enter your details to sign in or use Facebook",
+        "password": "Password",
+        "cancel": "Cancel",
+        "facebook": "Sign in with Facebook"
+
     }
+}

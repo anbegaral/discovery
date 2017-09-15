@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { MyguidesPage } from './myguides';
 import { IonicPageModule } from "ionic-angular";
@@ -6,7 +7,10 @@ import { IonicPageModule } from "ionic-angular";
   declarations: [
     MyguidesPage,
   ],
-  imports: [IonicPageModule.forChild(MyguidesPage)],
+  imports: [
+    IonicPageModule.forChild(MyguidesPage),
+    TranslateModule.forChild(),
+  ],
   exports:[MyguidesPage],
 })
 export class MyguidesPageModule {}

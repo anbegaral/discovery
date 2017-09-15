@@ -1,16 +1,8 @@
-import { Storage } from '@ionic/storage';
 import { Component, OnInit } from '@angular/core';
 import { NavController, IonicPage, NavParams } from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
-
-declare var firebase: any;
-
-interface Image {
-    path: string;
-    filename: string;
-    downloadURL?: string;
-    $key?: string;
-}
+import { Subject } from "rxjs/Subject";
+import { TranslateService } from "@ngx-translate/core";
 
 @IonicPage()
 @Component({
@@ -23,34 +15,26 @@ export class HomePage implements OnInit {
   locations: FirebaseListObservable<any[]>;
   audioguides: FirebaseListObservable<any[]>;
 
+  audioguidesSearched: FirebaseListObservable<any[]>;
+  startAt = new Subject();
+  endAt = new Subject();
+  
   lang: string;
 
   placesDisabled = true;
+  isSearched = true;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
-    private storage: Storage, 
-    private afDB: AngularFireDatabase) {
-    
+    private afDB: AngularFireDatabase,
+    public translate: TranslateService) {
+      this.lang = this.translate.getDefaultLang();
   }
 
-  ngOnInit() {
-    this.getLang();    
+  ngOnInit() { 
     this.getCountries();
     this.getGuides();
-  }
-  
-  getLang() {
-    this.storage.get('lang').then(
-      (lang) => this.lang = lang,
-      (err) => {
-        if (err.error instanceof Error) {
-          console.log("getLang method: Client-side error occured.");
-        } else {
-          console.log("getLang method: Server-side error occured.");
-        }
-      }  
-    );    
+    this.searchGuides(this.startAt, this.endAt).subscribe(list => this.audioguidesSearched = list);
   }
 
   getCountries() {
@@ -76,6 +60,23 @@ export class HomePage implements OnInit {
         }
       }
     );
+  }
+
+  searchGuides(start, end): FirebaseListObservable<any> {
+    return this.afDB.list('audioguides', {
+      query: {
+        orderByChild: 'title',
+        startAt: start,
+        endAt: end
+      }
+    });
+  }
+
+  searchAudioguides($event) {
+    let q = $event.target.value;
+    this.startAt.next(q)
+    this.endAt.next(q+"\uf8ff")
+    this.isSearched = false;
   }
 
   viewGuide(idGuide: string) {

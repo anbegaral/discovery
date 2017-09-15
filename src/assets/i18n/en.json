@@ -15,6 +15,20 @@
         "select": "Select from list",
         "pois": "Points of interest: ",
         "duration": "Total audio duration: ",
+        "price": "Price: ",
+        "noresults": "No results found"
+    },
+    "guides": {
+        "download": "Download",
         "language": "Available languages: "
+
+    },
+    "login": {
+        "signin": "Sign in",
+        "signText": "Please, enter your details to sign in or use Facebook",
+        "password": "Password",
+        "cancel": "Cancel",
+        "facebook": "Sign in with Facebook"
+
     }
 }
