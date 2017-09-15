@@ -1,13 +1,31 @@
-
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>view-guide</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <button ion-button icon-only menuToggle>
+          <ion-icon name="menu"></ion-icon>
+        </button>
+    
+        <ion-title>
+            {{audioguide.title}}
+        </ion-title>
+    
+        <!-- <ion-buttons end>
+          <button ion-button icon-only (click)="openModal()">
+            <ion-icon name="options"></ion-icon>
+          </button>
+        </ion-buttons> -->
+      </ion-navbar>
 
 </ion-header>
-
-
 <ion-content padding>
-
+  <div>
+    <img src="{{audioguide.image}}" alt="{{audioguide.title}}">
+    <h1>{{audioguide.title}}</h1>
+    <div>
+      <p>{{audioguide.description}}</p>
+      <p>{{'home.pois' | translate}}{{audioguide.pois}} {{'home.duration' | translate}}{{audioguide.duration}} mins</p>
+      <p>{{'home.price' | translate}}{{audioguide.price | currency}}</p>
+      <p>{{'guides.language' | translate}}{{audioguide.lang}}</p>
+        <button ion-button (click)="getAccount($event)">Download</button>
+    </div>
+  </div>
 </ion-content>

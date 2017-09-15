@@ -17,7 +17,7 @@ export class MyguidesPage {
       private alertCtrl: AlertController, 
       private afDB: AngularFireDatabase, 
       public actionSheetCtrl: ActionSheetController) {
-    this.songs = this.afDB.list('discounts');
+    this.songs = this.afDB.list('countries');
   }
 
   ionViewDidLoad() {
@@ -52,9 +52,9 @@ export class MyguidesPage {
           text: 'Save',
           handler: data => {
             this.songs.push({
-              idUser: "1",
-              percentage: 10,
-              isUsed: false,
+              en: "United States",
+              es: "Estados Unidos",
+              fr: "Etats Unis"
             });
           }
         }
