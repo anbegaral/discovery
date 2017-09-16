@@ -9,9 +9,9 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: 'app.html'
 })
 export class DiscoveryAudioguides {
-  rootPage:string;
+  rootPage: string;
   alertTitle: string;
-
+  
   constructor(private platform: Platform,
       private statusBar: StatusBar,
       private splashScreen: SplashScreen,
@@ -24,10 +24,14 @@ export class DiscoveryAudioguides {
             () => this.storage.get('lang').then(
               (data) => {
                 if (data === null || data === 'undefined') {
-                  this.setLanguage();  
-                  this.splashScreen.hide()        
+                  // this.setLanguage();
+                  this.splashScreen.hide();  
+                  //borrar estas lineas y descomentar la anterior
+                  this.translate.use('es'); 
+                  this.rootPage = 'TabsPage';      
                 } else {
                   this.translate.use(data);
+                  this.rootPage = 'TabsPage';
                 }
               }
             )

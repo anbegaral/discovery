@@ -1,0 +1,30 @@
+<ion-header>
+  
+    <ion-navbar>
+      <ion-title>{{'login.signin' | translate}}</ion-title>
+    </ion-navbar>
+  
+  </ion-header>
+  
+  
+  <ion-content padding>
+    <form [formGroup]="loginForm">
+      <ion-item>
+        <ion-label floating>Email</ion-label>
+        <ion-input formControlName="email" type="email" [(ngModel)]="email"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!loginForm.controls.email.valid  && (loginForm.controls.email.dirty)">
+          <p>Please enter a valid email.</p>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label floating>{{'login.password' | translate}}</ion-label>
+        <ion-input formControlName="password" type="password" [(ngModel)]="password"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!loginForm.controls.password.valid  && (loginForm.controls.password.dirty)">
+          <p>Please enter a valid password.</p>
+      </ion-item>
+    </form>
+    <button ion-button color="primary" full (click)="doLogin()">{{'login.signin' | translate}}</button>
+  
+  </ion-content>

@@ -1,7 +1,7 @@
-import { TranslateService } from '@ngx-translate/core';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
 @IonicPage({
   name:'GuidesPage'
@@ -17,16 +17,11 @@ export class ViewGuidePage implements OnInit {
   password:string;
   cancel: string;
   facebook: string;
+  isLoggedin: false;
 
   audioguide: FirebaseObjectObservable<any[]>;
   
-  constructor(public navCtrl: NavController, public navParams: NavParams, 
-    private afDB: AngularFireDatabase, private alertCtrl: AlertController, private translate: TranslateService) {
-    translate.get('login.signin').subscribe(value => this.title = value);
-    translate.get('login.signText').subscribe(value => this.text = value);
-    translate.get('login.password').subscribe(value => this.password = value);
-    translate.get('login.cancel').subscribe(value => this.cancel = value);
-    translate.get('login.facebook').subscribe(value => this.facebook = value);
+  constructor(public navCtrl: NavController, public navParams: NavParams, private storage: Storage, private afDB: AngularFireDatabase) {
   }
 
   ngOnInit() {
@@ -39,46 +34,18 @@ export class ViewGuidePage implements OnInit {
   }
 
   getAccount() {
-    let prompt = this.alertCtrl.create({
-      title: this.title,
-      message: this.text,
-      inputs: [
-        {
-          name: 'email',
-          placeholder: 'Email',
-          type: 'email'
-        },
-        {
-          name: 'password',
-          placeholder: this.password,
-          type: 'password'
-        },
-      ],
-      buttons: [
-        {
-          text: this.cancel,
-          handler: data => {
-            console.log('Cancel clicked');
+    if(this.isLoggedin) {
+      this.navCtrl.push('MyGuidesPage');
+    } else {
+      this.storage.get('useremail').then(
+        (data) => {
+          if(data === null || data === 'undefined') {
+            this.navCtrl.push('RegisterUserPage');
+          } else{
+            this.navCtrl.push('LoginPage');
           }
-        },
-        {
-          text: 'Ok',
-          handler: data => {
-            
-          }
-        },
-        {
-          text: this.facebook,
-          handler: data =>{
-            this.signInWithFacebook()
-          }
-        }
-      ]
-    });
-    prompt.present();
-  }
-
-  signInWithFacebook(){
-
+        } 
+      );
+    }
   }
 }
