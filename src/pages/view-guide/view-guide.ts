@@ -1,3 +1,4 @@
+import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-service';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
@@ -17,11 +18,14 @@ export class ViewGuidePage implements OnInit {
   password:string;
   cancel: string;
   facebook: string;
-  isLoggedin: false;
 
   audioguide: FirebaseObjectObservable<any[]>;
   
-  constructor(public navCtrl: NavController, public navParams: NavParams, private storage: Storage, private afDB: AngularFireDatabase) {
+  constructor(public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private storage: Storage, 
+    private afDB: AngularFireDatabase, 
+    private sqliteService: SqliteServiceProvider) {
   }
 
   ngOnInit() {
@@ -34,18 +38,23 @@ export class ViewGuidePage implements OnInit {
   }
 
   getAccount() {
-    if(this.isLoggedin) {
-      this.navCtrl.push('MyGuidesPage');
-    } else {
-      this.storage.get('useremail').then(
-        (data) => {
-          if(data === null || data === 'undefined') {
-            this.navCtrl.push('RegisterUserPage');
-          } else{
-            this.navCtrl.push('LoginPage');
-          }
-        } 
-      );
-    }
+    this.storage.get('isLoggedin').then(isLoggedin => {
+      console.log(isLoggedin)
+      if(isLoggedin) {
+        console.log(this.audioguide)
+        this.navCtrl.push('MyguidesPage');
+      } else {
+        this.storage.get('useremail').then(
+          (data) => {
+            console.log(data)
+            if(data === null || data === 'undefined') {
+              this.navCtrl.push('RegisterUserPage', this.audioguide);
+            } else{
+              this.navCtrl.push('LoginPage');
+            }
+          } 
+        );
+      }
+    });
   }
 }

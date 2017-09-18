@@ -19,7 +19,7 @@
         "noresults": "No se han encontrado resultados"
     },
     "guides": {
-        "download": "Descargar",
+        "download": "Comprar",
         "language": "Idiomas disponibles: "
 
     },
@@ -28,7 +28,8 @@
         "signText": "Introduce tus datos para entrar o accede con Facebook",
         "password": "Contraseña",
         "cancel": "Cancelar",
-        "facebook": "Login con Facebook"
+        "facebook": "Login con Facebook",
+        "register": "Crea tu cuenta"
 
     }
 }

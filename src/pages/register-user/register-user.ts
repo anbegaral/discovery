@@ -1,9 +1,10 @@
 import { Storage } from '@ionic/storage';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators, FormControl } from "@angular/forms/forms";
+import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
+import { SqliteServiceProvider } from "../../providers/sqlite-service/sqlite-service";
 
 @IonicPage()
 @Component({
@@ -16,44 +17,50 @@ export class RegisterUserPage {
   @ViewChild('password') password:string;
   registerForm: FormGroup;
   users: FirebaseListObservable<any>
+  EMAIL_PATTERN:string = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+  PASSWORD_PATTERN: string = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
+  
+  loader: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
     private afDB: AngularFireDatabase, 
     public fireAuth: AngularFireAuth, 
     private storage: Storage, 
-    public formBuilder: FormBuilder) {
+    public formBuilder: FormBuilder,
+    private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController, 
+    private sqliteService: SqliteServiceProvider) {
+
       this.registerForm = formBuilder.group({
-        email: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/'), Validators.required])],
-        password: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('(?=^.{8,20}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'), Validators.required])],
+        email: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(this.EMAIL_PATTERN), Validators.required])],
+        password: ['', Validators.compose([Validators.maxLength(20), Validators.pattern(this.PASSWORD_PATTERN), Validators.required])],
       });
 
       this.users = this.afDB.list('users');
   }
 
-  emailValidator(control: FormControl): {[s: string]: boolean} {
-    if (!(control.value.toLowerCase().match('/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/'))) {
-      return {invalidEmail: true};
-    }
-  }
-
-  passwordValidator(control: FormControl): {[s: string]: boolean} {
-    if(!(control.value.match('(?=^.{8,20}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'))) {
-      return {invalidPassword: true};
-    }
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad RegisterUserPage');
-  }
 
   registerUser(){
+    this.loader = this.loadingCtrl.create({
+      content: "Creating your account..."
+    });
+    this.loader.present();
+
     this.fireAuth.auth.createUserWithEmailAndPassword(this.email, this.password).then(
       (data) => {
         this.storage.set('useremail', data.email);
-        this.addUser();        
+        this.storage.set('isLoggedin', true);       
+        this.addUser();  
+        this.sqliteService.addAudioguide(JSON.stringify(this.navParams.data));
+        
+        this.loader.dismiss();
+        this.navCtrl.push('MyguidesPage'); 
       }
     ).catch(
-      (error) => console.log(error)
+      (error) => {
+        this.loader.dismiss();
+        this.handlerError(error)
+      }
     )
   }
 
@@ -61,7 +68,24 @@ export class RegisterUserPage {
     this.users.push({
       isAuthor: false,
       email: this.email,
-      password: this.password
-    })
+    }).catch(
+      (error) => {
+        this.loader.dismiss();
+        this.handlerError(error)
+      }
+    )
+  }
+
+  handlerError(error) {
+    this.alertCtrl.create({
+      title: 'Error',
+      message: error.message,
+      buttons: [        
+        {
+          text: 'Close',
+          handler: data => console.log(error) 
+        }
+      ]
+    }).present();
   }
 }

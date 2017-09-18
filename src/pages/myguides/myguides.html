@@ -2,15 +2,41 @@
 
 
 <ion-content padding>
-                <ion-list>
-                <!-- <ion-item *ngFor="let song of songs | async" (click)="showOptions(song.$key, song.language)">
-                        {{song.language[0].code}} {{song.$key}} -->
-                <!-- </ion-item> -->
-                </ion-list>
                 
-        <ion-buttons end>
+        <!-- <ion-buttons end>
                 <button ion-button icon-only (click)="addSong()">
                   <ion-icon name="add"></ion-icon>
                 </button>
-              </ion-buttons>
+              </ion-buttons> -->
+
+        <div padding>
+                <ion-segment [(ngModel)]="guides">
+                        <ion-segment-button value="bought">
+                        Bought
+                        </ion-segment-button>
+                        <ion-segment-button value="created">
+                        Created
+                        </ion-segment-button>
+                </ion-segment>
+        </div>
+
+        <div [ngSwitch]="guides">
+                <ion-list *ngSwitchCase="'bought'" *ngFor="let audioguide of audioguideList">
+                        <ion-item>
+                        <ion-thumbnail item-start>
+                        <img src="assets/images/thumbnail-puppy-1.jpg">
+                        </ion-thumbnail>
+                        <h2>{{audioguide.title}}</h2>
+                        </ion-item>
+                </ion-list>
+
+                <ion-list *ngSwitchCase="'created'">
+                        <ion-item>
+                        <ion-thumbnail item-start>
+                        <img src="img/thumbnail-kitten-1.jpg">
+                        </ion-thumbnail>
+                        <h2>Luna</h2>
+                        </ion-item>
+                </ion-list>
+        </div>
 </ion-content>

@@ -1,9 +1,10 @@
-import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms/forms';
+import { Storage } from '@ionic/storage';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
-import { Auth, AngularFireAuth } from "angularfire2/auth";
-import { User } from "firebase/app";
+import { IonicPage, NavController, AlertController, LoadingController } from 'ionic-angular';
+import { AngularFireAuth } from "angularfire2/auth";
 import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
+import { FormGroup, FormBuilder } from "@angular/forms";
+import { Validators } from "@angular/forms";
 
 
 @IonicPage()
@@ -13,31 +14,22 @@ import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/databa
 })
 export class LoginPage {
 
-  showLogin:boolean = true;
   @ViewChild('email') email:string;
   @ViewChild('password') password:string;
-  name:string = '';
   loginForm: FormGroup;
-  users: FirebaseListObservable<any>;
   
-  constructor(public navCtrl: NavController, public navParams: NavParams, 
+  constructor(public navCtrl: NavController,
     private afDB: AngularFireDatabase, 
     public fireAuth: AngularFireAuth, 
-    private storage: Storage, 
     public formBuilder: FormBuilder,
     private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController) {
+    private alertCtrl: AlertController,
+    private storage: Storage) {
 
       this.loginForm = formBuilder.group({
-        email: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/'), Validators.required])],
-        password: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('(?=^.{8,20}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'), Validators.required])],
+        email: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
+        password: ['', Validators.compose([Validators.maxLength(20), Validators.required])],
       });
-
-      this.users = this.afDB.list('users');
-  }
-
-  ionViewDidLoad() {
-    console.log('Hello LoginPage Page');
   }
 
   doLogin() {
@@ -50,6 +42,7 @@ export class LoginPage {
     this.fireAuth.auth.signInWithEmailAndPassword(this.email, this.password).then(
       (data) => {
         console.log(data)
+        this.storage.set('isLoggedin', true);
         loader.dismiss();
         this.navCtrl.push('MyguidesPage');
       }
