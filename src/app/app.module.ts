@@ -1,8 +1,10 @@
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpModule, Http } from '@angular/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -14,8 +16,12 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { DiscoveryAudioguides } from './app.component';
 
 import { TabsModule } from "../pages/tabs/tabs.module";
+import { SqliteServiceProvider } from '../providers/sqlite-service/sqlite-service';
+import { SQLite } from "@ionic-native/sqlite";
+import { Media } from '@ionic-native/media';
+import { FilesServiceProvider } from '../providers/files-service/files-service';
 
-export function HttpLoaderFactory(http: HttpClient) {
+export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/','.json');
 }
 
@@ -34,12 +40,12 @@ export const firebaseConfig = {
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
+    HttpModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
+        deps: [Http]
       }
     }),
     TabsModule,
@@ -60,6 +66,12 @@ export const firebaseConfig = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    SqliteServiceProvider,
+    SQLite,
+    Media,
+    FilesServiceProvider,
+    File,
+    FileTransfer,
   ],
   exports: [
     TranslateModule,

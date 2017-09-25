@@ -19,7 +19,7 @@
         "noresults": "No results found"
     },
     "guides": {
-        "download": "Download",
+        "download": "Buy",
         "language": "Available languages: "
 
     },
@@ -28,7 +28,8 @@
         "signText": "Please, enter your details to sign in or use Facebook",
         "password": "Password",
         "cancel": "Cancel",
-        "facebook": "Sign in with Facebook"
+        "facebook": "Sign in with Facebook",
+        "register": "Register"
 
     }
 }

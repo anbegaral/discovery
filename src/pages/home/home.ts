@@ -80,6 +80,6 @@ export class HomePage implements OnInit {
   }
 
   viewGuide(idGuide: string) {
-    this.navCtrl.push('GuidesPage', idGuide);
+    this.navCtrl.push('ViewGuidePage', idGuide);
   }
 }

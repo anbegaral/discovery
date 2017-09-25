@@ -1,0 +1,20 @@
+
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>pois</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list *ngFor="let poi of poisList">
+    <ion-item>
+      <ion-icon name="play" item-end></ion-icon>
+      <h2>{{poi.title }}</h2>
+      <p>{{poi.duration}}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>
