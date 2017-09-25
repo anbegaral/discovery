@@ -26,6 +26,6 @@
       <p>Please enter a valid password.</p>
   </ion-item>
 </form>
-  <button ion-button color="primary" full (click)="registerUser()">{{'login.register' | translate}}</button>
+  <button ion-button color="primary" full (click)="registerUser()" [disabled]="!registerForm.valid">{{'login.register' | translate}}</button>
   
 </ion-content>

@@ -42,7 +42,7 @@
     <ion-list no-lines>
       <ion-item *ngFor="let audioguide of audioguidesSearched" (click)="viewGuide(audioguide.$key)">
         <ion-thumbnail item-start class="thumbnail">
-          <img src="{{audioguide.image}}"/>
+          <img src="{{audioguide.imageUrl}}"/>
         </ion-thumbnail>
         <h2>{{ audioguide.title }}</h2>
         <p>
@@ -69,7 +69,7 @@
     <ion-list no-lines>
       <ion-item *ngFor="let audioguide of audioguides | async" (click)="viewGuide(audioguide.$key)">
         <ion-thumbnail item-start class="thumbnail">
-          <img src="{{audioguide.image}}"/>
+          <img src="{{audioguide.imageUrl}}"/>
         </ion-thumbnail>
         <h2>{{ audioguide.title }}</h2>
         <p>

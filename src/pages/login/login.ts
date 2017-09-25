@@ -1,10 +1,9 @@
 import { Storage } from '@ionic/storage';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, AlertController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, AlertController, LoadingController, NavParams } from 'ionic-angular';
 import { AngularFireAuth } from "angularfire2/auth";
-import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
-import { FormGroup, FormBuilder } from "@angular/forms";
-import { Validators } from "@angular/forms";
+import { FormGroup, FormBuilder,Validators } from "@angular/forms";
+import { SqliteServiceProvider } from "../../providers/sqlite-service/sqlite-service";
 
 
 @IonicPage()
@@ -18,13 +17,13 @@ export class LoginPage {
   @ViewChild('password') password:string;
   loginForm: FormGroup;
   
-  constructor(public navCtrl: NavController,
-    private afDB: AngularFireDatabase, 
+  constructor(public navCtrl: NavController, public navParams: NavParams,
     public fireAuth: AngularFireAuth, 
     public formBuilder: FormBuilder,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private storage: Storage) {
+    private storage: Storage, 
+    private sqliteService: SqliteServiceProvider) {
 
       this.loginForm = formBuilder.group({
         email: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
@@ -44,6 +43,12 @@ export class LoginPage {
         console.log(data)
         this.storage.set('isLoggedin', true);
         loader.dismiss();
+        if(this.navParams.data) {
+          // TODO sistema de compra
+          alert(encodeURI(JSON.stringify(this.navParams.get('audioguide'))))
+          this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois'));
+        }
+        
         this.navCtrl.push('MyguidesPage');
       }
     ).catch(

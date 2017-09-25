@@ -17,8 +17,8 @@ export class RegisterUserPage {
   @ViewChild('password') password:string;
   registerForm: FormGroup;
   users: FirebaseListObservable<any>
-  EMAIL_PATTERN:string = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-  PASSWORD_PATTERN: string = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
+  EMAIL_PATTERN: string = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+  PASSWORD_PATTERN: string = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})";
   
   loader: any;
 
@@ -33,7 +33,7 @@ export class RegisterUserPage {
 
       this.registerForm = formBuilder.group({
         email: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(this.EMAIL_PATTERN), Validators.required])],
-        password: ['', Validators.compose([Validators.maxLength(20), Validators.pattern(this.PASSWORD_PATTERN), Validators.required])],
+        password: ['', Validators.compose([Validators.maxLength(20), Validators.required])],
       });
 
       this.users = this.afDB.list('users');
@@ -47,14 +47,12 @@ export class RegisterUserPage {
     this.loader.present();
 
     this.fireAuth.auth.createUserWithEmailAndPassword(this.email, this.password).then(
-      (data) => {
-        this.storage.set('useremail', data.email);
+      () => {
+        this.storage.set('useremail', this.email);
         this.storage.set('isLoggedin', true);       
-        this.addUser();  
-        this.sqliteService.addAudioguide(JSON.stringify(this.navParams.data));
-        
-        this.loader.dismiss();
-        this.navCtrl.push('MyguidesPage'); 
+        this.addUser();
+        this.loader.dismiss(); 
+        this.buyAudioguide();       
       }
     ).catch(
       (error) => {
@@ -74,6 +72,12 @@ export class RegisterUserPage {
         this.handlerError(error)
       }
     )
+  }
+
+  buyAudioguide() {
+        // TODO sistema de compra 
+        this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois'))
+        .then(() => this.navCtrl.push('MyguidesPage')); 
   }
 
   handlerError(error) {

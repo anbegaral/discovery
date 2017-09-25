@@ -1,3 +1,5 @@
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
@@ -16,6 +18,8 @@ import { DiscoveryAudioguides } from './app.component';
 import { TabsModule } from "../pages/tabs/tabs.module";
 import { SqliteServiceProvider } from '../providers/sqlite-service/sqlite-service';
 import { SQLite } from "@ionic-native/sqlite";
+import { Media } from '@ionic-native/media';
+import { FilesServiceProvider } from '../providers/files-service/files-service';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/','.json');
@@ -64,6 +68,10 @@ export const firebaseConfig = {
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SqliteServiceProvider,
     SQLite,
+    Media,
+    FilesServiceProvider,
+    File,
+    FileTransfer,
   ],
   exports: [
     TranslateModule,
