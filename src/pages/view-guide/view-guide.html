@@ -30,12 +30,12 @@
   </div>
   <ion-list>
     <ion-item *ngFor="let poi of pois | async">
-      <ion-thumbnail item-start><img src="{{poi.image}}" alt="{{poi.title}}"></ion-thumbnail>
+      <ion-thumbnail item-start><img src="{{poi.imageUrl}}" alt="{{poi.title}}"></ion-thumbnail>
       <h3>{{poi.title}}</h3>
       <p>{{'home.duration' | translate}}{{poi.duration}}</p>
-      <ion-icon name="play" item-end *ngIf="poi.isExample && !isPlaying" (click)="listen(poi.file)"></ion-icon>
-      <ion-icon name="pause" item-end *ngIf="poi.isExample && isPlaying" (click)="pause()"></ion-icon>
-      <ion-icon name="square" item-end *ngIf="poi.isExample && isPlaying" (click)="stop()"></ion-icon>
+      <ion-icon name="play" item-end *ngIf="poi.isPreview && !isPlaying" (click)="listen(poi.file)"></ion-icon>
+      <ion-icon name="pause" item-end *ngIf="poi.isPreview && isPlaying" (click)="pause()"></ion-icon>
+      <ion-icon name="square" item-end *ngIf="poi.isPreview && isPlaying" (click)="stop()"></ion-icon>
     </ion-item>
   </ion-list>
 </ion-content>

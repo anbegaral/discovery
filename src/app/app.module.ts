@@ -20,6 +20,7 @@ import { SqliteServiceProvider } from '../providers/sqlite-service/sqlite-servic
 import { SQLite } from "@ionic-native/sqlite";
 import { Media } from '@ionic-native/media';
 import { FilesServiceProvider } from '../providers/files-service/files-service';
+import { PlayGuideProvider } from '../providers/play-guide/play-guide';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/','.json');
@@ -72,6 +73,7 @@ export const firebaseConfig = {
     FilesServiceProvider,
     File,
     FileTransfer,
+    PlayGuideProvider,
   ],
   exports: [
     TranslateModule,

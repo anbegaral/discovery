@@ -1,7 +1,6 @@
 import { Storage } from '@ionic/storage';
 import { Component } from '@angular/core';
 import { Platform, AlertController } from 'ionic-angular';
-import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -13,7 +12,6 @@ export class DiscoveryAudioguides {
   alertTitle: string;
   
   constructor(private platform: Platform,
-      private statusBar: StatusBar,
       private splashScreen: SplashScreen,
       public translate: TranslateService,
       private storage: Storage,

@@ -3,12 +3,6 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { FormGroup, Validators, FormBuilder } from "@angular/forms";
 import { AngularFireAuth } from "angularfire2/auth";
 
-/**
- * Generated class for the RegisterContributorPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -20,7 +14,7 @@ export class RegisterContributorPage {
   @ViewChild('password') password:string;
   registerContributorForm: FormGroup;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public fireAuth: AngularFireAuth, private storage: Storage, public formBuilder: FormBuilder) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public fireAuth: AngularFireAuth, public formBuilder: FormBuilder) {
     this.registerContributorForm = formBuilder.group({
       firstName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
       lastName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],

@@ -1,7 +1,7 @@
 import { Storage } from '@ionic/storage';
 import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-service';
-import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform, Events } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform } from 'ionic-angular';
 import { File } from '@ionic-native/file';
 
 
@@ -25,9 +25,7 @@ export class MyguidesPage {
       private alertCtrl: AlertController,
       public actionSheetCtrl: ActionSheetController,
       private sqliteService: SqliteServiceProvider,
-      private storage: Storage,
-      private ngZone: NgZone,
-      private events: Events ) {
+      private storage: Storage ) {
     // this.songs = this.afDB.list('countries');
     this.platform.ready().then(() => {
       if(this.platform.is('ios')) {
@@ -36,7 +34,11 @@ export class MyguidesPage {
         this.storageDirectory = this.file.externalDataDirectory;
       }
       
-      this.listAudioguides();
+      this.sqliteService.getDatabaseState().subscribe(ready => {
+        if(ready) {
+          this.listAudioguides();
+        }
+      })
       this.navCtrl.parent.select(1);
       this.guides = 'purchased';
       this.storage.get('isAuthor').then(isAuthor => this.isAuthor = isAuthor)
@@ -44,17 +46,9 @@ export class MyguidesPage {
   }
 
   listAudioguides() {
-    this.sqliteService.findAll().then(
-      data => {
-        this.ngZone.run(() => {
-          this.audioguidesList = data
-          console.log(`this.audioguidesList.length ` + this.audioguidesList.length)
-        // this.audioguidesList.forEach(element => {
-        //   let decodeJsonFile = decodeURI(element.jsonFile);          
-        //   element.jsonFile = JSON.parse(decodeJsonFile)
-        // });
-      })
-    }).catch(error => console.log('error listAudioguides ' + error.message.toString()));
+    console.log(`llamado`)
+    this.sqliteService.findAll().then(data => this.audioguidesList = data)
+    .catch(error => console.log('error listAudioguides ' + error.message.toString()));
   }
 
   openPois(idAudioguide) {
@@ -171,25 +165,23 @@ export class MyguidesPage {
       buttons: [        
         {
           text: 'Cancel',
-          handler: data => console.log('Delete canceled') 
+          handler: data => console.log('Delete canceled ' +data) 
         },
         {
           text: 'Delete',
           handler: data => {
-            this.sqliteService.deleteAudioguide(id).then(() => this.events.publish('updateList'))
+            console.log(`myguides 173 ` + data)
+            this.sqliteService.getDatabaseState().subscribe(ready => {
+              if(ready) {
+                this.sqliteService.deleteAudioguide(id).then(() => {
+                  this.listAudioguides();
+                })
+              }
+            })
           }
         }
       ]
     }).present();
-    
   }
 
-  // refreshGuides() {
-  //   this.sqliteService.findAll().then(guides => {
-  //   this.ngZone.run(() => {
-  //     this.audioguidesList = guides;
-  //     console.log(`refreshed ` +this.audioguidesList);
-  //   });
-  // });
-  // }
  }
