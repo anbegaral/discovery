@@ -1,7 +1,6 @@
 import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, IonicPage, NavParams } from 'ionic-angular';
-import { Subject } from "rxjs/Subject";
 import { TranslateService } from "@ngx-translate/core";
 import { Audioguide } from '../../model/models';
 
@@ -17,9 +16,7 @@ export class HomePage implements OnInit {
 
   audioguides: Audioguide[];
   audioguidesSearched: Audioguide[];
-  startAt = new Subject();
-  endAt = new Subject();
-  
+
   lang: string;
 
   placesDisabled = true;
