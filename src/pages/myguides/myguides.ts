@@ -1,11 +1,13 @@
 import { Storage } from '@ionic/storage';
 import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-service';
-import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform, Events } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform } from 'ionic-angular';
 import { File } from '@ionic-native/file';
 
 
-@IonicPage()
+@IonicPage({
+  name: 'MyguidesPage'
+})
 @Component({
   selector: 'page-myguides',
   templateUrl: 'myguides.html',
@@ -17,6 +19,7 @@ export class MyguidesPage {
   isAuthor: boolean;
   poisList: any;
   storageDirectory: any;  
+  showParent:boolean = false;
 
   constructor(public navCtrl: NavController, 
       public navParams: NavParams,
@@ -25,9 +28,7 @@ export class MyguidesPage {
       private alertCtrl: AlertController,
       public actionSheetCtrl: ActionSheetController,
       private sqliteService: SqliteServiceProvider,
-      private storage: Storage,
-      private ngZone: NgZone,
-      private events: Events ) {
+      private storage: Storage) {
     // this.songs = this.afDB.list('countries');
     this.platform.ready().then(() => {
       if(this.platform.is('ios')) {
@@ -35,30 +36,36 @@ export class MyguidesPage {
       } else if(this.platform.is('android')) {
         this.storageDirectory = this.file.externalDataDirectory;
       }
-      
-      this.listAudioguides();
+
       this.navCtrl.parent.select(1);
       this.guides = 'purchased';
       this.storage.get('isAuthor').then(isAuthor => this.isAuthor = isAuthor)
     });
   }
 
+  ionViewWillEnter() {
+    this.sqliteService.getDatabaseState().subscribe(ready => {
+      if(ready) {
+        this.listAudioguides();
+      }
+    });
+  }
+
   listAudioguides() {
-    this.sqliteService.findAll().then(
-      data => {
-        this.ngZone.run(() => {
-          this.audioguidesList = data
-          console.log(`this.audioguidesList.length ` + this.audioguidesList.length)
-        // this.audioguidesList.forEach(element => {
-        //   let decodeJsonFile = decodeURI(element.jsonFile);          
-        //   element.jsonFile = JSON.parse(decodeJsonFile)
-        // });
-      })
-    }).catch(error => console.log('error listAudioguides ' + error.message.toString()));
+    this.sqliteService.findAll().then(data => {
+      this.audioguidesList = data
+    })
+    .catch(error => console.log('error listAudioguides ' + error.message.toString()));
+  }
+
+  listMyAudioguides() {
+    // this.sqliteService.findMyAudioguides().then(data => {
+    //   this.audioguidesList = data
+    // })
+    // .catch(error => console.log('error listMyAudioguides ' + error.message.toString()));
   }
 
   openPois(idAudioguide) {
-    console.log(idAudioguide)
     this.navCtrl.push('PoisPage', idAudioguide);
   }
 
@@ -163,33 +170,32 @@ export class MyguidesPage {
   //   prompt.present();
   // }
 
-  delete(id: number) {
-    console.log(`delete `+id)
+  delete(id: string) {
     this.alertCtrl.create({
       title: 'Delete audioguide',
       message: 'Are you sure you want to delete the selected audioguide?',
       buttons: [        
         {
           text: 'Cancel',
-          handler: data => console.log('Delete canceled') 
+          handler: data => console.log('Delete canceled ' +data) 
         },
         {
           text: 'Delete',
           handler: data => {
-            this.sqliteService.deleteAudioguide(id).then(() => this.events.publish('updateList'))
+            this.sqliteService.getDatabaseState().subscribe(ready => {
+              if(ready) {
+                this.sqliteService.deleteAudioguide(id).then(() => {
+                  this.listAudioguides();
+                })
+              }
+            })
           }
         }
       ]
     }).present();
-    
   }
 
-  // refreshGuides() {
-  //   this.sqliteService.findAll().then(guides => {
-  //   this.ngZone.run(() => {
-  //     this.audioguidesList = guides;
-  //     console.log(`refreshed ` +this.audioguidesList);
-  //   });
-  // });
-  // }
+  registerContributor() {
+    this.navCtrl.push('RegisterContributorPage')
+  }
  }

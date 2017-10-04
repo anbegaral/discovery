@@ -1,7 +1,8 @@
+// import { Utils } from './../../providers/utils/utils';
 import { Storage } from '@ionic/storage';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
 import { SqliteServiceProvider } from "../../providers/sqlite-service/sqlite-service";
@@ -27,9 +28,10 @@ export class RegisterUserPage {
     public fireAuth: AngularFireAuth, 
     private storage: Storage, 
     public formBuilder: FormBuilder,
-    private alertCtrl: AlertController,
     private loadingCtrl: LoadingController, 
-    private sqliteService: SqliteServiceProvider) {
+    private sqliteService: SqliteServiceProvider,
+    // private utils: Utils
+  ) {
 
       this.registerForm = formBuilder.group({
         email: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(this.EMAIL_PATTERN), Validators.required])],
@@ -46,18 +48,24 @@ export class RegisterUserPage {
     });
     this.loader.present();
 
-    this.fireAuth.auth.createUserWithEmailAndPassword(this.email, this.password).then(
+    this.fireAuth.auth.createUserWithEmailAndPassword(this.email, this.password)
+    .then(
       () => {
         this.storage.set('useremail', this.email);
-        this.storage.set('isLoggedin', true);       
+        this.storage.set('isLoggedin', true); 
+        this.storage.set('isAuthor', false);      
         this.addUser();
         this.loader.dismiss(); 
-        this.buyAudioguide();       
+        this.sqliteService.getDatabaseState().subscribe(ready => {
+          if(ready) {
+            this.buyAudioguide();
+          }
+        })  
       }
     ).catch(
       (error) => {
         this.loader.dismiss();
-        this.handlerError(error)
+        // this.utils.handlerError(error);
       }
     )
   }
@@ -69,27 +77,19 @@ export class RegisterUserPage {
     }).catch(
       (error) => {
         this.loader.dismiss();
-        this.handlerError(error)
+        // this.utils.handlerError(error);
       }
     )
   }
 
   buyAudioguide() {
         // TODO sistema de compra 
+        console.log(`buyAudioguide in register-user`)
         this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois'))
-        .then(() => this.navCtrl.push('MyguidesPage')); 
-  }
-
-  handlerError(error) {
-    this.alertCtrl.create({
-      title: 'Error',
-      message: error.message,
-      buttons: [        
-        {
-          text: 'Close',
-          handler: data => console.log(error) 
-        }
-      ]
-    }).present();
+        .then(() =>{
+          this.navParams = null;
+          this.sqliteService.findAll();
+          this.navCtrl.push('MyguidesPage')
+        })  
   }
 }

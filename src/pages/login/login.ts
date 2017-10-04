@@ -43,11 +43,11 @@ export class LoginPage {
         console.log(data)
         this.storage.set('isLoggedin', true);
         loader.dismiss();
-        if(this.navParams.data) {
-          // TODO sistema de compra
-          alert(encodeURI(JSON.stringify(this.navParams.get('audioguide'))))
-          this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois'));
-        }
+        this.sqliteService.getDatabaseState().subscribe(ready => {
+          if(ready) {
+            this.buyAudioguide();
+          }
+        })  
         
         this.navCtrl.push('MyguidesPage');
       }
@@ -59,6 +59,11 @@ export class LoginPage {
     )
   }
 
+  buyAudioguide() {
+          // TODO sistema de compra
+    this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois'));
+  }
+
   handlerError(error) {
     this.alertCtrl.create({
       title: 'Error',
@@ -66,7 +71,7 @@ export class LoginPage {
       buttons: [        
         {
           text: 'Close',
-          handler: data => console.log(error) 
+          handler: data => console.log(data) 
         }
       ]
     }).present();

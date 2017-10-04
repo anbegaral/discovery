@@ -2,37 +2,39 @@
 # yarn lockfile v1
 
 
-"@angular-devkit/build-optimizer@~0.0.18":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/build-optimizer/-/build-optimizer-0.0.21.tgz#d3100a179c570d3c45ba02f87486c931e8845e13"
+"@angular-devkit/build-optimizer@~0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/build-optimizer/-/build-optimizer-0.0.23.tgz#2fe39f11460b27e3ebd007af7432e44646ea8816"
   dependencies:
     loader-utils "^1.1.0"
     source-map "^0.5.6"
     typescript "^2.3.3"
     webpack-sources "^1.0.1"
 
-"@angular-devkit/core@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-0.0.14.tgz#01b1bf89a3b354843ed4b8fec4e780ec6a31ca6c"
-
-"@angular-devkit/schematics@~0.0.21":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-0.0.24.tgz#5e4c2f01c95aea72fdb0e832504bc3d2475934f6"
+"@angular-devkit/core@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-0.0.15.tgz#f237b4b27743d3a5e6dac60503596daa14442516"
   dependencies:
-    "@angular-devkit/core" "0.0.14"
+    source-map "^0.5.6"
+
+"@angular-devkit/schematics@~0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-0.0.25.tgz#993e63c2398ce0bcd61172627bc6e44ed4c98a99"
+  dependencies:
+    "@angular-devkit/core" "0.0.15"
     "@ngtools/json-schema" "^1.1.0"
     minimist "^1.2.0"
     rxjs "^5.4.2"
 
 "@angular/cli@^1.4.2":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-1.4.3.tgz#8389d4eeadfe34abb1d16e53836416a8f8430fb3"
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-1.4.4.tgz#d267580412813942a0d84772b56d2bf0239338d4"
   dependencies:
-    "@angular-devkit/build-optimizer" "~0.0.18"
-    "@angular-devkit/schematics" "~0.0.21"
+    "@angular-devkit/build-optimizer" "~0.0.23"
+    "@angular-devkit/schematics" "~0.0.25"
     "@ngtools/json-schema" "1.1.0"
-    "@ngtools/webpack" "1.7.1"
-    "@schematics/angular" "~0.0.30"
+    "@ngtools/webpack" "1.7.2"
+    "@schematics/angular" "~0.0.38"
     autoprefixer "^6.5.3"
     chalk "^2.0.1"
     circular-dependency-plugin "^3.0.0"
@@ -47,10 +49,7 @@
     extract-text-webpack-plugin "3.0.0"
     file-loader "^0.10.0"
     fs-extra "^4.0.0"
-    get-caller-file "^1.0.0"
     glob "^7.0.3"
-    heimdalljs "^0.2.4"
-    heimdalljs-logger "^0.1.9"
     html-webpack-plugin "^2.29.0"
     istanbul-instrumenter-loader "^2.0.0"
     karma-source-map-support "^1.2.0"
@@ -129,41 +128,45 @@
   dependencies:
     tsickle "^0.21.0"
 
-"@ionic-native/core@3.12.1":
-  version "3.12.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-3.12.1.tgz#5b7c7a4f5adfc8da0b9197e1843e5893acf66021"
+"@ionic-native/core@^4.2.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-4.3.0.tgz#0d613bb6c8779146949514299ca1c02611e308a9"
 
 "@ionic-native/file-transfer@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/file-transfer/-/file-transfer-4.2.1.tgz#009d52b08f726f31dbce301e1abf204dff85b74e"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/file-transfer/-/file-transfer-4.3.0.tgz#fdd9b0b4c11e0f45f7f0e6727db47b033e81331c"
 
 "@ionic-native/file@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/file/-/file-4.2.1.tgz#3992d3a8d7cc7973afd59a70d28d9f9875582fd5"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/file/-/file-4.3.0.tgz#fa2c51752149d2139271f356f91955976dba7955"
 
 "@ionic-native/fingerprint-aio@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/fingerprint-aio/-/fingerprint-aio-4.2.1.tgz#0f2e93d9337cb8e7b8782a25b9d9780ae3043150"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/fingerprint-aio/-/fingerprint-aio-4.3.0.tgz#5a86a24dc6f7389929dabb9c9bf228bb83b5f6c7"
 
 "@ionic-native/firebase@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/firebase/-/firebase-4.2.1.tgz#561bd0728b6f984b351391e43d2de288ede442ff"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/firebase/-/firebase-4.3.0.tgz#85d45a47fae046e80d7be9d2eb4555a9aac85e46"
 
 "@ionic-native/media@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/media/-/media-4.2.1.tgz#569b18d3c2682297cda27cf7d73b45d5e9d92fd3"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/media/-/media-4.3.0.tgz#e7051beb2bc9db17c5e0e84523ca0a54f2b8d144"
+
+"@ionic-native/native-audio@^4.2.1":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/native-audio/-/native-audio-4.3.0.tgz#70d1ac2e852405b7694c89f804958aa38ae29dd8"
 
 "@ionic-native/splash-screen@^3.12.1":
   version "3.14.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-3.14.0.tgz#f864bfbd7f8577743a0301e7bec781316febc309"
 
 "@ionic-native/sqlite-porter@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/sqlite-porter/-/sqlite-porter-4.2.1.tgz#288a9e9b13be46c6f50dbd9c006177ee03a9866d"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/sqlite-porter/-/sqlite-porter-4.3.0.tgz#2d76781f4c50d3d296810e3f6d0ac107d140533b"
 
 "@ionic-native/sqlite@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/sqlite/-/sqlite-4.2.1.tgz#e44e0e1147dc8725f28770481678732289722f75"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/sqlite/-/sqlite-4.3.0.tgz#3fc2b08e2cc9d26e320926ad169199de46fc5e4e"
 
 "@ionic-native/status-bar@3.12.1":
   version "3.12.1"
@@ -216,9 +219,9 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@ngtools/json-schema/-/json-schema-1.1.0.tgz#c3a0c544d62392acc2813a42c8a0dc6f58f86922"
 
-"@ngtools/webpack@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-1.7.1.tgz#383ddd689845cf42fc755975f6440f75535f5016"
+"@ngtools/webpack@1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-1.7.2.tgz#3fc4de01786dcc2f50d8cbaaa117311e56799977"
   dependencies:
     enhanced-resolve "^3.1.0"
     loader-utils "^1.0.2"
@@ -233,9 +236,9 @@
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@ngx-translate/http-loader/-/http-loader-0.1.0.tgz#6029325561d7868fe325a419de2770e98ff1502e"
 
-"@schematics/angular@~0.0.30":
-  version "0.0.36"
-  resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-0.0.36.tgz#60c4f0a6b07c9695ae56eab7d84ab9f7c78d661a"
+"@schematics/angular@~0.0.38":
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-0.0.38.tgz#6131569a9fe21fe7bad8abf4a3174ea5a8647bbd"
 
 "@types/localforage@0.0.30":
   version "0.0.30"
@@ -311,6 +314,10 @@ alphanum-sort@^1.0.1, alphanum-sort@^1.0.2:
 amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
+
+android-versions@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/android-versions/-/android-versions-1.2.1.tgz#3f50baf693e73a512c3c5403542291cead900063"
 
 angularfire2@^4.0.0-rc.2:
   version "4.0.0-rc0"
@@ -1072,8 +1079,8 @@ buffer@^4.3.0:
     isarray "^1.0.0"
 
 buffer@^5.0.7:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.0.7.tgz#570a290b625cf2603290c1149223d27ccf04db97"
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.0.8.tgz#84daa52e7cf2fa8ce4195bc5cf0f7809e0930b24"
   dependencies:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
@@ -1414,17 +1421,18 @@ copy-webpack-plugin@^4.0.1:
     node-dir "^0.1.10"
 
 cordova-android@^6.2.3:
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/cordova-android/-/cordova-android-6.2.3.tgz#249f21b6ce5f1f1c847a7ab83b16909dbed5aa28"
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/cordova-android/-/cordova-android-6.3.0.tgz#da5418433d25c75a5977b428244bbe437d0128d2"
   dependencies:
-    cordova-common "^2.0.1"
+    android-versions "^1.2.0"
+    cordova-common "^2.1.0"
     elementtree "0.1.6"
     nopt "^3.0.1"
     properties-parser "^0.2.3"
     q "^1.4.1"
     shelljs "^0.5.3"
 
-cordova-common@2.1.0, cordova-common@^2.0.1:
+cordova-common@2.1.0, cordova-common@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cordova-common/-/cordova-common-2.1.0.tgz#bb357ee1b9825031ed9db3c56b592efe973d1640"
   dependencies:
@@ -1443,11 +1451,11 @@ cordova-common@2.1.0, cordova-common@^2.0.1:
     unorm "^1.3.3"
 
 cordova-ios@^4.4.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/cordova-ios/-/cordova-ios-4.5.0.tgz#ca7621760dda876175458077c927eaa7eb645285"
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/cordova-ios/-/cordova-ios-4.5.1.tgz#d17b21048c782e75190f8d05a7983c7af34cb585"
   dependencies:
     cordova-common "2.1.0"
-    ios-sim "^6.0.0"
+    ios-sim "^6.1.2"
     nopt "^3.0.6"
     plist "^1.2.0"
     q "^1.4.1"
@@ -2537,7 +2545,7 @@ gaze@^1.0.0:
   dependencies:
     globule "^1.0.0"
 
-get-caller-file@^1.0.0, get-caller-file@^1.0.1:
+get-caller-file@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.2.tgz#f702e63127e7e231c160a80c1554acb70d5047e5"
 
@@ -2750,19 +2758,6 @@ hawk@~6.0.2:
 he@1.1.x:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
-
-heimdalljs-logger@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/heimdalljs-logger/-/heimdalljs-logger-0.1.9.tgz#d76ada4e45b7bb6f786fc9c010a68eb2e2faf176"
-  dependencies:
-    debug "^2.2.0"
-    heimdalljs "^0.2.0"
-
-heimdalljs@^0.2.0, heimdalljs@^0.2.4:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/heimdalljs/-/heimdalljs-0.2.5.tgz#6aa54308eee793b642cff9cf94781445f37730ac"
-  dependencies:
-    rsvp "~3.2.1"
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
@@ -3002,7 +2997,7 @@ ionicons@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ionicons/-/ionicons-3.0.0.tgz#40b8daf4fd7a31150bd002160f66496e22a98c3c"
 
-ios-sim@^6.0.0:
+ios-sim@^6.1.2:
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/ios-sim/-/ios-sim-6.1.2.tgz#7b9df7c35abd5b9d4c014248174e8b9e5b97ecc4"
   dependencies:
@@ -5175,10 +5170,6 @@ rollup@0.42.0:
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.42.0.tgz#56e791b3a2f3dd7190bbb80a375675f2fe0f9b23"
   dependencies:
     source-map-support "^0.4.0"
-
-rsvp@~3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.2.1.tgz#07cb4a5df25add9e826ebc67dcc9fd89db27d84a"
 
 rxjs@5.4.0:
   version "5.4.0"

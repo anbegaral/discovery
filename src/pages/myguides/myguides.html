@@ -1,46 +1,49 @@
 <ion-content padding>
-                
+         
         <!-- <ion-buttons end>
                 <button ion-button icon-only (click)="addSong()">
                   <ion-icon name="add"></ion-icon>
                 </button>
               </ion-buttons> -->
 
-        <div padding>
-                <ion-segment [(ngModel)]="guides">
-                        <ion-segment-button value="purchased">
-                        Purchased
-                        </ion-segment-button>
-                        <ion-segment-button value="created">
-                        Created
-                        </ion-segment-button>
-                </ion-segment>
-        </div>
+        <ion-segment [(ngModel)]="guides">
+                <ion-segment-button value="purchased">
+                Purchased
+                </ion-segment-button>
+                <ion-segment-button value="created">
+                Created
+                </ion-segment-button>
+        </ion-segment>
 
         <div [ngSwitch]="guides">
                 <ion-list *ngSwitchCase="'purchased'">
-                        <ion-item *ngFor="let audioguide of audioguidesList">
-                                <div (click)="openPois(audioguide.idFirebase)">
-                                     <ion-thumbnail item-start>
-                                        <img src="{{storageDirectory + audioguide.image}}">
-                                        </ion-thumbnail>
-                                        <h2>{{audioguide.title}}</h2>
-                                        <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
-                                </div>
-                                <button primary (click)="delete(audioguide.id)">Delete</button>
-        
+                        <ion-item *ngFor="let audioguide of audioguidesList" (click)="openPois(audioguide.idFirebase)">
+                                <ion-thumbnail item-start>
+                                <img src="{{storageDirectory + audioguide.image}}">
+                                </ion-thumbnail>
+                                <h3>{{audioguide.title}}</h3>
+                                <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
+                                <ion-icon name="trash" (click)="delete(audioguide.idFirebase)"></ion-icon>        
                         </ion-item> 
                 </ion-list>
 
-                <ion-list *ngSwitchCase="'created'">
-                        <div *ngIf="!isAuthor">Information about becoming a contributor</div>
+                <ion-list *ngSwitchCase="'created'">                        
+                        <div *ngIf="!isAuthor">
+                                <p>If you want to become a contributor and upload your own audioguide, please register your details</p>
+                                <button ion-button primary (click)="registerContributor()">Register as contributor</button>
+                        </div>
                 
-                        <ion-item *ngIf="isAuthor">
-                                <ion-thumbnail item-start>
-                                <img src="img/thumbnail-kitten-1.jpg">
-                                </ion-thumbnail>
-                                <h2>Luna</h2>
-                        </ion-item>
+                        <div *ngIf="isAuthor">
+                                <button ion-button primary (click)="newGuide()">New guide</button>
+                                <ion-item *ngFor="let audioguide of audioguidesList" (click)="openPois(audioguide.idFirebase)">
+                                        <ion-thumbnail item-start>
+                                        <img src="{{storageDirectory + audioguide.image}}">
+                                        </ion-thumbnail>
+                                        <h3>{{audioguide.title}}</h3>                        
+                                        <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
+                                        <ion-icon name="trash" (click)="delete(audioguide.idFirebase)"></ion-icon>        
+                                </ion-item> 
+                        </div>
 
                 </ion-list>
         </div>

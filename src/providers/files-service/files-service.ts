@@ -1,14 +1,13 @@
-import { Platform, LoadingController } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file';
-import { MediaObject, Media } from '@ionic-native/media';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 
 @Injectable()
 export class FilesServiceProvider {
   storageDirectory: any;
 
-  constructor(private platform: Platform, private media: Media, private file: File, private transfer: FileTransfer, private loadingCtrl: LoadingController) {
+  constructor(private platform: Platform, private file: File, private transfer: FileTransfer) {
     // assign storage directory
     this.platform.ready().then(() => {
       if(this.platform.is('ios')) {
@@ -29,36 +28,42 @@ export class FilesServiceProvider {
   // }
 
   
-  downloadImageFile(url, filename) {
+  downloadFile(url, filename) {
     console.log(url , filename)
-    this.platform.ready().then(() => {
-      this.file.resolveDirectoryUrl(this.storageDirectory).then((resolvedDirectory) => {
+      return this.file.resolveDirectoryUrl(this.storageDirectory)
+      .then((resolvedDirectory) => {
         console.log("resolved  directory: " + resolvedDirectory.nativeURL);
-        this.file.checkFile(resolvedDirectory.nativeURL, filename).then((data) => {
+
+        return this.file.checkFile(resolvedDirectory.nativeURL, filename)
+        .then((data) => {
           console.log('File already exist ' + data)
-           
-        }).catch(err => {
+          return null; 
+        })
+        .catch(err => {
           console.log("Error occurred while checking local files:");
           console.log(err);
           if(err.code == 1) {
-            // not found! download!
-            console.log("not found! download!");
-            let loading = this.loadingCtrl.create({
-              content: 'Downloading the image from the server...'
-            });
-            loading.present();
             const fileTransfer: FileTransferObject = this.transfer.create();
-            fileTransfer.download(url, this.storageDirectory + filename).then(entry => {
-              console.log('download complete ' + entry.toURL());
-              loading.dismiss();
-            }).catch(err_2 => {
-              console.log("Download error!");
-              loading.dismiss();
-              console.log(err_2);
-            });
+            return fileTransfer.download(url, this.storageDirectory + filename)
+              .then(entry => {
+                console.log('download complete ' + entry.toURL());
+                return entry;
+              })
+              .catch(err_2 => {
+                console.log("Download error!");
+                console.log(err_2);
+              });
           }
         });
       });
-    });
+  }
+
+  deleteFile(fileName) {
+    this.file.removeFile(this.storageDirectory, fileName)
+      .then(() => console.log(`File ` + fileName + ` deleted`))
+      .catch(err => {
+        console.log("Error occurred while deleting local files:");
+        console.log(err);
+    })
   }
 }
