@@ -1,3 +1,4 @@
+import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { HomePage } from "./home";
@@ -11,6 +12,6 @@ import { IonicPageModule } from "ionic-angular";
     TranslateModule.forChild(),
   ],
   exports: [HomePage],
-  providers: []
+  providers: [FirebaseServiceProvider]
 })
 export class HomePageModule {}

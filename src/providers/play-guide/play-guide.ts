@@ -20,13 +20,13 @@ export class PlayGuideProvider {
     private loadingCtrl: LoadingController,
     private file: File,
     private platform: Platform) {
+      
       this.platform.ready().then(() => {
         if(this.platform.is('ios')) {
           this.storageDirectory = this.file.dataDirectory;
         } else if(this.platform.is('android')) {
           this.storageDirectory = this.file.externalDataDirectory;
         }
-        // this.isPlaying.next(false);
       });
   }
 
@@ -90,11 +90,12 @@ export class PlayGuideProvider {
       console.log(status)
       if(this.media.MEDIA_RUNNING === status){
         console.log(`MEDIA_RUNNING `+status)
-        this.mediaFile.seekTo(this.position*1000);
         this.isPlaying.next(true);
+        this.mediaFile.seekTo(this.position*1000);
       }
 
       if(this.media.MEDIA_STARTING === status) {
+        this.isPlaying.next(true);
         console.log(`MEDIA_STARTING status `+status)
       }
 
@@ -118,9 +119,7 @@ export class PlayGuideProvider {
     this.isPlaying.next(true);
   }
 
-  pause() {
-    console.log(`pause`)
-    
+  pause() {    
     this.mediaFile.pause();
     this.mediaFile.getCurrentPosition().then(position => this.position = position)
     this.isPlaying.next(false);

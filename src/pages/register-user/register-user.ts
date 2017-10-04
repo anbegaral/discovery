@@ -1,4 +1,4 @@
-import { Utils } from './../../providers/utils/utils';
+// import { Utils } from './../../providers/utils/utils';
 import { Storage } from '@ionic/storage';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Component, ViewChild } from '@angular/core';
@@ -30,7 +30,8 @@ export class RegisterUserPage {
     public formBuilder: FormBuilder,
     private loadingCtrl: LoadingController, 
     private sqliteService: SqliteServiceProvider,
-    private utils: Utils) {
+    // private utils: Utils
+  ) {
 
       this.registerForm = formBuilder.group({
         email: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(this.EMAIL_PATTERN), Validators.required])],
@@ -51,7 +52,8 @@ export class RegisterUserPage {
     .then(
       () => {
         this.storage.set('useremail', this.email);
-        this.storage.set('isLoggedin', true);       
+        this.storage.set('isLoggedin', true); 
+        this.storage.set('isAuthor', false);      
         this.addUser();
         this.loader.dismiss(); 
         this.sqliteService.getDatabaseState().subscribe(ready => {
@@ -63,7 +65,7 @@ export class RegisterUserPage {
     ).catch(
       (error) => {
         this.loader.dismiss();
-        this.utils.handlerError(error);
+        // this.utils.handlerError(error);
       }
     )
   }
@@ -75,7 +77,7 @@ export class RegisterUserPage {
     }).catch(
       (error) => {
         this.loader.dismiss();
-        this.utils.handlerError(error);
+        // this.utils.handlerError(error);
       }
     )
   }

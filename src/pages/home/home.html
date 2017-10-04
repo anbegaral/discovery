@@ -15,7 +15,7 @@
       <ion-item>
         <ion-label>{{ 'home.country' | translate }}</ion-label>
         <ion-select (ionChange)="getLocations($event)">
-          <ion-option value="{{country.$key}}" *ngFor="let country of countries | async" >
+          <ion-option value="{{country.$key}}" *ngFor="let country of countries" >
             <ng-container *ngFor="let language of country.language">
               <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
             </ng-container>
@@ -28,7 +28,7 @@
       <ion-item>
         <ion-label>{{ 'home.place' | translate }}</ion-label>
         <ion-select (ionChange)="getGuides($event)" [disabled]="placesDisabled">
-            <ion-option value="{{location.$key}}" *ngFor="let location of locations | async" >
+            <ion-option value="{{location.$key}}" *ngFor="let location of locations" >
               <ng-container *ngFor="let language of location.language">
                 <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
               </ng-container>
@@ -38,36 +38,15 @@
     </ion-list>
   </div>
 
-  <div *ngIf="audioguidesSearched?.length > 0">
-    <ion-list no-lines>
-      <ion-item *ngFor="let audioguide of audioguidesSearched" (click)="viewGuide(audioguide.$key)">
-        <ion-thumbnail item-start class="thumbnail">
-          <img src="{{audioguide.imageUrl}}"/>
-        </ion-thumbnail>
-        <h2>{{ audioguide.title }}</h2>
-        <p>
-          {{ 'home.pois' | translate }}{{audioguide.pois}}
-        </p>
-        <p>
-          {{ 'home.duration' | translate }}{{audioguide.duration}} mins
-        </p>
-        <p>
-          {{ 'home.price' | translate }}{{audioguide.price | currency}}
-        </p>
-      </ion-item>
-    </ion-list>
-  </div>
-
-  <div *ngIf="audioguidesSearched?.length < 1"  [hidden]="isSearched">
+  <div *ngIf="audioguides?.length < 1">
     <hr>
     <p>
       {{'home.noresults' | translate}}
     </p>
   </div>
 
-  <div [hidden]="!isSearched">
     <ion-list no-lines>
-      <ion-item *ngFor="let audioguide of audioguides | async" (click)="viewGuide(audioguide.$key)">
+      <ion-item *ngFor="let audioguide of audioguides" (click)="viewGuide(audioguide.$key)">
         <ion-thumbnail item-start class="thumbnail">
           <img src="{{audioguide.imageUrl}}"/>
         </ion-thumbnail>
@@ -83,6 +62,5 @@
         </p>
       </ion-item>
     </ion-list>
-  </div>
 
 </ion-content>

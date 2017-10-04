@@ -1,4 +1,4 @@
-import { Platform, LoadingController } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
@@ -7,7 +7,7 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 export class FilesServiceProvider {
   storageDirectory: any;
 
-  constructor(private platform: Platform, private file: File, private transfer: FileTransfer, private loadingCtrl: LoadingController) {
+  constructor(private platform: Platform, private file: File, private transfer: FileTransfer) {
     // assign storage directory
     this.platform.ready().then(() => {
       if(this.platform.is('ios')) {
@@ -43,27 +43,27 @@ export class FilesServiceProvider {
           console.log("Error occurred while checking local files:");
           console.log(err);
           if(err.code == 1) {
-            // not found! download!
-            console.log("not found! download!");
-            let loading = this.loadingCtrl.create({
-              content: 'Downloading files from the server...'
-            });
-            loading.present();
-
             const fileTransfer: FileTransferObject = this.transfer.create();
             return fileTransfer.download(url, this.storageDirectory + filename)
               .then(entry => {
                 console.log('download complete ' + entry.toURL());
-                loading.dismiss();
                 return entry;
               })
               .catch(err_2 => {
                 console.log("Download error!");
-                loading.dismiss();
                 console.log(err_2);
               });
           }
         });
       });
+  }
+
+  deleteFile(fileName) {
+    this.file.removeFile(this.storageDirectory, fileName)
+      .then(() => console.log(`File ` + fileName + ` deleted`))
+      .catch(err => {
+        console.log("Error occurred while deleting local files:");
+        console.log(err);
+    })
   }
 }

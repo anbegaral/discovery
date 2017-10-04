@@ -28,6 +28,7 @@
     </div>
     <button ion-button (click)="getAccount($event)">Download</button>
   </div>
+  
   <ion-list>
     <ion-item *ngFor="let poi of pois | async">
       <ion-thumbnail item-start><img src="{{poi.imageUrl}}" alt="{{poi.title}}"></ion-thumbnail>

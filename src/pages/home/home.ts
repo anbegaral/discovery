@@ -1,8 +1,9 @@
+import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, IonicPage, NavParams } from 'ionic-angular';
-import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
 import { Subject } from "rxjs/Subject";
 import { TranslateService } from "@ngx-translate/core";
+import { Audioguide } from '../../model/models';
 
 @IonicPage()
 @Component({
@@ -11,11 +12,11 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class HomePage implements OnInit {
   
-  countries: FirebaseListObservable<any[]>;
-  locations: FirebaseListObservable<any[]>;
-  audioguides: FirebaseListObservable<any[]>;
+  countries: any[];
+  locations: any[];
 
-  audioguidesSearched: FirebaseListObservable<any[]>;
+  audioguides: Audioguide[];
+  audioguidesSearched: Audioguide[];
   startAt = new Subject();
   endAt = new Subject();
   
@@ -23,60 +24,53 @@ export class HomePage implements OnInit {
 
   placesDisabled = true;
   isSearched = true;
+  lastKeyPress: number = 0;
 
-  constructor(public navCtrl: NavController, 
-    public navParams: NavParams,
-    private afDB: AngularFireDatabase,
-    public translate: TranslateService) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private firebaseService: FirebaseServiceProvider, public translate: TranslateService) {
       this.lang = this.translate.getDefaultLang();
   }
 
   ngOnInit() { 
     this.getCountries();
-    this.getGuides();
-    this.searchGuides(this.startAt, this.endAt).subscribe(list => this.audioguidesSearched = list);
+    this.getAudioguides();
   }
 
   getCountries() {
-    this.countries = this.afDB.list('countries');
+    this.firebaseService.getCountries({}).subscribe(countries => this.countries = countries)
   }
 
   getLocations(idCountry: string) { 
     this.placesDisabled = false; 
-    this.locations = this.afDB.list('locations', {
-        query: {
+    this.firebaseService.getLocations({
           orderByChild: 'idCountry',
           equalTo: idCountry
-        }
-      }
-    );
+    }).subscribe(locations => this.locations = locations)
   }
 
-  getGuides(idLocation?: string) {
-    this.audioguides = this.afDB.list('audioguides', {
-        query: {
+  getAudioguides(idLocation?: string) {
+    this.firebaseService.getAudioguidesList({
           orderByChild: 'idLocation',
           equalTo: idLocation
-        }
-      }
-    );
+    }).subscribe(audioguides => {
+      this.audioguides = audioguides
+      this.audioguidesSearched = audioguides
+    })
   }
 
-  searchGuides(start, end): FirebaseListObservable<any> {
-    return this.afDB.list('audioguides', {
-      query: {
-        orderByChild: 'title',
-        startAt: start,
-        endAt: end
-      }
-    });
+  initializeList(): void {
+    this.audioguides = this.audioguidesSearched;
   }
 
   searchAudioguides($event) {
-    let q = $event.target.value;
-    this.startAt.next(q)
-    this.endAt.next(q+"\uf8ff")
-    this.isSearched = false;
+    this.initializeList();
+
+    let val = $event.target.value;
+    
+    if (val && val.trim() !== '') {
+      this.audioguides = this.audioguides.filter((item) => {
+        return (item.title.toLowerCase().indexOf(val.toLowerCase()) > -1);
+      })
+    }
   }
 
   viewGuide(idGuide: string) {

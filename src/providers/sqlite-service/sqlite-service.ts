@@ -1,20 +1,23 @@
 import { FirebaseApp } from 'angularfire2';
 import { FilesServiceProvider } from './../files-service/files-service';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
-import { Platform } from 'ionic-angular';
+import { Platform, LoadingController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class SqliteServiceProvider {
   fileUrl: string;
+  loading: any;
 
   private database: SQLiteObject;
   private dbReady: BehaviorSubject<boolean>;
   storageImageRef: any;
   storageAudioRef: any;
 
-  constructor(private platform: Platform, private sqlite: SQLite, private fileService: FilesServiceProvider, private firebaseStorage: FirebaseApp) {
+  constructor(private platform: Platform, private sqlite: SQLite, private fileService: FilesServiceProvider, private firebaseStorage: FirebaseApp,
+    private loadingCtrl: LoadingController) {
+
     this.dbReady = new BehaviorSubject(false);
     this.platform.ready().then(()=>{
       this.sqlite.create({
@@ -52,6 +55,10 @@ export class SqliteServiceProvider {
           pois.length, audioguide.lang, audioguide.price, audioguide.image])
       .then(result => {
         if(result.insertId){
+           this.loading = this.loadingCtrl.create({
+              content: 'Downloading files from the server...'
+            });
+            this.loading.present();
           return this.getAudioguideFiles(audioguide).then(() => {
             console.log(`audioguide.id `+ result.insertId);
             return this.addPois(pois)
@@ -69,7 +76,7 @@ export class SqliteServiceProvider {
         .then(resultPois => {
             return this.getPoiFiles(element).then(() => {
               console.log('pois id' +resultPois.insertId)
-
+              this.loading.dismiss();
             })
           }).catch((error) => console.log("Error addingPois " + error.message.toString()))
     });
@@ -78,7 +85,6 @@ export class SqliteServiceProvider {
   getAudioguideFiles(audioguide) {
     this.storageImageRef = this.firebaseStorage.storage().ref().child(audioguide.image);
     return this.storageImageRef.getDownloadURL().then(url => {
-      console.log(`image `+url)
       this.fileUrl = url;
       return this.fileService.downloadFile(this.fileUrl, audioguide.image).then(() => {
         console.log('image downloaded');  
@@ -157,8 +163,7 @@ export class SqliteServiceProvider {
     console.log('findPois '+idAudioguide)
     return this.database.executeSql(`SELECT * FROM pois WHERE idAudioguide = '${idAudioguide}'`, []).then(
       (data) => {
-        let poisList = [];
-          console.log(data.rows.length)       
+        let poisList = [];     
         if(data.rows.length > 0) {            
           for(var i = 0; i < data.rows.length; i++) {
             console.log(data.rows.item(i))
@@ -171,16 +176,31 @@ export class SqliteServiceProvider {
     });
   }
 
-  deleteAudioguide(id:number){
-      return this.database.executeSql(`DELETE FROM audioguides WHERE id = ${id}`, []).then(() => {
-        return this.database.executeSql(`DELETE FROM pois WHERE idAudioguide = ${id}`, []).then()
-        .catch(
-          (error) => console.log("Error deletePois: " + error.message.toString()))
+  deleteAudioguide(idAudioguide:string){
+    this.findPoisByAudioguide(idAudioguide).then((poiList) => {
+      let poisList:any = [];
+      poisList = poiList;
+      poisList.forEach(element => {
+        console.log(element)
+        this.fileService.deleteFile(element.file)
+        this.fileService.deleteFile(element.image)
+      });      
+    })
+      return this.database.executeSql(`DELETE FROM audioguides WHERE idFirebase = '${idAudioguide}'`, []).then(() => {
+        return this.database.executeSql(`DELETE FROM pois WHERE idAudioguide = '${idAudioguide}'`, []).then(
+
+        )
+          .catch(
+            (error) => console.log("Error deletePois: " + error.message.toString()))
       })
       .catch(
         (error) => console.log("Error deleteAudioguides: " + error.message.toString()))
   }
 
+  findMyAudioguides() {
+
+  }
+  
   getDatabaseState() {
     return this.dbReady.asObservable();
   }
