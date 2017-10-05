@@ -30,7 +30,8 @@
                 <ion-list *ngSwitchCase="'created'">                        
                         <div *ngIf="!isAuthor">
                                 <p>If you want to become a contributor and upload your own audioguide, please register your details</p>
-                                <button ion-button primary (click)="registerContributor()">Register as contributor</button>
+                                <button ion-button primary (click)="registerContributor()">Register as contributor</button> or
+                                <button ion-button primary (click)="login()" *ngIf="!isLoggedin">Login</button>
                         </div>
                 
                         <div *ngIf="isAuthor">
@@ -43,6 +44,7 @@
                                         <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
                                         <ion-icon name="trash" (click)="delete(audioguide.idFirebase)"></ion-icon>        
                                 </ion-item> 
+                                <!-- <p *ngIf="audioguidesList.length < 1">You have not created any audioguide yet</p> -->
                         </div>
 
                 </ion-list>

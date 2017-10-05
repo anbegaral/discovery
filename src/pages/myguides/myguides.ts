@@ -3,6 +3,7 @@ import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-s
 import { Component } from '@angular/core';
 import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform } from 'ionic-angular';
 import { File } from '@ionic-native/file';
+import { Audioguide } from '../../model/models';
 
 
 @IonicPage({
@@ -14,9 +15,10 @@ import { File } from '@ionic-native/file';
 })
 export class MyguidesPage {
   // songs: FirebaseListObservable<any[]>;
-  audioguidesList: any;
+  audioguidesList: Audioguide[];
   guides: string;
   isAuthor: boolean;
+  isLoggedin: boolean;
   poisList: any;
   storageDirectory: any;  
   showParent:boolean = false;
@@ -39,11 +41,12 @@ export class MyguidesPage {
 
       this.navCtrl.parent.select(1);
       this.guides = 'purchased';
-      this.storage.get('isAuthor').then(isAuthor => this.isAuthor = isAuthor)
     });
   }
 
   ionViewWillEnter() {
+    this.storage.get('isAuthor').then(isAuthor => this.isAuthor = isAuthor)
+    this.storage.get('isLoggedin').then(isLoggedin => this.isLoggedin = isLoggedin)
     this.sqliteService.getDatabaseState().subscribe(ready => {
       if(ready) {
         this.listAudioguides();
@@ -197,5 +200,9 @@ export class MyguidesPage {
 
   registerContributor() {
     this.navCtrl.push('RegisterContributorPage')
+  }
+
+  login() {
+    this.navCtrl.push('LoginPage')
   }
  }

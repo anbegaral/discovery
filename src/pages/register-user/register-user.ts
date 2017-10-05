@@ -1,35 +1,39 @@
+import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
+import { OnInit } from '@angular/core';
 // import { Utils } from './../../providers/utils/utils';
 import { Storage } from '@ionic/storage';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
 import { SqliteServiceProvider } from "../../providers/sqlite-service/sqlite-service";
+import { User } from '../../model/models';
 
 @IonicPage()
 @Component({
   selector: 'page-register-user',
   templateUrl: 'register-user.html',
 })
-export class RegisterUserPage {
+export class RegisterUserPage implements OnInit{
 
   @ViewChild('email') email:string;
   @ViewChild('password') password:string;
   registerForm: FormGroup;
-  users: FirebaseListObservable<any>
+  users: User[]
+  newUser = new User();
+  
   EMAIL_PATTERN: string = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
   PASSWORD_PATTERN: string = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})";
   
   loader: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
-    private afDB: AngularFireDatabase, 
     public fireAuth: AngularFireAuth, 
     private storage: Storage, 
     public formBuilder: FormBuilder,
     private loadingCtrl: LoadingController, 
     private sqliteService: SqliteServiceProvider,
+    private firebaseService: FirebaseServiceProvider
     // private utils: Utils
   ) {
 
@@ -38,9 +42,12 @@ export class RegisterUserPage {
         password: ['', Validators.compose([Validators.maxLength(20), Validators.required])],
       });
 
-      this.users = this.afDB.list('users');
+     
   }
 
+  ngOnInit() {
+     this.firebaseService.getUsers({}).subscribe(users => this.users = users)
+  }
 
   registerUser(){
     this.loader = this.loadingCtrl.create({
@@ -71,15 +78,10 @@ export class RegisterUserPage {
   }
 
   addUser(){
-    this.users.push({
-      isAuthor: false,
-      email: this.email,
-    }).catch(
-      (error) => {
-        this.loader.dismiss();
-        // this.utils.handlerError(error);
-      }
-    )
+    this.newUser.isAuthor = false;
+    this.newUser.email = this.email;
+    this.firebaseService.addUser(this.newUser);
+    this.newUser = new User() // reset user
   }
 
   buyAudioguide() {

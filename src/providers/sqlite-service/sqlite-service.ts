@@ -4,6 +4,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Platform, LoadingController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Audioguide } from '../../model/models';
 
 @Injectable()
 export class SqliteServiceProvider {
@@ -128,7 +129,7 @@ export class SqliteServiceProvider {
   findAll() {
     return this.database.executeSql(`SELECT * FROM audioguides`, []).then(
       (data) => {   
-        let audioguidesList = [];         
+        let audioguidesList = Array<Audioguide>();         
         if(data.rows.length > 0) {
             for(var i = 0; i < data.rows.length; i++) {
               audioguidesList.push(data.rows.item(i));  

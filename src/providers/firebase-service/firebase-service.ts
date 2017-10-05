@@ -1,4 +1,4 @@
-import { POI } from './../../model/models';
+import { POI, User } from './../../model/models';
 import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database';
@@ -15,6 +15,9 @@ export class FirebaseServiceProvider {
 
   countries: FirebaseListObservable<any[]> = null;
   locations: FirebaseListObservable<any[]> = null;
+
+  users: FirebaseListObservable<User[]> = null;
+  user: User = null;
 
   constructor(private angFireDatabase: AngularFireDatabase, private alertCtrl: AlertController) {
   }
@@ -68,6 +71,18 @@ export class FirebaseServiceProvider {
     });
   }
 
+  getUsers(query:{}) {
+    this.users = this.angFireDatabase.list('users', {
+      query: query
+    })
+    return this.users
+  }
+
+  addUser(user: User): void {
+    this.users.push(user)
+      .catch(error => this.handleError(error))
+  }
+
   // Default error handling for all actions
   private handleError(error) {
     this.alertCtrl.create({
@@ -80,5 +95,5 @@ export class FirebaseServiceProvider {
         }
       ]
     }).present();
-}
+  }
 }

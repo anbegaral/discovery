@@ -27,7 +27,7 @@
     <ion-list no-lines>
       <ion-item>
         <ion-label>{{ 'home.place' | translate }}</ion-label>
-        <ion-select (ionChange)="getGuides($event)" [disabled]="placesDisabled">
+        <ion-select (ionChange)="getAudioguides($event)" [disabled]="placesDisabled">
             <ion-option value="{{location.$key}}" *ngFor="let location of locations" >
               <ng-container *ngFor="let language of location.language">
                 <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
@@ -45,22 +45,22 @@
     </p>
   </div>
 
-    <ion-list no-lines>
-      <ion-item *ngFor="let audioguide of audioguides" (click)="viewGuide(audioguide.$key)">
-        <ion-thumbnail item-start class="thumbnail">
-          <img src="{{audioguide.imageUrl}}"/>
-        </ion-thumbnail>
-        <h2>{{ audioguide.title }}</h2>
-        <p>
-          {{ 'home.pois' | translate }}{{audioguide.pois}}
-        </p>
-        <p>
-          {{ 'home.duration' | translate }}{{audioguide.duration}} mins
-        </p>
-        <p>
-          {{ 'home.price' | translate }}{{audioguide.price | currency}}
-        </p>
-      </ion-item>
-    </ion-list>
+  <ion-list no-lines>
+    <ion-item *ngFor="let audioguide of audioguides" (click)="viewGuide(audioguide.$key)">
+      <ion-thumbnail item-start class="thumbnail">
+        <img src="{{audioguide.imageUrl}}"/>
+      </ion-thumbnail>
+      <h2>{{ audioguide.title }}</h2>
+      <p>
+        {{ 'home.pois' | translate }}{{audioguide.pois}}
+      </p>
+      <p>
+        {{ 'home.duration' | translate }}{{audioguide.duration}} mins
+      </p>
+      <p>
+        {{ 'home.price' | translate }}{{audioguide.price | currency}}
+      </p>
+    </ion-item>
+  </ion-list>
 
 </ion-content>

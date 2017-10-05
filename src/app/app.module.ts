@@ -1,3 +1,11 @@
+import { FirebaseServiceProvider } from './../providers/firebase-service/firebase-service';
+import { Media } from '@ionic-native/media';
+import { PlayGuideProvider } from './../providers/play-guide/play-guide';
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
+import { FilesServiceProvider } from './../providers/files-service/files-service';
+import { SQLite } from '@ionic-native/sqlite';
+import { SqliteServiceProvider } from './../providers/sqlite-service/sqlite-service';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
@@ -60,6 +68,14 @@ export const firebaseConfig = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    SqliteServiceProvider,
+    SQLite,
+    FilesServiceProvider,
+    File,
+    FileTransfer,
+    PlayGuideProvider,
+    Media,
+    FirebaseServiceProvider,
   ],
   exports: [
     TranslateModule,
