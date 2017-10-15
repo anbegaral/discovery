@@ -2,6 +2,8 @@ import { Platform } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
+import { Upload } from '../../model/models';
+import * as firebase from 'firebase';
 
 @Injectable()
 export class FilesServiceProvider {
@@ -58,11 +60,34 @@ export class FilesServiceProvider {
       });
   }
 
+  uploadFile(folder: string, upload: Upload){
+    let storageRef = firebase.storage().ref();
+    let uploadTask = storageRef.child(`${folder}/${upload.file.name}`).put(upload.file)
+    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+      (snapshot) =>  {
+        // upload in progress
+        upload.progress = (uploadTask.snapshot.bytesTransferred / uploadTask.snapshot.totalBytes) * 100
+      },
+      (error) => {
+        // upload failed
+        console.log(error)
+      },
+      () => {
+        // upload success
+        upload.imageUrl = uploadTask.snapshot.downloadURL
+        upload.image = upload.file.name
+      }
+    );
+    return uploadTask.then(() => {
+      return upload.imageUrl
+    })
+  }
+
   deleteFile(fileName) {
     this.file.removeFile(this.storageDirectory, fileName)
       .then(() => console.log(`File ` + fileName + ` deleted`))
       .catch(err => {
-        console.log("Error occurred while deleting local files:");
+        console.log("Error occurred while deleting local files: ");
         console.log(err);
     })
   }

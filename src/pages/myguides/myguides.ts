@@ -1,9 +1,9 @@
+import { Audioguide } from './../../model/models';
 import { Storage } from '@ionic/storage';
 import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-service';
 import { Component } from '@angular/core';
 import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform } from 'ionic-angular';
 import { File } from '@ionic-native/file';
-import { Audioguide } from '../../model/models';
 
 
 @IonicPage({
@@ -14,14 +14,16 @@ import { Audioguide } from '../../model/models';
   templateUrl: 'myguides.html',
 })
 export class MyguidesPage {
-  // songs: FirebaseListObservable<any[]>;
-  audioguidesList: Audioguide[];
-  guides: string;
+  purchasedAudioguidesList: Audioguide[] = [];
+  createdAudioguidesList: Audioguide[] = [];
+  myguidesSegment: string;
   isAuthor: boolean;
   isLoggedin: boolean;
+  idAuthor: string;
   poisList: any;
   storageDirectory: any;  
-  showParent:boolean = false;
+  newAudioguide: boolean = false;
+  
 
   constructor(public navCtrl: NavController, 
       public navParams: NavParams,
@@ -31,7 +33,7 @@ export class MyguidesPage {
       public actionSheetCtrl: ActionSheetController,
       private sqliteService: SqliteServiceProvider,
       private storage: Storage) {
-    // this.songs = this.afDB.list('countries');
+
     this.platform.ready().then(() => {
       if(this.platform.is('ios')) {
         this.storageDirectory = this.file.dataDirectory;
@@ -40,32 +42,38 @@ export class MyguidesPage {
       }
 
       this.navCtrl.parent.select(1);
-      this.guides = 'purchased';
+      this.myguidesSegment = 'purchased';
     });
   }
 
   ionViewWillEnter() {
-    this.storage.get('isAuthor').then(isAuthor => this.isAuthor = isAuthor)
+    this.storage.get('isAuthor').then(isAuthor => {
+      this.isAuthor = isAuthor
+      if(this.isAuthor && this.isLoggedin) {
+        this.storage.get('useremail').then(isLoggedin => this.isLoggedin = isLoggedin)
+      }
+    })
     this.storage.get('isLoggedin').then(isLoggedin => this.isLoggedin = isLoggedin)
     this.sqliteService.getDatabaseState().subscribe(ready => {
       if(ready) {
-        this.listAudioguides();
+        this.myguidesSegment = 'purchased';
+        this.listMyPurchasedAudioguides();
       }
     });
   }
 
-  listAudioguides() {
-    this.sqliteService.findAll().then(data => {
-      this.audioguidesList = data
+  listMyPurchasedAudioguides() {
+    this.sqliteService.findPurchasedAudioguides().then(data => {
+      this.purchasedAudioguidesList = data
     })
     .catch(error => console.log('error listAudioguides ' + error.message.toString()));
   }
 
-  listMyAudioguides() {
-    // this.sqliteService.findMyAudioguides().then(data => {
-    //   this.audioguidesList = data
-    // })
-    // .catch(error => console.log('error listMyAudioguides ' + error.message.toString()));
+  listMyCreatedAudioguides() {
+    this.sqliteService.findMyAudioguides().then(data => {
+      this.createdAudioguidesList = data
+    })
+    .catch(error => console.log('error listMyAudioguides ' + error.message.toString()));
   }
 
   openPois(idAudioguide) {
@@ -188,7 +196,7 @@ export class MyguidesPage {
             this.sqliteService.getDatabaseState().subscribe(ready => {
               if(ready) {
                 this.sqliteService.deleteAudioguide(id).then(() => {
-                  this.listAudioguides();
+                  this.listMyPurchasedAudioguides();
                 })
               }
             })
@@ -204,5 +212,9 @@ export class MyguidesPage {
 
   login() {
     this.navCtrl.push('LoginPage')
+  }
+
+  showNewAudioguide() {
+    this.newAudioguide = !this.newAudioguide;
   }
  }

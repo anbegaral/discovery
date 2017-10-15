@@ -1,31 +1,31 @@
 <ion-header>
-    
-      <ion-navbar>
+
+    <ion-navbar>
         <ion-title>{{'login.register' | translate}}</ion-title>
-      </ion-navbar>
-    
-    </ion-header>
-    
-    
+    </ion-navbar>
+
+</ion-header>
+
+
 <ion-content padding>
     <form [formGroup]="registerContributorForm">
-    
-      <ion-item>
-          <ion-label floating>First Name</ion-label>
-          <ion-input formControlName="firstName" type="text" [(ngModel)]="firstName"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="!registerContributorForm.controls.firstName.valid  && (registerContributorForm.controls.firstName.dirty)">
-          <p>Please enter a valid name.</p>
-      </ion-item>
-    
-      <ion-item>
-          <ion-label floating>Last Name</ion-label>
-          <ion-input formControlName="lastName" type="text" [(ngModel)]="lastName"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="!registerContributorForm.controls.lastName.valid  && (registerContributorForm.controls.lastName.dirty)">
-          <p>Please enter a valid surname.</p>
-      </ion-item>
-      
+
+        <ion-item>
+            <ion-label floating>First Name</ion-label>
+            <ion-input formControlName="firstName" type="text" [(ngModel)]="firstName"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="!registerContributorForm.controls.firstName.valid  && (registerContributorForm.controls.firstName.dirty)">
+            <p>Please enter a valid name.</p>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Last Name</ion-label>
+            <ion-input formControlName="lastName" type="text" [(ngModel)]="lastName"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="!registerContributorForm.controls.lastName.valid  && (registerContributorForm.controls.lastName.dirty)">
+            <p>Please enter a valid surname.</p>
+        </ion-item>
+
         <ion-item>
             <ion-label floating>Address</ion-label>
             <ion-input formControlName="address" type="text" [(ngModel)]="address"></ion-input>
@@ -33,15 +33,15 @@
         <ion-item *ngIf="!registerContributorForm.controls.address.valid  && (registerContributorForm.controls.address.dirty)">
             <p>Please enter a valid address.</p>
         </ion-item>
-        
-          <ion-item>
-              <ion-label floating>City</ion-label>
-              <ion-input formControlName="city" type="text" [(ngModel)]="city"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="!registerContributorForm.controls.city.valid  && (registerContributorForm.controls.city.dirty)">
-              <p>Please enter a valid city.</p>
-          </ion-item>
-          
+
+        <ion-item>
+            <ion-label floating>City</ion-label>
+            <ion-input formControlName="city" type="text" [(ngModel)]="city"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="!registerContributorForm.controls.city.valid  && (registerContributorForm.controls.city.dirty)">
+            <p>Please enter a valid city.</p>
+        </ion-item>
+
         <ion-item>
             <ion-label floating>Postcode</ion-label>
             <ion-input formControlName="postcode" type="text" [(ngModel)]="postcode"></ion-input>
@@ -49,7 +49,7 @@
         <ion-item *ngIf="!registerContributorForm.controls.postcode.valid  && (registerContributorForm.controls.postcode.dirty)">
             <p>Please enter a valid postcode.</p>
         </ion-item>
-        
+
         <ion-item>
             <ion-label floating>Country</ion-label>
             <ion-input formControlName="country" type="text" [(ngModel)]="country"></ion-input>
@@ -57,7 +57,7 @@
         <ion-item *ngIf="!registerContributorForm.controls.country.valid  && (registerContributorForm.controls.country.dirty)">
             <p>Please enter a valid country.</p>
         </ion-item>
-        
+
         <ion-item>
             <ion-label floating>Bank account</ion-label>
             <ion-input formControlName="bankaccount" type="text" [(ngModel)]="bankaccount"></ion-input>
@@ -65,24 +65,25 @@
         <ion-item *ngIf="!registerContributorForm.controls.bankaccount.valid  && (registerContributorForm.controls.bankaccount.dirty)">
             <p>Please enter a valid bank account.</p>
         </ion-item>
-    
-      <ion-item>
-        <ion-label floating>Email</ion-label>
-        <ion-input formControlName="email" type="email" [(ngModel)]="email"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="!registerContributorForm.controls.email.valid  && (registerContributorForm.controls.email.dirty)">
-          <p>Please enter a valid email.</p>
-      </ion-item>
-    
-      <ion-item>
-        <ion-label floating>{{'login.password' | translate}}</ion-label>
-        <ion-input formControlName="password" type="password" [(ngModel)]="password"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="!registerContributorForm.controls.password.valid  && (registerContributorForm.controls.password.dirty)">
-          <p>Please enter a valid password.</p>
-      </ion-item>
-    
-      </form>
-      <button ion-button color="primary" full (click)="registerContributor()" [disabled]="!registerContributorForm.valid">{{'login.register' | translate}}</button>
-      
+
+        <div *ngIf="!isLoggedin">
+            <ion-item>
+                <ion-label floating>Email</ion-label>
+                <ion-input formControlName="email" type="email" [(ngModel)]="email"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!registerContributorForm.controls.email.valid  && (registerContributorForm.controls.email.dirty)">
+                <p>Please enter a valid email.</p>
+            </ion-item>
+
+            <ion-item>
+                <ion-label floating>{{'login.password' | translate}}</ion-label>
+                <ion-input formControlName="password" type="password" [(ngModel)]="password"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!registerContributorForm.controls.password.valid  && (registerContributorForm.controls.password.dirty)">
+                <p>Please enter a valid password.</p>
+            </ion-item>
+        </div>
+    </form>
+    <button ion-button color="primary" full (click)="registerContributor()" [disabled]="!registerContributorForm.valid">{{'login.register' | translate}}</button>
+
 </ion-content>

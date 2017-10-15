@@ -35,7 +35,7 @@ export class ViewGuidePage {
 
   getGuide(){    
     this.idGuide = this.navParams.data;
-    this.firebaseService.getAudioguide(this.idGuide).subscribe(audioguide => this.audioguide = audioguide)
+    this.audioguide = this.firebaseService.getAudioguide(this.idGuide);
 
     this.pois = this.firebaseService.getPoisList({
       orderByChild: 'idAudioguide',
@@ -55,8 +55,7 @@ export class ViewGuidePage {
     this.playService.isPlaying.subscribe(isPlaying => this.isPlaying = isPlaying)
   }
 
-  pause() {
-    
+  pause() { 
     this.playService.pause()
     this.playService.isPlaying.subscribe(isPlaying => this.isPlaying = isPlaying)
   }
@@ -103,7 +102,7 @@ export class ViewGuidePage {
               this.navCtrl.pop();
               this.navCtrl.push('MyguidesPage')
         })
-        .catch(error => console.log('error addAudioguide ' + error.message.toString()));
+        .catch(error => console.log('error addAudioguide ' + error.toString()));
       } else{
         this.alertCtrl.create({
           title: 'Error',
