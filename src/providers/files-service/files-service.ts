@@ -91,4 +91,8 @@ export class FilesServiceProvider {
         console.log(err);
     })
   }
+
+  saveFileToSqlite(upload: Upload) {
+
+  }
 }

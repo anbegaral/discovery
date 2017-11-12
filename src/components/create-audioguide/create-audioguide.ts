@@ -88,7 +88,11 @@ export class CreateAudioguideComponent {
   uploadFile() {
     this.currentUpload = new Upload(this.image);
     return this.filesService.uploadFile('images', this.currentUpload).then(url => {
-      return this.audioguide.imageUrl =  url
+      console.log(url)
+      return this.audioguide.imageUrl = url
+    }).catch(error => {
+      console.log('Error ' + error)
+      return error
     })
   }
 
@@ -100,6 +104,7 @@ export class CreateAudioguideComponent {
     if(!this.showInputs) {
       this.audioguide.idLocation = this.location;
     } else {
+      // if the location does not exist we need to create it
       this.createLocation()
       this.audioguide.idLocation = this.location;      
     } 
@@ -109,13 +114,20 @@ export class CreateAudioguideComponent {
     this.audioguide.price = this.price; 
     this.audioguide.image = 'images/'+this.image.name;
     this.audioguide.imageUrl = this.image.name;
-    this.sqliteService.createAudioguide(this.audioguide).then(() => this.navCtrl.push('MyguidesPage'))
+    this.sqliteService.createAudioguide(this.audioguide).then(() => {
+      this.filesService.downloadFile(new Upload(this.image), this.image.name).then(() => {
+        alert('Audioguide created succesfully');
+        this.navCtrl.push('MyguidesPage')
+      }).catch(error => console.log(error))
+    })
     
+    // reset the audioguide object
     this.audioguide = new Audioguide()
   }
 
   createLocation() {
     this.firebaseService.getCountry(this.country).subscribe(idCountry => {
+    // if the country already exists      
       if(idCountry.$key === this.country && idCountry.$value !== null && idCountry.$value !== 'undefined') {
         let newLocation = new Location();
           newLocation.idCountry = this.country;
@@ -125,6 +137,7 @@ export class CreateAudioguideComponent {
             
           });
       } else {
+    // if the country does not exist        
         let newCountry = new Country();
         newCountry.language = [{code: this.translateService.getDefaultLang(), name: this.country}];
         this.firebaseService.addCountry(newCountry).then(idCountry => {
@@ -140,7 +153,7 @@ export class CreateAudioguideComponent {
   }
 
   completeAudioguide() {
-
+    // add the audioguide to firebase
     this.uploadFile().then(() => {
       this.audioguide.reviewed = false;
       this.audioguide.idAuthor = this.idAuthor;
