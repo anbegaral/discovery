@@ -50,8 +50,7 @@ export class FirebaseServiceProvider {
   }
 
   createAudioguide(audioguide: Audioguide): void  {
-    this.audioguides.push(audioguide)
-      .catch(error => this.handleError(error))
+    this.audioguides.push(audioguide);
   }
 
   getPoisList(query:{}): FirebaseListObservable<POI[]> {
@@ -79,8 +78,7 @@ export class FirebaseServiceProvider {
   }
 
   addUser(user: User): void {
-    this.users.push(user)
-      .catch(error => this.handleError(error))
+    this.users.push(user);
   }
 
   // Default error handling for all actions

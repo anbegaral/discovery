@@ -87,11 +87,6 @@ export class RegisterContributorPage {
       country: this.country,
       bankaccount: this.bankaccount,
       email: this.email,
-    }).catch(
-      (error) => {
-        this.loader.dismiss();
-        // this.utils.handlerError(error);
-      }
-    )
+    });
   }
 }
