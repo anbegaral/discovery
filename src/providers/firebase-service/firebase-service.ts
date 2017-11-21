@@ -2,24 +2,29 @@ import { POI, User } from './../../model/models';
 import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database';
-import { Audioguide } from '../../model/models';
+import { Audioguide, Country, Location } from '../../model/models';
 
 
 @Injectable()
 export class FirebaseServiceProvider {
 
   audioguides: FirebaseListObservable<Audioguide[]> = null;
-  audioguide: FirebaseObjectObservable<Audioguide> = null;
+  audioguide: Audioguide = null;
+  storageImageRef: any;
 
   pois: FirebaseListObservable<POI[]> = null;
 
-  countries: FirebaseListObservable<any[]> = null;
-  locations: FirebaseListObservable<any[]> = null;
-
+  countries: FirebaseListObservable<Country[]> = null;
+  country: FirebaseObjectObservable<Location> = null;
+  locations: FirebaseListObservable<Location[]> = null;
+  location: FirebaseObjectObservable<Location> = null;
+  
   users: FirebaseListObservable<User[]> = null;
   user: User = null;
 
   constructor(private angFireDatabase: AngularFireDatabase, private alertCtrl: AlertController) {
+    this.countries = this.getCountries({})
+    this.locations = this.getLocations({})
   }
 
   getCountries(query:{}) {
@@ -29,6 +34,18 @@ export class FirebaseServiceProvider {
     return this.countries
   }
 
+  // Return a single observable Audioguide
+  getCountry(key: string) {
+    return this.angFireDatabase.object(`countries/${key}`)
+  }
+
+  addCountry(country: Country) {
+    return this.countries.push(country).then(snapshot => {
+      console.log(snapshot.key)
+      return snapshot.key
+    }).catch(error => this.handleError(error))
+  }
+
   getLocations(query:{}) { 
     this.locations = this.angFireDatabase.list('locations', {
         query: query
@@ -36,21 +53,34 @@ export class FirebaseServiceProvider {
     return this.locations
   }
 
+  addLocation(location: Location) {
+    return this.locations.push(location).then(snapshot => {
+      console.log(snapshot.key)
+      return snapshot.key
+    }).catch(error => this.handleError(error))
+  }
+
   getAudioguidesList(query:{}): FirebaseListObservable<Audioguide[]> {
     this.audioguides = this.angFireDatabase.list('audioguides', {
       query: query
     });
+    
     return this.audioguides
   }
 
   // Return a single observable Audioguide
-  getAudioguide(key: string): FirebaseObjectObservable<Audioguide> {
-    this.audioguide = this.angFireDatabase.object(`audioguides/${key}`)
+  getAudioguide(key: string): Audioguide {
+    this.angFireDatabase.object(`audioguides/${key}`).subscribe((audioguide) => {
+      this.audioguide = audioguide;
+    })    
     return this.audioguide
   }
 
-  createAudioguide(audioguide: Audioguide): void  {
-    this.audioguides.push(audioguide);
+  createAudioguide(audioguide: Audioguide) {
+    return this.audioguides.push(audioguide).then(snapshot => {
+      console.log(snapshot.key)
+      return snapshot.key
+    }).catch(error => this.handleError(error))
   }
 
   getPoisList(query:{}): FirebaseListObservable<POI[]> {
@@ -79,6 +109,11 @@ export class FirebaseServiceProvider {
 
   addUser(user: User): void {
     this.users.push(user);
+  }
+
+  updateUser(key: string, user: User): void {
+    this.users.update(key, user)
+      .catch(error => this.handleError(error))
   }
 
   // Default error handling for all actions

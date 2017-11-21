@@ -6,7 +6,7 @@
                 </button>
               </ion-buttons> -->
 
-        <ion-segment [(ngModel)]="guides">
+        <ion-segment [(ngModel)]="myguidesSegment">
                 <ion-segment-button value="purchased">
                 Purchased
                 </ion-segment-button>
@@ -14,10 +14,9 @@
                 Created
                 </ion-segment-button>
         </ion-segment>
-
-        <div [ngSwitch]="guides">
+        <div [ngSwitch]="myguidesSegment">
                 <ion-list *ngSwitchCase="'purchased'">
-                        <ion-item *ngFor="let audioguide of audioguidesList" (click)="openPois(audioguide.idFirebase)">
+                        <ion-item *ngFor="let audioguide of purchasedAudioguidesList" (click)="openPois(audioguide.idFirebase)">
                                 <ion-thumbnail item-start>
                                 <img src="{{storageDirectory + audioguide.image}}">
                                 </ion-thumbnail>
@@ -35,16 +34,19 @@
                         </div>
                 
                         <div *ngIf="isAuthor">
-                                <button ion-button primary (click)="newGuide()">New guide</button>
-                                <ion-item *ngFor="let audioguide of audioguidesList" (click)="openPois(audioguide.idFirebase)">
-                                        <ion-thumbnail item-start>
-                                        <img src="{{storageDirectory + audioguide.image}}">
-                                        </ion-thumbnail>
-                                        <h3>{{audioguide.title}}</h3>                        
-                                        <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
-                                        <ion-icon name="trash" (click)="delete(audioguide.idFirebase)"></ion-icon>        
-                                </ion-item> 
-                                <!-- <p *ngIf="audioguidesList.length < 1">You have not created any audioguide yet</p> -->
+                                <create-audioguide [hidden]="!newAudioguide"></create-audioguide>
+                                <div [hidden]="newAudioguide">
+                                        <button ion-button primary (click)="showNewAudioguide()">New guide</button>
+                                        <p *ngIf="createdAudioguidesList?.length < 1">You have not created any audioguide yet</p>
+                                        <ion-item *ngFor="let audioguide of createdAudioguidesList" (click)="openPois(audioguide.id)">
+                                                <ion-thumbnail item-start>
+                                                <img src="{{storageDirectory + audioguide.image}}">
+                                                </ion-thumbnail>
+                                                <h3>{{audioguide.title}}</h3>                        
+                                                <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
+                                                <ion-icon name="trash" (click)="delete(audioguide.idFirebase)"></ion-icon>        
+                                        </ion-item> 
+                                </div>
                         </div>
 
                 </ion-list>

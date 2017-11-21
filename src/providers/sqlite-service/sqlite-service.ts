@@ -5,11 +5,13 @@ import { Platform, LoadingController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Audioguide } from '../../model/models';
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class SqliteServiceProvider {
   fileUrl: string;
   loading: any;
+  idAuthor: string;
 
   private database: SQLiteObject;
   private dbReady: BehaviorSubject<boolean>;
@@ -17,7 +19,7 @@ export class SqliteServiceProvider {
   storageAudioRef: any;
 
   constructor(private platform: Platform, private sqlite: SQLite, private fileService: FilesServiceProvider, private firebaseStorage: FirebaseApp,
-    private loadingCtrl: LoadingController) {
+    private loadingCtrl: LoadingController, private storage: Storage) {
 
     this.dbReady = new BehaviorSubject(false);
     this.platform.ready().then(()=>{
@@ -33,6 +35,7 @@ export class SqliteServiceProvider {
       })
       .catch(error => console.log(`creating database ` +JSON.stringify(error)))
 
+      this.storage.get('idAuthor').then(author => this.idAuthor = author)
     });
   }
 
@@ -126,8 +129,8 @@ export class SqliteServiceProvider {
       }).catch(error => console.log('getAudioguide ' +error.message.toString()))
   }
 
-  findAll() {
-    return this.database.executeSql(`SELECT * FROM audioguides`, []).then(
+  findPurchasedAudioguides() {
+    return this.database.executeSql(`SELECT * FROM audioguides WHERE idAuthor != '${this.idAuthor}'`, []).then(
       (data) => {   
         let audioguidesList = Array<Audioguide>();         
         if(data.rows.length > 0) {
@@ -139,6 +142,23 @@ export class SqliteServiceProvider {
         }
     }, (error) => {
         console.log("Error findAll: " + error.message.toString());
+        return [];
+    });
+  }
+
+  findMyAudioguides() {
+    return this.database.executeSql(`SELECT * FROM audioguides WHERE idAuthor = '${this.idAuthor}'`, []).then(
+      (data) => {
+        let audioguidesList = Array<Audioguide>();         
+        if(data.rows.length > 0) {
+            for(var i = 0; i < data.rows.length; i++) {
+              audioguidesList.push(data.rows.item(i));  
+            }
+            console.log(`this.audioguidesList.length ` + audioguidesList.length)
+            return audioguidesList;
+        }
+    }, (error) => {
+        console.log("Error findPois: " + error.message.toString());
         return [];
     });
   }
@@ -182,7 +202,6 @@ export class SqliteServiceProvider {
       let poisList:any = [];
       poisList = poiList;
       poisList.forEach(element => {
-        console.log(element)
         this.fileService.deleteFile(element.file)
         this.fileService.deleteFile(element.image)
       });      
@@ -191,15 +210,27 @@ export class SqliteServiceProvider {
         return this.database.executeSql(`DELETE FROM pois WHERE idAudioguide = '${idAudioguide}'`, []).then(
 
         )
-          .catch(
-            (error) => console.log("Error deletePois: " + error.message.toString()))
+        .catch(
+          (error) => console.log("Error deletePois: " + error.message.toString()))
       })
       .catch(
         (error) => console.log("Error deleteAudioguides: " + error.message.toString()))
   }
 
-  findMyAudioguides() {
-
+  createAudioguide(audioguide: Audioguide) {
+    console.log(audioguide)
+    return this.database.executeSql(`INSERT INTO audioguides (idFirebase, idAuthor, idLocation, title, description, duration, pois, lang, price, image) 
+          VALUES (?,?,?,?,?,?,?,?,?,?)`, ['', audioguide.idAuthor, audioguide.idLocation, audioguide.title,audioguide.description, 0, 
+          0, audioguide.lang, audioguide.price, audioguide.image])
+      .then(result => {
+        console.log(result)
+        if(result.insertId){
+          return this.fileService.downloadFile(audioguide.imageUrl, audioguide.image).then(() => {
+            console.log(`audioguide.id `+ result.insertId);
+         })
+        }  
+      })
+      .catch(error => console.log("Error addAudioguide:  " + error.message.toString()))   
   }
   
   getDatabaseState() {

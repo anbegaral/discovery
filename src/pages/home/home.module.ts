@@ -1,3 +1,4 @@
+import { LocationsDropdownComponentModule } from './../../components/locations-dropdown/locations-dropdown.module';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { HomePage } from "./home";
@@ -9,6 +10,7 @@ import { IonicPageModule } from "ionic-angular";
   imports: [
     IonicPageModule.forChild(HomePage),
     TranslateModule.forChild(),
+    LocationsDropdownComponentModule,
   ],
   exports: [HomePage],
   providers: []

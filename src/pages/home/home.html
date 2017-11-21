@@ -10,32 +10,7 @@
   <h6>{{ 'home.description' | translate }}</h6>
 
   <div class="combos">
-
-    <ion-list no-lines>
-      <ion-item>
-        <ion-label>{{ 'home.country' | translate }}</ion-label>
-        <ion-select (ionChange)="getLocations($event)">
-          <ion-option value="{{country.$key}}" *ngFor="let country of countries" >
-            <ng-container *ngFor="let language of country.language">
-              <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
-            </ng-container>
-          </ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-list>
-
-    <ion-list no-lines>
-      <ion-item>
-        <ion-label>{{ 'home.place' | translate }}</ion-label>
-        <ion-select (ionChange)="getAudioguides($event)" [disabled]="placesDisabled">
-            <ion-option value="{{location.$key}}" *ngFor="let location of locations" >
-              <ng-container *ngFor="let language of location.language">
-                <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
-              </ng-container>
-            </ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-list>
+    <locations-dropdown (idLocationEvent)="getAudioguides($event)"></locations-dropdown>
   </div>
 
   <div *ngIf="audioguides?.length < 1">

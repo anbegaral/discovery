@@ -1,9 +1,10 @@
+import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { FormGroup, Validators, FormBuilder } from "@angular/forms";
 import { AngularFireAuth } from "angularfire2/auth";
 import { Storage } from '@ionic/storage';
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { User } from '../../model/models';
 
 @IonicPage()
 @Component({
@@ -11,6 +12,7 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
   templateUrl: 'register-contributor.html',
 })
 export class RegisterContributorPage {
+
   @ViewChild('firstName') firstName:string;
   @ViewChild('lastName') lastName:string;
   @ViewChild('address') address:string;
@@ -21,8 +23,12 @@ export class RegisterContributorPage {
   @ViewChild('email') email:string;
   @ViewChild('password') password:string;
   registerContributorForm: FormGroup;
+
   loader: any;
-  users: FirebaseListObservable<any>
+  user: User = new User();
+  isLoggedin: boolean = false;
+  idAuthor: string = null;
+
   EMAIL_PATTERN: string = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
   PASSWORD_PATTERN: string = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})";
 
@@ -32,7 +38,7 @@ export class RegisterContributorPage {
     public formBuilder: FormBuilder,
     private loadingCtrl: LoadingController, 
     private storage: Storage, 
-    private afDB: AngularFireDatabase,  ) {
+    private firebaseService: FirebaseServiceProvider  ) {
     this.registerContributorForm = formBuilder.group({
       firstName: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
       lastName: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -40,16 +46,21 @@ export class RegisterContributorPage {
       city: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
       postcode: ['', Validators.compose([Validators.maxLength(10), Validators.required])],
       country: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-      bankaccount: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
+      bankaccount: ['', Validators.compose([Validators.maxLength(30)])],
       email: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(this.EMAIL_PATTERN), Validators.required])],
       password: ['', Validators.compose([Validators.maxLength(20), Validators.required])],
     });
 
-    this.users = this.afDB.list('users');
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad RegisterContributorPage');
+    this.storage.get('isLoggedin').then(isLoggedin => this.isLoggedin = isLoggedin)
+    if(this.isLoggedin) {
+      this.storage.get('useremail').then(useremail => {
+        this.email = useremail;
+        this.firebaseService.getUsers({
+          orderByChild: 'email',
+          equalTo: useremail
+        }).subscribe(idAuthor => this.idAuthor = idAuthor[0].$key)
+      })
+    }
   }
 
   registerContributor(){
@@ -58,13 +69,34 @@ export class RegisterContributorPage {
     });
     this.loader.present();
 
+    if(this.idAuthor && this.isLoggedin) {
+      this.updateUser()
+    } else{
+      this.addContributor();
+    }
+    
+  }
+
+  //The user is totally new
+  addContributor(){
     this.fireAuth.auth.createUserWithEmailAndPassword(this.email, this.password)
     .then(
       () => {
         this.storage.set('useremail', this.email)
         this.storage.set('isLoggedin', true);
         this.storage.set('isAuthor', true);
-        this.addContributor();
+
+        this.user.isAuthor = true;
+        this.user.firstName = this.firstName;
+        this.user.lastName = this.lastName;
+        this.user.address = this.address;
+        this.user.city = this.city;
+        this.user.postcode = this.postcode;
+        this.user.country = this.country;
+        this.user.bankaccount = this.bankaccount;
+        this.user.email = this.email;
+        this.firebaseService.addUser(this.user);
+
         this.loader.dismiss();
         this.navCtrl.pop();
       }
@@ -74,19 +106,22 @@ export class RegisterContributorPage {
         // this.utils.handlerError(error);
       }
     )
+    
+    this.user = new User();
   }
 
-  addContributor(){
-    this.users.push({
-      isAuthor: true,
-      firstName: this.firstName,
-      lastName: this.lastName,
-      address: this.address,
-      city: this.city,
-      postcode: this.postcode,
-      country: this.country,
-      bankaccount: this.bankaccount,
-      email: this.email,
-    });
+  // The user already exists but is not a contributor
+  updateUser() {
+    this.user.isAuthor = true;
+    this.user.firstName = this.firstName;
+    this.user.lastName = this.lastName;
+    this.user.address = this.address;
+    this.user.city = this.city;
+    this.user.postcode = this.postcode;
+    this.user.country = this.country;
+    this.user.bankaccount = this.bankaccount;
+    this.firebaseService.updateUser(this.idAuthor, this.user);
+    
+    this.user = new User();
   }
 }

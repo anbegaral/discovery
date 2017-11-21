@@ -1,0 +1,27 @@
+<ion-list no-lines>
+    <ion-item>
+      <ion-label>{{ 'home.country' | translate }}</ion-label>
+      <ion-select (ionChange)="getLocations($event)" [(ngModel)]="idcountry" >
+        <ion-option value="{{country.$key}}" *ngFor="let country of countries">
+          <ng-container *ngFor="let language of country.language">
+            <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
+          </ng-container>
+        </ion-option>
+        <ion-option value="other" *ngIf="creating">Other</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-list no-lines>
+    <ion-item>
+      <ion-label>{{ 'home.place' | translate }}</ion-label>
+      <ion-select (ionChange)="sendLocation($event)" [disabled]="placesDisabled" [(ngModel)]="idlocation">
+          <ion-option value="{{location.$key}}" *ngFor="let location of locations" >
+            <ng-container *ngFor="let language of location.language">
+              <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
+            </ng-container>
+          </ion-option>
+        <ion-option value="other" *ngIf="creating">Other</ion-option>        
+      </ion-select>
+    </ion-item>
+  </ion-list>

@@ -90,7 +90,7 @@ export class RegisterUserPage implements OnInit{
         this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois'))
         .then(() =>{
           this.navParams = null;
-          this.sqliteService.findAll();
+          this.sqliteService.findPurchasedAudioguides();
           this.navCtrl.push('MyguidesPage')
         })  
   }

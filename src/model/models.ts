@@ -9,6 +9,9 @@ export class Audioguide {
     lang: string;
     price: number;
     image: string;
+    imageUrl: string;
+    reviewed: boolean;
+    size: number;
 }
 
 export class POI {
@@ -20,6 +23,7 @@ export class POI {
     image: string;
     file:string;
     duration: number;
+    size: number;
 }
 
 export class User {
@@ -36,9 +40,34 @@ export class User {
 }
 
 export class Country {
-    // $key: string;
-    // language: string[
-    //     code: string; 
-    //     name: string;
-    // ]
+    $key: string;
+    language: [
+        {
+            code: string; 
+            name: string;
+        }
+    ]
+}
+
+export class Location {
+    $key: string;
+    idCountry: string;
+    language: [
+        {
+            code: string; 
+            name: string;
+        }
+    ]
+}
+
+export class Upload {
+    $key: string;
+    file: File;
+    image: string;
+    imageUrl: string;
+    progress: number;
+    
+    constructor(file:File) {
+        this.file = file
+    }
 }
