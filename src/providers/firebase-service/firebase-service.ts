@@ -108,8 +108,7 @@ export class FirebaseServiceProvider {
   }
 
   addUser(user: User): void {
-    this.users.push(user)
-      .catch(error => this.handleError(error))
+    this.users.push(user);
   }
 
   updateUser(key: string, user: User): void {
