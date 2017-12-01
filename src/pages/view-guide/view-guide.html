@@ -31,7 +31,7 @@
   
   <ion-list>
     <ion-item *ngFor="let poi of pois | async">
-      <ion-thumbnail item-start><img src="{{poi.imageUrl}}" alt="{{poi.title}}"></ion-thumbnail>
+      <ion-thumbnail item-start><img src="{{poi.imageUrl}}" alt=" "></ion-thumbnail>
       <h3>{{poi.title}}</h3>
       <p>{{'home.duration' | translate}}{{poi.duration}}</p>
       <ion-icon name="play" item-end *ngIf="poi.isPreview && !isPlaying" (click)="listen(poi.file)"></ion-icon>

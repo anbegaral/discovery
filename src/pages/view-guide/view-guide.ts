@@ -67,7 +67,7 @@ export class ViewGuidePage {
 
   getAccount() {
     this.storage.get('isLoggedin').then(isLoggedin => {
-      console.log(isLoggedin)
+      console.log('isLoggedin' + isLoggedin)
       if(isLoggedin) {
         // TODO sistema de compra
         this.sqliteService.getDatabaseState().subscribe(ready => {

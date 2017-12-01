@@ -6,7 +6,9 @@ import { AngularFireAuth } from "angularfire2/auth";
 import { Storage } from '@ionic/storage';
 import { User } from '../../model/models';
 
-@IonicPage()
+@IonicPage({
+  name: 'RegisterContributorPage'
+})
 @Component({
   selector: 'page-register-contributor',
   templateUrl: 'register-contributor.html',
@@ -51,16 +53,26 @@ export class RegisterContributorPage {
       password: ['', Validators.compose([Validators.maxLength(20), Validators.required])],
     });
 
-    this.storage.get('isLoggedin').then(isLoggedin => this.isLoggedin = isLoggedin)
-    if(this.isLoggedin) {
-      this.storage.get('useremail').then(useremail => {
-        this.email = useremail;
-        this.firebaseService.getUsers({
-          orderByChild: 'email',
-          equalTo: useremail
-        }).subscribe(idAuthor => this.idAuthor = idAuthor[0].$key)
-      })
-    }
+    this.storage.get('isLoggedin').then(isLoggedin => {
+      console.log('isLoggedin' +isLoggedin)
+      this.isLoggedin = isLoggedin;
+      
+      if(this.isLoggedin) {
+        this.storage.get('useremail').then(useremail => {
+          console.log('useremail' +useremail)
+          this.email = useremail;
+
+          this.firebaseService.getUsers({
+            orderByChild: 'email',
+            equalTo: useremail
+          }).subscribe(idAuthor => {
+            console.log(idAuthor)
+            console.log(idAuthor[0].$key)
+            this.idAuthor = idAuthor[0].$key
+          })
+        })
+      }
+    })    
   }
 
   registerContributor(){
@@ -68,9 +80,9 @@ export class RegisterContributorPage {
       content: "Creating your account..."
     });
     this.loader.present();
-
+    
     if(this.idAuthor && this.isLoggedin) {
-      this.updateUser()
+      this.updateUser();
     } else{
       this.addContributor();
     }
@@ -81,10 +93,7 @@ export class RegisterContributorPage {
   addContributor(){
     this.fireAuth.auth.createUserWithEmailAndPassword(this.email, this.password)
     .then(
-      () => {
-        this.storage.set('useremail', this.email)
-        this.storage.set('isLoggedin', true);
-        this.storage.set('isAuthor', true);
+      () => {    
 
         this.user.isAuthor = true;
         this.user.firstName = this.firstName;
@@ -95,14 +104,22 @@ export class RegisterContributorPage {
         this.user.country = this.country;
         this.user.bankaccount = this.bankaccount;
         this.user.email = this.email;
-        this.firebaseService.addUser(this.user);
+        this.firebaseService.addUser(this.user).then((idAuthor) => {
+          console.log(idAuthor)
+          
+          this.storage.set('isAuthor', true);
+          this.storage.set('idAuthor', idAuthor);
+          this.storage.set('useremail', this.email)
+          this.storage.set('isLoggedin', true);
+        });
 
         this.loader.dismiss();
-        this.navCtrl.pop();
+        // this.navCtrl.pop();
       }
     ).catch(
       (error) => {
         this.loader.dismiss();
+        console.log(error)
         // this.utils.handlerError(error);
       }
     )
@@ -120,8 +137,16 @@ export class RegisterContributorPage {
     this.user.postcode = this.postcode;
     this.user.country = this.country;
     this.user.bankaccount = this.bankaccount;
-    this.firebaseService.updateUser(this.idAuthor, this.user);
+
+    this.firebaseService.updateUser(this.idAuthor, this.user).then((idAuthor) => {
+      this.storage.set('isAuthor', true);
+      this.storage.set('idAuthor', idAuthor);
+      this.storage.set('useremail', this.email)
+      this.storage.set('isLoggedin', true);
+    });
     
+    this.loader.dismiss();
+    this.navCtrl.pop();
     this.user = new User();
   }
 }

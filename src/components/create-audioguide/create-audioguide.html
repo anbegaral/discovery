@@ -67,7 +67,7 @@
         Progress: {{currentUpload?.name}} | {{currentUpload?.progress}}% Complete
     </div>
     <ion-item>
-        <ion-label>
+        <ion-label> Image
             <input formControlName="image" type="file" (change)="detectFile($event)">
         </ion-label>
     </ion-item>
@@ -75,4 +75,4 @@
         <p>Please enter a valid image.</p>
     </ion-item>
 </form>
-<button ion-button color="primary" full [disabled]="!createAudioguideForm.valid" (click)="createAudioguide()">Create audioguide</button>
+<button ion-button color="primary" full (click)="createAudioguide()">Create audioguide</button>

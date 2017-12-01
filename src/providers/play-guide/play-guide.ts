@@ -132,4 +132,19 @@ export class PlayGuideProvider {
     this.isPlaying.next(false);
   }
 
+  startRecord(poiName: string) {
+    this.file.createFile(this.storageDirectory, poiName, true).then(() => { 
+      if (this.platform.is('ios')) {  //ios
+        this.mediaFile = this.media.create(this.storageDirectory.replace(/^file:\/\//, '') + poiName);
+      } else {  // android
+        this.mediaFile =  this.media.create(this.storageDirectory + poiName);
+      }
+      this.mediaFile.startRecord();
+    })
+  }
+
+  stopRecord() {
+    this.mediaFile.stopRecord();
+  }
+
 }

@@ -29,13 +29,13 @@ export class SqliteServiceProvider {
       })
       .then((db: SQLiteObject) => {
         this.database = db;
+        console.log(this.database)
         this.createAudioguidesTable();
         this.createPoisTable();
         this.dbReady.next(true);
       })
       .catch(error => console.log(`creating database ` +JSON.stringify(error)))
 
-      this.storage.get('idAuthor').then(author => this.idAuthor = author)
     });
   }
 
@@ -129,8 +129,8 @@ export class SqliteServiceProvider {
       }).catch(error => console.log('getAudioguide ' +error.message.toString()))
   }
 
-  findPurchasedAudioguides() {
-    return this.database.executeSql(`SELECT * FROM audioguides WHERE idAuthor != '${this.idAuthor}'`, []).then(
+  findPurchasedAudioguides(idAuthor: string) {
+    return this.database.executeSql(`SELECT * FROM audioguides WHERE idAuthor != '${idAuthor}'`, []).then(
       (data) => {   
         let audioguidesList = Array<Audioguide>();         
         if(data.rows.length > 0) {
@@ -146,9 +146,11 @@ export class SqliteServiceProvider {
     });
   }
 
-  findMyAudioguides() {
-    return this.database.executeSql(`SELECT * FROM audioguides WHERE idAuthor = '${this.idAuthor}'`, []).then(
+  findMyAudioguides(idAuthor: string) {
+    console.log('idAuthor findMyAudioguides '+ idAuthor)
+    return this.database.executeSql(`SELECT * FROM audioguides WHERE idAuthor = '${idAuthor}'`, []).then(
       (data) => {
+        console.log(data)
         let audioguidesList = Array<Audioguide>();         
         if(data.rows.length > 0) {
             for(var i = 0; i < data.rows.length; i++) {
@@ -218,9 +220,8 @@ export class SqliteServiceProvider {
   }
 
   createAudioguide(audioguide: Audioguide) {
-    console.log(audioguide)
     return this.database.executeSql(`INSERT INTO audioguides (idFirebase, idAuthor, idLocation, title, description, duration, pois, lang, price, image) 
-          VALUES (?,?,?,?,?,?,?,?,?,?)`, ['', audioguide.idAuthor, audioguide.idLocation, audioguide.title,audioguide.description, 0, 
+          VALUES (?,?,?,?,?,?,?,?,?,?)`, ['', audioguide.idAuthor, audioguide.idLocation, audioguide.title, audioguide.description, 0, 
           0, audioguide.lang, audioguide.price, audioguide.image])
       .then(result => {
         console.log(result)

@@ -59,7 +59,7 @@ export class CreateAudioguideComponent {
       orderByChild: 'email',
       equalTo: useremail
         }).subscribe(idAuthor => {
-          console.log(idAuthor)
+          console.log('isAuthor ' +idAuthor)
           this.idAuthor = idAuthor[0].$key
           this.storage.set('idAuthor', this.idAuthor)
         })})
@@ -96,11 +96,14 @@ export class CreateAudioguideComponent {
     })
   }
 
+  // create the audioguide on local
   createAudioguide() {
+    console.log('this.idAuthor '+this.idAuthor)
     if(this.idAuthor === null) {
       this.navCtrl.push('RegisterContributorPage')
       return
     }
+
     if(!this.showInputs) {
       this.audioguide.idLocation = this.location;
     } else {
@@ -108,6 +111,8 @@ export class CreateAudioguideComponent {
       this.createLocation()
       this.audioguide.idLocation = this.location;      
     } 
+
+    this.audioguide.idAuthor = this.idAuthor;
     this.audioguide.title = this.title;
     this.audioguide.description = this.description;
     this.audioguide.lang = this.lang;
@@ -115,11 +120,13 @@ export class CreateAudioguideComponent {
     this.audioguide.image = 'images/'+this.image.name;
     this.audioguide.imageUrl = this.image.name;
     this.sqliteService.createAudioguide(this.audioguide).then(() => {
-      this.filesService.downloadFile(new Upload(this.image), this.image.name).then(() => {
+      console.log(new Upload(this.image))
+      this.filesService.downloadFile(this.image.name, this.image.name).then(() => {
         alert('Audioguide created succesfully');
         this.navCtrl.push('MyguidesPage')
       }).catch(error => console.log(error))
     })
+    
     
     // reset the audioguide object
     this.audioguide = new Audioguide()

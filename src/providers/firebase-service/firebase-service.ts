@@ -20,11 +20,11 @@ export class FirebaseServiceProvider {
   location: FirebaseObjectObservable<Location> = null;
   
   users: FirebaseListObservable<User[]> = null;
-  user: User = null;
 
   constructor(private angFireDatabase: AngularFireDatabase, private alertCtrl: AlertController) {
     this.countries = this.getCountries({})
     this.locations = this.getLocations({})
+    this.users = this.getUsers({})
   }
 
   getCountries(query:{}) {
@@ -76,10 +76,9 @@ export class FirebaseServiceProvider {
     return this.audioguide
   }
 
-  createAudioguide(audioguide: Audioguide) {
-    return this.audioguides.push(audioguide).then(snapshot => {
-      console.log(snapshot.key)
-      return snapshot.key
+  createAudioguide(audioguide: Audioguide): string {
+    return this.audioguides.push(audioguide).then(idAudioguide => {
+      return idAudioguide.key
     }).catch(error => this.handleError(error))
   }
 
@@ -107,12 +106,15 @@ export class FirebaseServiceProvider {
     return this.users
   }
 
-  addUser(user: User): void {
-    this.users.push(user);
+  addUser(user: User) {
+    return this.users.push(user).then(idAuthor => {
+      console.log(idAuthor.key)
+      return idAuthor.key
+    }).catch(err => this.handleError(err))
   }
 
-  updateUser(key: string, user: User): void {
-    this.users.update(key, user)
+  updateUser(key: string, user: User) {
+    return this.users.update(key, user)
       .catch(error => this.handleError(error))
   }
 

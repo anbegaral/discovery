@@ -58,11 +58,13 @@ export class RegisterUserPage implements OnInit{
     this.fireAuth.auth.createUserWithEmailAndPassword(this.email, this.password)
     .then(
       () => {
+        console.log('this.email '+ this.email)
         this.storage.set('useremail', this.email);
         this.storage.set('isLoggedin', true); 
         this.storage.set('isAuthor', false);      
         this.addUser();
         this.loader.dismiss(); 
+        this.storage.get('useremail').then((email) => console.log(email)).catch(error => console.log(error))
         this.sqliteService.getDatabaseState().subscribe(ready => {
           if(ready) {
             this.buyAudioguide();
@@ -90,7 +92,6 @@ export class RegisterUserPage implements OnInit{
         this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois'))
         .then(() =>{
           this.navParams = null;
-          this.sqliteService.findPurchasedAudioguides();
           this.navCtrl.push('MyguidesPage')
         })  
   }
