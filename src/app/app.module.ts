@@ -54,7 +54,7 @@ export const firebaseConfig = {
     IonicModule.forRoot(DiscoveryAudioguides),
     IonicStorageModule.forRoot({
       name: '__mydb',
-         driverOrder: ['sqlite', 'websql']
+         driverOrder: ['sqlite', 'websql', 'indexeddb']
     }),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,

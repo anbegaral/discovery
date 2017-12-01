@@ -18,18 +18,8 @@ export class FilesServiceProvider {
         this.storageDirectory = this.file.externalDataDirectory;
       }
     });
-    console.log(this.storageDirectory)
   }
 
-  // createAudioFile(pathToDirectory, filename): MediaObject {
-  //   if (this.platform.is('ios')) {  //ios
-  //     return this.media.create((pathToDirectory).replace(/^file:\/\//, '') + '/' + filename);
-  //   } else {  // android
-  //     return this.media.create(pathToDirectory + filename);
-  //   } 
-  // }
-
-  
   downloadFile(url, filename) {
     console.log(url , filename)
       return this.file.resolveDirectoryUrl(this.storageDirectory)
@@ -46,6 +36,7 @@ export class FilesServiceProvider {
           console.log(err);
           if(err.code == 1) {
             const fileTransfer: FileTransferObject = this.transfer.create();
+            console.log('url ' +url + ' this.storageDirectory ' + this.storageDirectory+filename)
             return fileTransfer.download(url, this.storageDirectory + filename)
               .then(entry => {
                 console.log('download complete ' + entry.toURL());
@@ -93,6 +84,6 @@ export class FilesServiceProvider {
   }
 
   saveFileToSqlite(upload: Upload) {
-
+    console.log(upload)
   }
 }

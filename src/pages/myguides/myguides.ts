@@ -1,9 +1,12 @@
+import { PlayGuideProvider } from './../../providers/play-guide/play-guide';
+import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
 import { Audioguide } from './../../model/models';
 import { Storage } from '@ionic/storage';
 import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-service';
 import { Component } from '@angular/core';
 import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform } from 'ionic-angular';
 import { File } from '@ionic-native/file';
+import { FilesServiceProvider } from '../../providers/files-service/files-service';
 
 
 @IonicPage({
@@ -19,7 +22,7 @@ export class MyguidesPage {
   myguidesSegment: string;
   isAuthor: boolean;
   isLoggedin: boolean;
-  idAuthor: string;
+  idAuthor: string = null;
   poisList: any;
   storageDirectory: any;  
   newAudioguide: boolean = false;
@@ -32,7 +35,30 @@ export class MyguidesPage {
       private alertCtrl: AlertController,
       public actionSheetCtrl: ActionSheetController,
       private sqliteService: SqliteServiceProvider,
-      private storage: Storage) {
+      private storage: Storage, 
+      private firebaseService: FirebaseServiceProvider,
+      private fileService: FilesServiceProvider,
+      private playService: PlayGuideProvider ) {
+
+    this.storage.get('isLoggedin').then(isLoggedin => {
+      console.log('isLoggedin' +isLoggedin)
+      this.isLoggedin = isLoggedin;
+      
+      if(this.isLoggedin) {
+        this.storage.get('isAuthor').then(isAuthor => {
+          console.log('isAuthor' +isAuthor)
+          this.isAuthor = isAuthor;
+
+          if(this.isAuthor) {
+            this.storage.get('idAuthor').then(idAuthor => {
+              console.log('idAuthor' +idAuthor)
+              this.idAuthor = idAuthor;
+            })
+          }
+        })
+      }
+
+    })
 
     this.platform.ready().then(() => {
       if(this.platform.is('ios')) {
@@ -40,37 +66,26 @@ export class MyguidesPage {
       } else if(this.platform.is('android')) {
         this.storageDirectory = this.file.externalDataDirectory;
       }
-
-      this.navCtrl.parent.select(1);
-      this.myguidesSegment = 'purchased';
-    });
-  }
-
-  ionViewWillEnter() {
-    this.storage.get('isAuthor').then(isAuthor => {
-      this.isAuthor = isAuthor
-      if(this.isAuthor && this.isLoggedin) {
-        this.storage.get('useremail').then(isLoggedin => this.isLoggedin = isLoggedin)
-      }
-    })
-    this.storage.get('isLoggedin').then(isLoggedin => this.isLoggedin = isLoggedin)
-    this.sqliteService.getDatabaseState().subscribe(ready => {
-      if(ready) {
+      console.log(this.navCtrl.getPrevious())
+      // if(this.navCtrl.getPrevious() === 'RegisterContributorPage') {
+        this.navCtrl.parent.select(1);
         this.myguidesSegment = 'purchased';
-        this.listMyPurchasedAudioguides();
-      }
+      // }
+
+        
     });
   }
 
   listMyPurchasedAudioguides() {
-    this.sqliteService.findPurchasedAudioguides().then(data => {
+    this.sqliteService.findPurchasedAudioguides(this.idAuthor).then(data => {
       this.purchasedAudioguidesList = data
     })
     .catch(error => console.log('error listAudioguides ' + error.message.toString()));
   }
 
   listMyCreatedAudioguides() {
-    this.sqliteService.findMyAudioguides().then(data => {
+    this.sqliteService.findMyAudioguides(this.idAuthor).then(data => {
+      console.log(data)
       this.createdAudioguidesList = data
     })
     .catch(error => console.log('error listMyAudioguides ' + error.message.toString()));
@@ -217,4 +232,18 @@ export class MyguidesPage {
   showNewAudioguide() {
     this.newAudioguide = !this.newAudioguide;
   }
+  
+  startRecordPoi(idAudioguide: string) {
+    this.playService.startRecord('malaga1.mp3');
+  }
+
+  stopRecordPoi(idAudioguide: string) {
+    this.playService.stopRecord();
+  }
+
+  playRecordPoi(idAudioguide: string) {
+    this.playService.listen('malaga1.mp3');
+  }
  }
+
+ 

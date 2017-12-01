@@ -1,19 +1,14 @@
 <ion-content padding>
-         
-        <!-- <ion-buttons end>
-                <button ion-button icon-only (click)="addSong()">
-                  <ion-icon name="add"></ion-icon>
-                </button>
-              </ion-buttons> -->
 
         <ion-segment [(ngModel)]="myguidesSegment">
-                <ion-segment-button value="purchased">
+                <ion-segment-button value="purchased" (click)="listMyPurchasedAudioguides()">
                 Purchased
                 </ion-segment-button>
-                <ion-segment-button value="created">
+                <ion-segment-button value="created" (click)="listMyCreatedAudioguides()">
                 Created
                 </ion-segment-button>
         </ion-segment>
+        
         <div [ngSwitch]="myguidesSegment">
                 <ion-list *ngSwitchCase="'purchased'">
                         <ion-item *ngFor="let audioguide of purchasedAudioguidesList" (click)="openPois(audioguide.idFirebase)">
@@ -29,24 +24,28 @@
                 <ion-list *ngSwitchCase="'created'">                        
                         <div *ngIf="!isAuthor">
                                 <p>If you want to become a contributor and upload your own audioguide, please register your details</p>
-                                <button ion-button primary (click)="registerContributor()">Register as contributor</button> or
-                                <button ion-button primary (click)="login()" *ngIf="!isLoggedin">Login</button>
+                                <button ion-button primary (click)="registerContributor()">Register as contributor</button>
+                                <button ion-button primary (click)="login()" *ngIf="!isLoggedin"> or Login</button>
                         </div>
                 
                         <div *ngIf="isAuthor">
-                                <create-audioguide [hidden]="!newAudioguide"></create-audioguide>
-                                <div [hidden]="newAudioguide">
-                                        <button ion-button primary (click)="showNewAudioguide()">New guide</button>
-                                        <p *ngIf="createdAudioguidesList?.length < 1">You have not created any audioguide yet</p>
-                                        <ion-item *ngFor="let audioguide of createdAudioguidesList" (click)="openPois(audioguide.id)">
-                                                <ion-thumbnail item-start>
+                                <button ion-button primary (click)="showNewAudioguide()">New guide</button>
+                                <create-audioguide *ngIf="newAudioguide"></create-audioguide>
+                                
+                                <p *ngIf="createdAudioguidesList?.length < 1">You have not created any audioguide yet</p>
+                                <ion-item *ngFor="let audioguide of createdAudioguidesList">
+                                        <ion-thumbnail item-start>
                                                 <img src="{{storageDirectory + audioguide.image}}">
-                                                </ion-thumbnail>
-                                                <h3>{{audioguide.title}}</h3>                        
-                                                <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
-                                                <ion-icon name="trash" (click)="delete(audioguide.idFirebase)"></ion-icon>        
-                                        </ion-item> 
-                                </div>
+                                        </ion-thumbnail>
+                                        <h3>{{audioguide.title}}</h3>                        
+                                        <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
+                                        <ion-icon name="trash" (click)="delete(audioguide.id)"></ion-icon>        
+                                        <button ion-button primary (click)="startRecordPoi(audioguide.id)">Record POI</button>
+                                        <button ion-button primary (click)="stopRecordPoi(audioguide.id)">Stop POI</button>
+                                        <button ion-button primary (click)="playRecordPoi(audioguide.id)">Play POI</button>
+                                        
+                                        
+                                </ion-item> 
                         </div>
 
                 </ion-list>

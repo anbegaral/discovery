@@ -48,7 +48,7 @@ export class LoginPage {
       (data) => {
         
         this.storage.set('isLoggedin', true);
-        this.storage.get('isLoggedin').then(isLoggedin => this.isLoggedin = isLoggedin)
+        this.isLoggedin = true;
 
         this.firebaseService.getUsers({
           orderByChild: 'email',
@@ -56,7 +56,7 @@ export class LoginPage {
         }).subscribe(user => {
           this.user = user[0]
           this.storage.set('isAuthor', this.user.isAuthor);
-          this.storage.get('isAuthor').then(isAuthor => this.isAuthor = isAuthor)
+          this.isAuthor = this.user.isAuthor;
         
         });
 
