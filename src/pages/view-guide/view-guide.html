@@ -18,25 +18,17 @@
 </ion-header>
 <ion-content padding cache-view="false">
   <div>
-    <img src="{{audioguide.imageUrl}}" alt="{{audioguide.title}}">
+    <img src="{{audioguide.imageUrl}}" alt=" ">
     <h1>{{audioguide.title}}</h1>
     <div>
       <p>{{audioguide.description}}</p>
-      <p>{{'home.pois' | translate}}{{audioguide.pois}} {{'home.duration' | translate}}{{audioguide.duration}} mins</p>
+      <p>{{'home.pois' | translate}}{{audioguide.pois}} 
+      <p>{{'home.duration' | translate}}{{audioguide.duration}} mins</p>
       <p>{{'home.price' | translate}}{{audioguide.price | currency}}</p>
       <p>{{'guides.language' | translate}}{{audioguide.lang}}</p>
     </div>
     <button ion-button (click)="getAccount($event)">Download</button>
   </div>
-  
-  <ion-list>
-    <ion-item *ngFor="let poi of pois | async">
-      <ion-thumbnail item-start><img src="{{poi.imageUrl}}" alt=" "></ion-thumbnail>
-      <h3>{{poi.title}}</h3>
-      <p>{{'home.duration' | translate}}{{poi.duration}}</p>
-      <ion-icon name="play" item-end *ngIf="poi.isPreview && !isPlaying" (click)="listen(poi.file)"></ion-icon>
-      <ion-icon name="pause" item-end *ngIf="poi.isPreview && isPlaying" (click)="pause()"></ion-icon>
-      <ion-icon name="square" item-end *ngIf="poi.isPreview && isPlaying" (click)="stop()"></ion-icon>
-    </ion-item>
-  </ion-list>
+  <button ion-button (click)="togglePois()">See this audioguide's POIs</button>
+  <accordion [elements]="pois" *ngIf="expanded"></accordion>
 </ion-content>
