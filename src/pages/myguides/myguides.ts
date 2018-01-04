@@ -37,7 +37,6 @@ export class MyguidesPage {
       private sqliteService: SqliteServiceProvider,
       private storage: Storage, 
       private firebaseService: FirebaseServiceProvider,
-      private fileService: FilesServiceProvider,
       private playService: PlayGuideProvider ) {
 
     this.storage.get('isLoggedin').then(isLoggedin => {

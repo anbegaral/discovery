@@ -1,5 +1,3 @@
-import { PlayGuideProvider } from './../../providers/play-guide/play-guide';
-import { FirebaseListObservable } from 'angularfire2/database';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Platform, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
@@ -16,11 +14,11 @@ import { Audioguide, POI } from '../../model/models';
 export class ViewGuidePage {
 
   audioguide: Audioguide = null;
-  pois: FirebaseListObservable<POI[]>;
+  pois: POI[];
   poisToDB: POI[] = [];
   idGuide: string;
-  isPlaying: any = false; 
   loader: any;
+  expanded: boolean = false;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -28,7 +26,6 @@ export class ViewGuidePage {
     private storage: Storage,
     private sqliteService: SqliteServiceProvider,
     private firebaseService: FirebaseServiceProvider,
-    private playService: PlayGuideProvider,
     private alertCtrl: AlertController ) {
       this.getGuide();
   }
@@ -36,33 +33,22 @@ export class ViewGuidePage {
   getGuide(){    
     this.idGuide = this.navParams.data;
     this.audioguide = this.firebaseService.getAudioguide(this.idGuide);
-
-    this.pois = this.firebaseService.getPoisList({
+    
+    this.firebaseService.getPoisList({
       orderByChild: 'idAudioguide',
       equalTo: this.idGuide
+    }).subscribe(pois => {
+      console.log(pois)
+      this.pois = pois;
     })
+    // console.log(this.pois)
     
-    this.pois.subscribe(pois  => {
-      pois.forEach(poi => {
-        console.log(poi)
-        this.poisToDB.push(poi)
-      })      
-    })
-  }
-
-  listen(filename){
-    this.playService.listenStreaming(filename)
-    this.playService.isPlaying.subscribe(isPlaying => this.isPlaying = isPlaying)
-  }
-
-  pause() { 
-    this.playService.pause()
-    this.playService.isPlaying.subscribe(isPlaying => this.isPlaying = isPlaying)
-  }
-
-  stop() {
-    this.playService.stop()
-    this.playService.isPlaying.subscribe(isPlaying => this.isPlaying = isPlaying)
+    // this.pois.subscribe(pois  => {
+    //   pois.forEach(poi => {
+    //     console.log(poi)
+    //     this.poisToDB.push(poi)
+    //   })      
+    // })
   }
 
   getAccount() {
@@ -118,5 +104,10 @@ export class ViewGuidePage {
         }).present();
       }
     }).catch (error => console.log("Error buyAudioguide:  " + error.message.toString()));
+  }
+
+  togglePois() {
+    console.log(this.expanded);
+    this.expanded = !this.expanded;
   }
 }
