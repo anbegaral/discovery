@@ -23,6 +23,7 @@ export class MyguidesPage {
   idAuthor: string = '';
   storageDirectory: any;  
   newAudioguide: boolean = false;
+  newPoi: boolean = false;  
   expanded: boolean = false;
 
 
@@ -127,6 +128,10 @@ export class MyguidesPage {
 
   showNewAudioguide() {
     this.newAudioguide = !this.newAudioguide;
+  }
+
+  showNewPoi() {
+    this.newPoi = !this.newPoi;
   }
   
   startRecordPoi(idAudioguide: string) {

@@ -40,14 +40,14 @@ export class SqliteServiceProvider {
 
   createAudioguidesTable() {
     this.database.executeSql(`create table if not exists audioguides(id integer primary key autoincrement, idFirebase CHAR(20), idAuthor CHAR(20), idLocation CHAR(20), 
-      title CHAR(255), description CHAR(255), duration INTEGER, pois INTEGER, lang CHAR(20), price FLOAT, image CHAR(255))`, {}).then(
+      title CHAR(255), description CHAR(255), duration INTEGER, pois INTEGER, lang CHAR(20), price FLOAT, image CHAR(255)), complete INTEGER`, {}).then(
       () =>  this.dbReady.next(true)
     ).catch(error => console.log(`creating table ` +error.message.toString()))
   }
 
   createPoisTable() {
     this.database.executeSql(`create table if not exists pois(id integer primary key autoincrement, idFirebase CHAR(20), idAudioguide char(20),
-      title CHAR(20), lat CHAR(20), lon CHAR(20), image BLOB, file BLOB, duration integer)`, {}).then(
+      title CHAR(20), lat CHAR(20), lon CHAR(20), image BLOB, file BLOB, duration integer, isPreview integer)`, {}).then(
       () =>  this.dbReady.next(true)
     ).catch(error => console.log(`creating table ` + error.message.toString()))
   }
@@ -74,8 +74,8 @@ export class SqliteServiceProvider {
   addPois(pois) {
     console.log(pois)
     pois.forEach(element => {
-      return this.database.executeSql(`INSERT INTO pois (idFirebase, idAudioguide, title, lat, lon, image, file, duration) VALUES (?,?,?,?,?,?,?,?)`,
-        [element.idFirebase, element.idAudioguide, element.title, element.lat, element.lon, element.image, element.file, element.duration])
+      return this.database.executeSql(`INSERT INTO pois (idFirebase, idAudioguide, title, lat, lon, image, file, duration, isPreview) VALUES (?,?,?,?,?,?,?,?,?)`,
+        [element.idFirebase, element.idAudioguide, element.title, element.lat, element.lon, element.image, element.file, element.duration, element.isPreview])
         .then(resultPois => {
             return this.getPoiFiles(element).then(() => {
               console.log('pois id' +resultPois.insertId)
@@ -234,6 +234,20 @@ export class SqliteServiceProvider {
         }  
       })
       .catch(error => console.log("Error addAudioguide:  " + error.message.toString()))   
+  }
+
+  createPoi(poi: POI) {
+    return this.database.executeSql(`INSERT INTO pois (idFirebase, idAudioguide, title, lat, lon, image, file, duration) VALUES (?,?,?,?,?,?,?,?)`,
+    [poi.idFirebase, poi.idAudioguide, poi.title, poi.lat, poi.lon, poi.image, poi.file, 0])
+      .then(result => {
+        console.log(result)
+        if(result.insertId){
+          return this.fileService.downloadFile(poi.imageUrl, poi.image).then(() => {
+            console.log(`poi.id `+ result.insertId);
+         })
+        }  
+      })
+      .catch(error => console.log("Error createPoi:  " + error.message.toString()))   
   }
   
   getDatabaseState() {

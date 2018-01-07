@@ -1,3 +1,4 @@
+import { CreatePoiComponentModule } from './../../components/create-poi/create-poi.module';
 import { CreateAudioguideComponentModule } from './../../components/create-audioguide/create-audioguide.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
@@ -12,6 +13,7 @@ import { AccordionComponentModule } from '../../components/accordion/accordion.m
   imports: [
     AccordionComponentModule,
     CreateAudioguideComponentModule,
+    CreatePoiComponentModule,
     IonicPageModule.forChild(MyguidesPage),
     TranslateModule.forChild(),
   ],

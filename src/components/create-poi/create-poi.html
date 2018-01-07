@@ -1,0 +1,39 @@
+<form [formGroup]="createPoiForm">
+    <ion-input formControlName="idAudioguide" type="text" [(ngModel)]="idAudioguide"></ion-input>
+  
+    <ion-item>
+        <ion-label floating>Title</ion-label>
+        <ion-input formControlName="title" type="text" [(ngModel)]="title"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!createPoiForm.controls.title.valid  && (createPoiForm.controls.title.dirty)">
+        <p>Please enter a valid title.</p>
+    </ion-item>
+    <ion-item>
+        <ion-label floating>Latitude</ion-label>
+        <ion-input formControlName="lat" type="text" [(ngModel)]="lat"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!createPoiForm.controls.lat.valid  && (createPoiForm.controls.lat.dirty)">
+        <p>Please enter a valid latitude.</p>
+    </ion-item>
+    <ion-item>
+        <ion-label floating>Longitude</ion-label>
+        <ion-input formControlName="lon" type="text" [(ngModel)]="lon"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!createPoiForm.controls.lon.valid  && (createPoiForm.controls.lon.dirty)">
+        <p>Please enter a valid longitude.</p>
+    </ion-item>
+
+    <ion-item>
+        <ion-label floating>Do you want this POI as example?</ion-label>
+        <ion-input formControlName="isPreview" type="checkbox" [(ngModel)]="isPreview">Yes</ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label> Image
+          <input formControlName="image" type="file" (change)="detectFile($event)">
+      </ion-label>
+  </ion-item>
+  <ion-item *ngIf="!createPoiForm.controls.image.valid  && (createPoiForm.controls.image.dirty)">
+      <p>Please enter a valid image.</p>
+  </ion-item>
+</form>
+<button ion-button color="primary" full (click)="createPoi()">Create POI</button>

@@ -1,14 +1,31 @@
 page-myguides {
     ul {
-        margin: 10px 0 0 0;
-    }    
-    
-    li {
         list-style: none;
-        display: flex;
+        margin-left: -50px;
     }
 
-    img {
-        width: 25%;
+    li {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0 10px 0;
+
+        img {
+            width: 25%;
+            height: 25%;
+            margin: 0;
+        }
+
+        div {
+            display: inline-block;
+            padding: 5px;
+            flex-grow: 1;
+        }
+
+        &:nth-child(odd) {
+            background-color: limegreen
+        }
+        &:nth-child(even) {
+            background-color: green
+        }   
     }
 }

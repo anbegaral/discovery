@@ -11,57 +11,43 @@
         
         <div [ngSwitch]="myguidesSegment">
                 <ul *ngSwitchCase="'purchased'">
-                        <li *ngFor="let audioguide of purchasedAudioguidesList" (click)="getPoisByAudioguide(audioguide.idFirebase)">
+                        <li *ngFor="let audioguide of purchasedAudioguidesList" (click)="getPoisByAudioguide(audioguide.id)">
+                                <img src="{{storageDirectory + audioguide.image}}">
                                 <div>
-                                        <ion-thumbnail item-start>
-                                                <img src="{{storageDirectory + audioguide.image}}">
-                                        </ion-thumbnail>
                                         <h3>{{audioguide.title}}</h3>
                                         <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
-                                        <ion-icon item-end name="trash" (click)="delete(audioguide.idFirebase)"></ion-icon>
                                 </div>
+                                <ion-icon item-end name="trash" (click)="delete(audioguide.id)"></ion-icon>
                                 <accordion [elements]="poiList" *ngIf="expanded"></accordion>   
                         </li>
                 </ul>
-                <!-- <ion-list *ngSwitchCase="'purchased'">                
-                        <ion-item *ngFor="let audioguide of purchasedAudioguidesList" (click)="getPoisByAudioguide(audioguide.idFirebase)">
-                                <div>
-                                        <ion-thumbnail item-start>
-                                                <img src="{{storageDirectory + audioguide.image}}">
-                                        </ion-thumbnail>
-                                        <h3>{{audioguide.title}}</h3>
-                                        <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
-                                        <ion-icon item-end name="trash" (click)="delete(audioguide.idFirebase)"></ion-icon>
-                                </div>
-                                <accordion [elements]="poiList" *ngIf="expanded"></accordion>
-                        </ion-item> 
-                </ion-list> -->
-
-                <ion-list *ngSwitchCase="'created'">                        
+                <ul *ngSwitchCase="'created'">
                         <div *ngIf="!isAuthor">
                                 <p>If you want to become a contributor and upload your own audioguide, please register your details</p>
                                 <button ion-button primary (click)="registerContributor()">Register as contributor</button>
                                 <button ion-button primary (click)="login()" *ngIf="!isLoggedin"> or Login</button>
                         </div>
-                
                         <div *ngIf="isAuthor">
                                 <button ion-button primary (click)="showNewAudioguide()">New guide</button>
                                 <create-audioguide *ngIf="newAudioguide"></create-audioguide>
                                 
                                 <p *ngIf="createdAudioguidesList?.length < 1">You have not created any audioguide yet</p>
-                                <ion-item *ngFor="let audioguide of createdAudioguidesList">
-                                        <ion-thumbnail item-start>
-                                                <img src="{{storageDirectory + audioguide.image}}">
-                                        </ion-thumbnail>
-                                        <h3>{{audioguide.title}}</h3>                        
-                                        <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
+                                <li *ngFor="let audioguide of createdAudioguidesList">
+                                        <img src="{{storageDirectory + audioguide.image}}">
+                                        <div>
+                                                <p>{{storageDirectory + audioguide.image}}</p>
+                                                <h3>{{audioguide.title}}</h3>                        
+                                                <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
+                                        </div>
                                         <ion-icon name="trash" (click)="delete(audioguide.id)"></ion-icon>        
-                                        <button ion-button primary (click)="startRecordPoi(audioguide.id)">Record POI</button>
+                                        <!-- <button ion-button primary (click)="startRecordPoi(audioguide.id)">Record POI</button>
                                         <button ion-button primary (click)="stopRecordPoi(audioguide.id)">Stop POI</button>
-                                        <button ion-button primary (click)="playRecordPoi(audioguide.id)">Play POI</button> 
-                                </ion-item> 
+                                        <button ion-button primary (click)="playRecordPoi(audioguide.id)">Play POI</button>  -->
+                                        <button ion-button primary (click)="showNewPoi(audioguide.id)">Add POI</button>
+                                        <create-poi *ngIf="newPoi"></create-poi>
+                                        <accordion [elements]="poiList"></accordion>   
+                                </li>
                         </div>
-
-                </ion-list>
+                </ul>
         </div>
 </ion-content>
