@@ -4,8 +4,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Platform, LoadingController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Audioguide } from '../../model/models';
-import { Storage } from '@ionic/storage';
+import { Audioguide, POI } from '../../model/models';
 
 @Injectable()
 export class SqliteServiceProvider {
@@ -19,7 +18,7 @@ export class SqliteServiceProvider {
   storageAudioRef: any;
 
   constructor(private platform: Platform, private sqlite: SQLite, private fileService: FilesServiceProvider, private firebaseStorage: FirebaseApp,
-    private loadingCtrl: LoadingController, private storage: Storage) {
+    private loadingCtrl: LoadingController) {
 
     this.dbReady = new BehaviorSubject(false);
     this.platform.ready().then(()=>{
@@ -68,7 +67,7 @@ export class SqliteServiceProvider {
             return this.addPois(pois)
          })
         }  
-      })
+      }).then(() => this.loading.dismiss())
       .catch(error => console.log("Error addAudioguide:  " + error.message.toString()))   
   }
 
@@ -130,6 +129,7 @@ export class SqliteServiceProvider {
   }
 
   findPurchasedAudioguides(idAuthor: string) {
+    console.log('idAuthor '+idAuthor)
     return this.database.executeSql(`SELECT * FROM audioguides WHERE idAuthor != '${idAuthor}'`, []).then(
       (data) => {   
         let audioguidesList = Array<Audioguide>();         
@@ -160,42 +160,44 @@ export class SqliteServiceProvider {
             return audioguidesList;
         }
     }, (error) => {
-        console.log("Error findPois: " + error.message.toString());
+        console.log("Error findMyAudioguides: " + error.message.toString());
         return [];
     });
   }
 
-  findAllPois() {
-    return this.database.executeSql(`SELECT * FROM pois`, []).then(
-      (data) => {
-        let poisList = [];
-          console.log(data.rows.length)       
-        if(data.rows.length > 0) {            
-          for(var i = 0; i < data.rows.length; i++) {
-            console.log(data.rows.item(i))
-            poisList.push(data.rows.item(i))  
-          }
-          return poisList;
-        }
-    }, (error) => {
-        console.log("Error findPois: " + error.message.toString());
-    });
-  }
+  // findAllPois() {
+  //   return this.database.executeSql(`SELECT * FROM pois`, []).then(
+  //     (data) => {
+  //       let poisList = Array<POI>();
+  //         console.log(data.rows.length)       
+  //       if(data.rows.length > 0) {            
+  //         for(var i = 0; i < data.rows.length; i++) {
+  //           console.log(data.rows.item(i))
+  //           poisList.push(data.rows.item(i))  
+  //         }
+  //         return poisList;
+  //       }
+  //   }, (error) => {
+  //       console.log("Error findPois: " + error.message.toString());
+  //   });
+  // }
 
   findPoisByAudioguide(idAudioguide: string) {
     console.log('findPois '+idAudioguide)
     return this.database.executeSql(`SELECT * FROM pois WHERE idAudioguide = '${idAudioguide}'`, []).then(
       (data) => {
-        let poisList = [];     
-        if(data.rows.length > 0) {            
-          for(var i = 0; i < data.rows.length; i++) {
-            console.log(data.rows.item(i))
-            poisList.push(data.rows.item(i))  
-          }
-          return poisList;
+        console.log(data)
+        let poisList = Array<POI>();         
+        if(data.rows.length > 0) {
+            for(var i = 0; i < data.rows.length; i++) {
+              poisList.push(data.rows.item(i));  
+            }
+            console.log(`this.poisList.length ` + poisList.length)
+            return poisList;
         }
     }, (error) => {
-        console.log("Error findPois: " + error.message.toString());
+        console.log("Error findPoisByAudioguide: " + error.message.toString());
+        return [];        
     });
   }
 

@@ -92,9 +92,7 @@ export class RegisterContributorPage {
   //The user is totally new
   addContributor(){
     this.fireAuth.auth.createUserWithEmailAndPassword(this.email, this.password)
-    .then(
-      () => {    
-
+    .then(() => {    
         this.user.isAuthor = true;
         this.user.firstName = this.firstName;
         this.user.lastName = this.lastName;
@@ -115,6 +113,9 @@ export class RegisterContributorPage {
 
         this.loader.dismiss();
         // this.navCtrl.pop();
+        this.navCtrl.push('MyguidesPage', {
+            myguidesSegment: 'created'
+        })
       }
     ).catch(
       (error) => {
@@ -146,7 +147,9 @@ export class RegisterContributorPage {
     });
     
     this.loader.dismiss();
-    this.navCtrl.pop();
+    this.navCtrl.push('MyguidesPage', {
+      myguidesSegment: 'created'
+    })
     this.user = new User();
   }
 }

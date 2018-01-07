@@ -20,8 +20,8 @@
     },
     "guides": {
         "download": "Buy",
-        "language": "Available languages: "
-
+        "language": "Available languages: ",
+        "size": "Size: "
     },
     "login": {
         "signin": "Sign in",

@@ -15,11 +15,13 @@
         "select": "Selecciona de la lista",
         "pois": "Puntos de inter&ecute;s: ",
         "price": "Precio: ",
-        "duration": "Total duraci&ocute;n: "
+        "duration": "Total duraci&ocute;n: ",
+        "noresults": "No se han encontrado resultados"
     },
     "guides": {
         "download": "Download",
-        "language": "Idiomas disponibles: "
+        "language": "Idiomas disponibles: ",
+        "size": "Size: "
     },
     "login": {
         "signin": "Sign in",

@@ -121,12 +121,14 @@ export class CreateAudioguideComponent {
     this.audioguide.imageUrl = this.image.name;
     this.sqliteService.createAudioguide(this.audioguide).then(() => {
       console.log(new Upload(this.image))
-      this.filesService.downloadFile(this.image.name, this.image.name).then(() => {
-        alert('Audioguide created succesfully');
-        this.navCtrl.push('MyguidesPage')
-      }).catch(error => console.log(error))
-    })
-    
+      this.filesService.downloadFile(this.image.name, this.image.name)
+        .then(() => {
+          alert('Audioguide created succesfully');
+          this.navCtrl.push('MyguidesPage', {
+            myguidesSegment: 'created'
+          })
+        }).catch(error => console.log(error))
+    })    
     
     // reset the audioguide object
     this.audioguide = new Audioguide()

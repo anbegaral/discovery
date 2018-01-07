@@ -1,4 +1,3 @@
-import { POI } from './../../model/models';
 import { Component, Input } from '@angular/core';
 import { PlayGuideProvider } from '../../providers/play-guide/play-guide';
 

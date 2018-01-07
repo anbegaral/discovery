@@ -16,14 +16,14 @@ export class Audioguide {
 
 export class POI {
     $key: string;
+    idFirebase: string;
     idAudioguide: string;
     title: string;
     lat: string;
     lon: string;
     image: string;
-    file:string;
-    duration: number;
-    size: number;
+    file: string;
+    duration: string;
 }
 
 export class User {
