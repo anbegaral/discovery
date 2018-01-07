@@ -13,14 +13,15 @@
         "country": "País",
         "place": "Lugar",
         "select": "Selecciona de la lista",
-        "pois": "Puntos de interés: ",
-        "duration": "Total duración: ",
+        "pois": "Puntos de interes: ",
         "price": "Precio: ",
+        "duration": "Total duracion: ",
         "noresults": "No se han encontrado resultados"
     },
     "guides": {
         "download": "Comprar",
-        "language": "Idiomas disponibles: "
+        "language": "Idiomas disponibles: ",
+        "size": "Tamano: "
 
     },
     "login": {

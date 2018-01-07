@@ -1,2 +1,14 @@
 page-myguides {
+    ul {
+        margin: 10px 0 0 0;
+    }    
+    
+    li {
+        list-style: none;
+        display: flex;
+    }
+
+    img {
+        width: 25%;
+    }
 }

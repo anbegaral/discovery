@@ -1,10 +1,24 @@
-<ion-list>
+<!-- <ion-list>
   <ion-item *ngFor="let item of elements">        
     <ion-thumbnail item-start><img src="{{item.imageUrl}}" alt=" "></ion-thumbnail>
     <h3>{{item.title}}</h3>
     <p>{{'home.duration' | translate}}{{item.duration}}</p>
+    <p>{{'guides.size' | translate}}{{item.size}}</p>    
     <ion-icon name="play" item-end *ngIf="item.isPreview && !isPlaying" (click)="listen(item.file)"></ion-icon>
     <ion-icon name="pause" item-end *ngIf="item.isPreview && isPlaying" (click)="pause()"></ion-icon>
     <ion-icon name="square" item-end *ngIf="item.isPreview && isPlaying" (click)="stop()"></ion-icon>
   </ion-item>
-</ion-list>
+</ion-list> -->
+<ul>
+  <li *ngFor="let item of elements">
+    <img src="{{item.imageUrl}}" alt=" ">
+    <div>
+      <h3>{{item.title}}</h3>
+      <p>{{'home.duration' | translate}}{{item.duration}}</p>
+      <p>{{'guides.size' | translate}}{{item.size}}</p>
+    </div>
+    <ion-icon name="play" item-end *ngIf="item.isPreview && !isPlaying" (click)="listen(item.file)"></ion-icon>
+    <ion-icon name="pause" item-end *ngIf="item.isPreview && isPlaying" (click)="pause()"></ion-icon>
+    <ion-icon name="square" item-end *ngIf="item.isPreview && isPlaying" (click)="stop()"></ion-icon>
+  </li>
+</ul>

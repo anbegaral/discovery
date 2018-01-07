@@ -1,11 +1,31 @@
 accordion {
-    
-    .expand-wrapper {
-        transition: 0.2s linear;
-    }  
-
-    .collapsed {
-        height: 0 !important;
+    ul {
+        list-style: none;
+        margin-left: -40px;
     }
 
+    li {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0 10px 0;
+
+        img {
+            width: 25%;
+            height: 25%;
+            margin: 0;
+        }
+
+        div {
+            display: inline-block;
+            padding: 5px;
+            flex-grow: 1;
+        }
+
+        &:nth-child(odd) {
+            background-color: limegreen
+        }
+        &:nth-child(even) {
+            background-color: green
+        }   
+    }
 }
