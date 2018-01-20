@@ -55,7 +55,11 @@ export class LoginPage {
           equalTo: this.email
         }).subscribe(user => {
           this.user = user[0]
+          console.log(this.user)
           this.storage.set('isAuthor', this.user.isAuthor);
+          if(this.user.isAuthor) {
+            this.storage.set('idAuthor', this.user.$key);
+          }
           this.isAuthor = this.user.isAuthor;
         
         });

@@ -1,3 +1,4 @@
+import { Transfer, TransferObject } from '@ionic-native/transfer';
 import { FirebaseServiceProvider } from './../providers/firebase-service/firebase-service';
 import { Media } from '@ionic-native/media';
 import { PlayGuideProvider } from './../providers/play-guide/play-guide';

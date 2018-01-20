@@ -50,20 +50,11 @@ export class CreateAudioguideComponent {
       idlocation: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
       image: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
     });
-    console.log(this.storage.get('useremail'))
     
-    this.storage.get('useremail').then(useremail => {
-      console.log(useremail)
-      
-      this.firebaseService.getUsers({
-      orderByChild: 'email',
-      equalTo: useremail
-        }).subscribe(idAuthor => {
-          console.log('isAuthor ' +idAuthor)
-          this.idAuthor = idAuthor[0].$key
-          this.storage.set('idAuthor', this.idAuthor)
-        })})
-    .catch(error => console.log(error))
+    this.storage.get('idAuthor').then(idAuthor => {
+      console.log('idAuthor ' +idAuthor)
+      this.idAuthor = idAuthor;
+    })
   }
 
   getLocation($event?) {
@@ -98,11 +89,6 @@ export class CreateAudioguideComponent {
 
   // create the audioguide on local
   createAudioguide() {
-    console.log('this.idAuthor '+this.idAuthor)
-    if(this.idAuthor === null) {
-      this.navCtrl.push('RegisterContributorPage')
-      return
-    }
 
     if(!this.showInputs) {
       this.audioguide.idLocation = this.location;
@@ -117,18 +103,24 @@ export class CreateAudioguideComponent {
     this.audioguide.description = this.description;
     this.audioguide.lang = this.lang;
     this.audioguide.price = this.price; 
-    this.audioguide.image = 'images/'+this.image.name;
-    this.audioguide.imageUrl = this.image.name;
-    this.sqliteService.createAudioguide(this.audioguide).then(() => {
-      console.log(new Upload(this.image))
-      this.filesService.downloadFile(this.image.name, this.image.name)
-        .then(() => {
-          alert('Audioguide created succesfully');
-          this.navCtrl.push('MyguidesPage', {
-            myguidesSegment: 'created'
-          })
-        }).catch(error => console.log(error))
-    })    
+    this.audioguide.image = this.image.name;
+    this.currentUpload = new Upload(this.image);
+    console.log(this.currentUpload)
+    this.audioguide.imageUrl = this.currentUpload.imageUrl;
+    this.filesService.saveFile(this.currentUpload)
+    // this.sqliteService.createAudioguide(this.audioguide).then(() => {
+      // console.log(this.image + " " + this.image.type);
+      // this.filesService.downloadFile(this.image.name, this.image.name)
+      //   .then(() => {
+      //     alert('Audioguide created succesfully');
+      //     console.log('this.navCtrl.parent.newAudioguide '+this.navCtrl.parent.newAudioguide)
+
+      //     this.navCtrl.parent.newAudioguide = false;
+      //     this.navCtrl.push('MyguidesPage', {
+      //       myguidesSegment: 'created'
+      //     })
+      //   }).catch(error => console.log(error))
+    // })    
     
     // reset the audioguide object
     this.audioguide = new Audioguide()

@@ -57,11 +57,14 @@ export class CreatePoiComponent {
     this.poi.isPreview = this.isPreview;    
     this.poi.image = 'images/'+this.image.name;
     this.poi.imageUrl = this.image.name;
+    console.log(this.poi)
     this.sqliteService.createPoi(this.poi).then(() => {
       console.log(new Upload(this.image))
       this.filesService.downloadFile(this.image.name, this.image.name)
         .then(() => {
           alert('Poi created succesfully');
+          console.log('this.navCtrl.parent.newPoi '+this.navCtrl.parent.newPoi)
+          this.navCtrl.parent.newPoi = false;
           this.navCtrl.push('MyguidesPage', {
             myguidesSegment: 'created'
           })

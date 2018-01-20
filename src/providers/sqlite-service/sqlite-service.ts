@@ -40,21 +40,21 @@ export class SqliteServiceProvider {
 
   createAudioguidesTable() {
     this.database.executeSql(`create table if not exists audioguides(id integer primary key autoincrement, idFirebase CHAR(20), idAuthor CHAR(20), idLocation CHAR(20), 
-      title CHAR(255), description CHAR(255), duration INTEGER, pois INTEGER, lang CHAR(20), price FLOAT, image CHAR(255)), complete INTEGER`, {}).then(
+      title CHAR(255), description CHAR(255), duration INTEGER, pois INTEGER, lang CHAR(20), price FLOAT, image CHAR(255))`, {}).then(
       () =>  this.dbReady.next(true)
     ).catch(error => console.log(`creating table ` +error.message.toString()))
   }
 
   createPoisTable() {
     this.database.executeSql(`create table if not exists pois(id integer primary key autoincrement, idFirebase CHAR(20), idAudioguide char(20),
-      title CHAR(20), lat CHAR(20), lon CHAR(20), image BLOB, file BLOB, duration integer, isPreview integer)`, {}).then(
+      title CHAR(20), lat CHAR(20), lon CHAR(20), image CHAR(250), file CHAR(250), duration integer, isPreview integer)`, {}).then(
       () =>  this.dbReady.next(true)
     ).catch(error => console.log(`creating table ` + error.message.toString()))
   }
 
   addAudioguide(idGuide, audioguide, pois) {
     return this.database.executeSql(`INSERT INTO audioguides (idFirebase, idAuthor, idLocation, title, description, duration, pois, lang, price, image) 
-          VALUES (?,?,?,?,?,?,?,?,?,?)`, [idGuide, audioguide.idAuthor, audioguide.idLocation, audioguide.title,audioguide.description, audioguide.duration, 
+          VALUES (?,?,?,?,?,?,?,?,?,?)`, [idGuide, audioguide.idAuthor, audioguide.idLocation, audioguide.title, audioguide.description, audioguide.duration, 
           pois.length, audioguide.lang, audioguide.price, audioguide.image])
       .then(result => {
         if(result.insertId){

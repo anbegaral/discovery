@@ -57,22 +57,26 @@ export class MyguidesPage {
 
     }).then(() => {
       this.platform.ready().then(() => {
-        if(this.platform.is('ios')) {
-          this.storageDirectory = this.file.dataDirectory;
-        } else if(this.platform.is('android')) {
-          this.storageDirectory = this.file.externalDataDirectory;
+        // if(this.platform.is('ios')) {
+        //   this.storageDirectory = this.file.dataDirectory;
+        // } else if(this.platform.is('android')) {
+        //   this.storageDirectory = this.file.externalDataDirectory;
+        // }
+        if (this.platform.is('ios')) {
+          this.storageDirectory = this.file.documentsDirectory;
         }
+        else if(this.platform.is('android')) {
+          this.storageDirectory = this.file.dataDirectory;
+        }
+        this.listMyPurchasedAudioguides();        
         this.navCtrl.parent.select(1);
         this.myguidesSegment = 'purchased';
       }).catch(error => console.log(error));
     }).catch(error => console.log(error));   
   }
 
-  ionViewWillEnter() {
-    this.listMyPurchasedAudioguides();    
-  }
-
   listMyPurchasedAudioguides() {
+    console.log(this.idAuthor)
     this.sqliteService.findPurchasedAudioguides(this.idAuthor).then(data => {
       this.purchasedAudioguidesList = data
     })
