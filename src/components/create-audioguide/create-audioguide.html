@@ -67,12 +67,10 @@
         Progress: {{currentUpload?.name}} | {{currentUpload?.progress}}% Complete
     </div>
     <ion-item>
-        <ion-label> Image
-            <input formControlName="image" type="file" (change)="detectFile($event)">
-        </ion-label>
-    </ion-item>
-    <ion-item *ngIf="!createAudioguideForm.controls.image.valid  && (createAudioguideForm.controls.image.dirty)">
-        <p>Please enter a valid image.</p>
+        <button ion-button icon-left (click)="takePicture()">
+            <ion-icon name="camera"></ion-icon>
+            Select Image
+        </button> {{pictureName}}
     </ion-item>
 </form>
 <button ion-button color="primary" full (click)="createAudioguide()">Create audioguide</button>

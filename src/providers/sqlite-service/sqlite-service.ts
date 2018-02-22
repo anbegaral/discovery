@@ -40,7 +40,7 @@ export class SqliteServiceProvider {
 
   createAudioguidesTable() {
     this.database.executeSql(`create table if not exists audioguides(id integer primary key autoincrement, idFirebase CHAR(20), idAuthor CHAR(20), idLocation CHAR(20), 
-      title CHAR(255), description CHAR(255), duration INTEGER, pois INTEGER, lang CHAR(20), price FLOAT, image CHAR(255))`, {}).then(
+      title CHAR(255), description CHAR(255), duration INTEGER, pois INTEGER, lang CHAR(20), price FLOAT, image CHAR(255), imageUrl CHAR(255))`, {}).then(
       () =>  this.dbReady.next(true)
     ).catch(error => console.log(`creating table ` +error.message.toString()))
   }
@@ -53,9 +53,9 @@ export class SqliteServiceProvider {
   }
 
   addAudioguide(idGuide, audioguide, pois) {
-    return this.database.executeSql(`INSERT INTO audioguides (idFirebase, idAuthor, idLocation, title, description, duration, pois, lang, price, image) 
+    return this.database.executeSql(`INSERT INTO audioguides (idFirebase, idAuthor, idLocation, title, description, duration, pois, lang, price, image, imageUrl) 
           VALUES (?,?,?,?,?,?,?,?,?,?)`, [idGuide, audioguide.idAuthor, audioguide.idLocation, audioguide.title, audioguide.description, audioguide.duration, 
-          pois.length, audioguide.lang, audioguide.price, audioguide.image])
+          pois.length, audioguide.lang, audioguide.price, audioguide.image, audioguide.imageUrl])
       .then(result => {
         if(result.insertId){
            this.loading = this.loadingCtrl.create({
@@ -151,7 +151,7 @@ export class SqliteServiceProvider {
     return this.database.executeSql(`SELECT * FROM audioguides WHERE idAuthor = '${idAuthor}'`, []).then(
       (data) => {
         console.log(data)
-        let audioguidesList = Array<Audioguide>();         
+        let audioguidesList: Audioguide[] = [];         
         if(data.rows.length > 0) {
             for(var i = 0; i < data.rows.length; i++) {
               audioguidesList.push(data.rows.item(i));  
@@ -201,24 +201,26 @@ export class SqliteServiceProvider {
     });
   }
 
-  deleteAudioguide(idAudioguide:string){
-    this.findPoisByAudioguide(idAudioguide).then((poiList) => {
-      let poisList:any = [];
-      poisList = poiList;
-      poisList.forEach(element => {
-        this.fileService.deleteFile(element.file)
-        this.fileService.deleteFile(element.image)
-      });      
+  deleteAudioguide(idAudioguide: string){
+    this.findPoisByAudioguide(idAudioguide).then(poiList => {
+      if(poiList) {
+        let poisList: POI[] = [];
+        poisList = poiList;
+        poisList.forEach(element => {
+          this.fileService.deleteFile(element.file)
+          this.fileService.deleteFile(element.image)
+        });
+        this.database.executeSql(`DELETE FROM pois WHERE idAudioguide = '${idAudioguide}'`, []).then(() => {
+          console.log("pois deleted successfully");
+        })
+        .catch(error => console.log("Error deletePois: " + error.message.toString()))
+      }
+      
     })
-      return this.database.executeSql(`DELETE FROM audioguides WHERE idFirebase = '${idAudioguide}'`, []).then(() => {
-        return this.database.executeSql(`DELETE FROM pois WHERE idAudioguide = '${idAudioguide}'`, []).then(
-
-        )
-        .catch(
-          (error) => console.log("Error deletePois: " + error.message.toString()))
-      })
-      .catch(
-        (error) => console.log("Error deleteAudioguides: " + error.message.toString()))
+    return this.database.executeSql(`DELETE FROM audioguides WHERE id = '${idAudioguide}'`, []).then(() => {
+      console.log("audioguide deleted successfully");
+    })
+      .catch(error => console.log("Error deleteAudioguides: " + error.message.toString()))
   }
 
   createAudioguide(audioguide: Audioguide) {
@@ -228,9 +230,7 @@ export class SqliteServiceProvider {
       .then(result => {
         console.log(result)
         if(result.insertId){
-          return this.fileService.downloadFile(audioguide.imageUrl, audioguide.image).then(() => {
             console.log(`audioguide.id `+ result.insertId);
-         })
         }  
       })
       .catch(error => console.log("Error addAudioguide:  " + error.message.toString()))   

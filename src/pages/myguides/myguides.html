@@ -35,7 +35,6 @@
                                 <li *ngFor="let audioguide of createdAudioguidesList" (click)="getPoisByAudioguide(audioguide.id)">
                                         <img src="{{storageDirectory + audioguide.image}}">
                                         <div class="info">
-                                                <p>{{storageDirectory + audioguide.image}}</p>
                                                 <h3>{{audioguide.title}}</h3>                        
                                                 <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
                                         </div>

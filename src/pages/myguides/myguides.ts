@@ -1,9 +1,10 @@
+import { CreateAudioguideComponent } from './../../components/create-audioguide/create-audioguide';
 import { PlayGuideProvider } from './../../providers/play-guide/play-guide';
 import { Audioguide, POI } from './../../model/models';
 import { Storage } from '@ionic/storage';
 import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-service';
 import { Component } from '@angular/core';
-import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform } from 'ionic-angular';
+import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform, ModalController } from 'ionic-angular';
 import { File } from '@ionic-native/file';
 
 @IonicPage({
@@ -35,7 +36,8 @@ export class MyguidesPage {
       public actionSheetCtrl: ActionSheetController,
       private sqliteService: SqliteServiceProvider,
       private storage: Storage, 
-      private playService: PlayGuideProvider ) {
+      private playService: PlayGuideProvider,
+      private modalCtrl: ModalController ) {
 
     this.storage.get('isLoggedin').then(isLoggedin => {
       console.log('isLoggedin ' +isLoggedin)
@@ -57,17 +59,16 @@ export class MyguidesPage {
 
     }).then(() => {
       this.platform.ready().then(() => {
-        // if(this.platform.is('ios')) {
-        //   this.storageDirectory = this.file.dataDirectory;
-        // } else if(this.platform.is('android')) {
-        //   this.storageDirectory = this.file.externalDataDirectory;
-        // }
-        if (this.platform.is('ios')) {
-          this.storageDirectory = this.file.documentsDirectory;
-        }
-        else if(this.platform.is('android')) {
-          this.storageDirectory = this.file.dataDirectory;
-        }
+        this.platform.ready().then(() => {
+          if(this.platform.is('ios')) {
+            this.storageDirectory = this.file.dataDirectory;
+          } else if(this.platform.is('android')) {
+            this.storageDirectory = this.file.dataDirectory;
+          } else {
+            // exit otherwise, but you could add further types here e.g. Windows
+            return false;
+          }
+        });
         this.listMyPurchasedAudioguides();        
         this.navCtrl.parent.select(1);
         this.myguidesSegment = 'purchased';
@@ -86,6 +87,7 @@ export class MyguidesPage {
   listMyCreatedAudioguides() {
     this.sqliteService.findMyAudioguides(this.idAuthor).then(data => {
       this.createdAudioguidesList = data
+      this.newAudioguide = false;
     })
     .catch(error => console.log('error listMyCreatedAudioguides ' + error.message.toString()));
   }
@@ -113,6 +115,7 @@ export class MyguidesPage {
               if(ready) {
                 this.sqliteService.deleteAudioguide(id).then(() => {
                   this.listMyPurchasedAudioguides();
+                  this.listMyCreatedAudioguides();
                 })
               }
             })
@@ -131,7 +134,9 @@ export class MyguidesPage {
   }
 
   showNewAudioguide() {
-    this.newAudioguide = !this.newAudioguide;
+    let modal = this.modalCtrl.create(CreateAudioguideComponent);
+    modal.present();
+    // this.newAudioguide = !this.newAudioguide;
   }
 
   showNewPoi() {

@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { MyguidesPage } from './myguides';
 import { IonicPageModule } from "ionic-angular";
 import { AccordionComponentModule } from '../../components/accordion/accordion.module';
+import { CreateAudioguideComponent } from '../../components/create-audioguide/create-audioguide';
 
 @NgModule({
   declarations: [
@@ -12,12 +13,15 @@ import { AccordionComponentModule } from '../../components/accordion/accordion.m
   ],
   imports: [
     AccordionComponentModule,
-    CreateAudioguideComponentModule,
     CreatePoiComponentModule,
     IonicPageModule.forChild(MyguidesPage),
     TranslateModule.forChild(),
   ],
   exports:[MyguidesPage],
+  entryComponents: [
+    // CreateAudioguideComponent,
+  ],
   providers: []
 })
 export class MyguidesPageModule {}
+

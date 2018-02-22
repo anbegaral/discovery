@@ -1,3 +1,4 @@
+import { File } from '@ionic-native/file';
 export class Audioguide {
     $key: string;
     idAuthor: string;

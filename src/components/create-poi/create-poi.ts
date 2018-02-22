@@ -38,16 +38,16 @@ export class CreatePoiComponent {
     this.image = event.target.files[0];
   }
 
-  uploadFile() {
-    this.currentUpload = new Upload(this.image);
-    return this.filesService.uploadFile('images', this.currentUpload).then(url => {
-      console.log(url)
-      return this.poi.imageUrl = url
-    }).catch(error => {
-      console.log('Error ' + error)
-      return error
-    })
-  }
+  // uploadFile() {
+  //   this.currentUpload = new Upload(this.image);
+  //   return this.filesService.uploadFile('images', this.currentUpload).then(url => {
+  //     console.log(url)
+  //     return this.poi.imageUrl = url
+  //   }).catch(error => {
+  //     console.log('Error ' + error)
+  //     return error
+  //   })
+  // }
 
   createPoi() {
     this.poi.idAudioguide = this.idAudioguide;
@@ -58,17 +58,17 @@ export class CreatePoiComponent {
     this.poi.image = 'images/'+this.image.name;
     this.poi.imageUrl = this.image.name;
     console.log(this.poi)
-    this.sqliteService.createPoi(this.poi).then(() => {
-      console.log(new Upload(this.image))
-      this.filesService.downloadFile(this.image.name, this.image.name)
-        .then(() => {
-          alert('Poi created succesfully');
-          console.log('this.navCtrl.parent.newPoi '+this.navCtrl.parent.newPoi)
-          this.navCtrl.parent.newPoi = false;
-          this.navCtrl.push('MyguidesPage', {
-            myguidesSegment: 'created'
-          })
-        }).catch(error => console.log(error))
-      })
+    // this.sqliteService.createPoi(this.poi).then(() => {
+    //   console.log(new Upload(this.image))
+    //   this.filesService.downloadFile(this.image.name, this.image.name)
+    //     .then(() => {
+    //       alert('Poi created succesfully');
+    //       console.log('this.navCtrl.parent.newPoi '+this.navCtrl.parent.newPoi)
+    //       this.navCtrl.parent.newPoi = false;
+    //       this.navCtrl.push('MyguidesPage', {
+    //         myguidesSegment: 'created'
+    //       })
+    //     }).catch(error => console.log(error))
+    //   })
   }
 }

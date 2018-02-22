@@ -57,23 +57,10 @@ export class FilesServiceProvider {
         });
       });
   }
-
-  saveFile(image: Upload) {
-    const fileTransfer: FileTransferObject = this.fileTransfer.create();
-    console.log('image.imageUrl ' + image.imageUrl)
-    return fileTransfer.download(image.imageUrl, this.storageDirectory + image.image)
-      .then(entry => {
-        console.log('download complete ' + entry.toURL());
-        return entry;
-      })
-      .catch(err_2 => {
-        console.log("Download error!");
-        console.log(err_2);
-      });
-  }
+  
   uploadFile(folder: string, upload: Upload){
     let storageRef = firebase.storage().ref();
-    let uploadTask = storageRef.child(`${folder}/${upload.file.name}`).put(upload.file)
+    let uploadTask = storageRef.child(`${folder}/${upload.file}`).put(upload.file)
     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
       (snapshot) =>  {
         // upload in progress
@@ -86,7 +73,7 @@ export class FilesServiceProvider {
       () => {
         // upload success
         upload.imageUrl = uploadTask.snapshot.downloadURL
-        upload.image = upload.file.name
+        // upload.image = upload.file
       }
     );
     return uploadTask.then(() => {
