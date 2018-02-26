@@ -27,6 +27,8 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { DiscoveryAudioguides } from './app.component';
 
 import { TabsModule } from "../pages/tabs/tabs.module";
+import { CreatePoiComponent } from '../components/create-poi/create-poi';
+import { CreatePoiComponentModule } from '../components/create-poi/create-poi.module';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, 'assets/i18n/','.json');
@@ -65,11 +67,13 @@ export const firebaseConfig = {
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     CreateAudioguideComponentModule,
+    CreatePoiComponentModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     DiscoveryAudioguides,
     CreateAudioguideComponent,
+    CreatePoiComponent,
   ],
   providers: [
     StatusBar,

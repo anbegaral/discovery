@@ -4,6 +4,7 @@ import { Component, ViewChild, Input } from '@angular/core';
 import { POI, Upload } from '../../model/models';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NavController } from 'ionic-angular/navigation/nav-controller';
+import { ViewController } from 'ionic-angular';
 
 @Component({
   selector: 'create-poi',
@@ -24,7 +25,8 @@ export class CreatePoiComponent {
   constructor(private sqliteService: SqliteServiceProvider,     
     public formBuilder: FormBuilder,
     private filesService: FilesServiceProvider,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    public viewCtrl: ViewController) {
       this.createPoiForm = formBuilder.group({
         title: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
         lat: ['', Validators.compose([Validators.maxLength(250), Validators.pattern('^-?([1-8]?[0-9]\.{1}\d{1,6}$|90\.{1}0{1,6}$)'), Validators.required])],
@@ -63,12 +65,15 @@ export class CreatePoiComponent {
     //   this.filesService.downloadFile(this.image.name, this.image.name)
     //     .then(() => {
     //       alert('Poi created succesfully');
-    //       console.log('this.navCtrl.parent.newPoi '+this.navCtrl.parent.newPoi)
-    //       this.navCtrl.parent.newPoi = false;
+              // this.modalDismiss();
     //       this.navCtrl.push('MyguidesPage', {
     //         myguidesSegment: 'created'
     //       })
     //     }).catch(error => console.log(error))
     //   })
+  }
+
+  modalDismiss() {
+    this.viewCtrl.dismiss();
   }
 }

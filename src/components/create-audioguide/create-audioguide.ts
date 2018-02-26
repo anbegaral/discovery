@@ -1,7 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-service';
 import { FilesServiceProvider } from './../../providers/files-service/files-service';
-import { NavController, Platform } from 'ionic-angular';
+import { NavController, Platform, ViewController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Audioguide, Upload, Location, Country } from './../../model/models';
 import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
@@ -47,7 +47,8 @@ export class CreateAudioguideComponent {
     private file: File,
     private platform: Platform,
     private camera: Camera,
-    private filePath: FilePath
+    private filePath: FilePath,
+    public viewCtrl: ViewController
   ) {
 
     this.createAudioguideForm = formBuilder.group({
@@ -78,8 +79,7 @@ export class CreateAudioguideComponent {
     });
   }
 
-  getLocation($event?) {
-    console.log($event)    
+  getLocation($event?) {  
     this.location = $event
   }
 
@@ -120,14 +120,19 @@ export class CreateAudioguideComponent {
     this.audioguide.price = this.price;
     console.log(this.audioguide);
     this.sqliteService.createAudioguide(this.audioguide).then(() => {
-          alert('Audioguide created succesfully');
-          this.navCtrl.push('MyguidesPage', {
-            myguidesSegment: 'created'
-          })
-    })    
+      this.modalDismiss();
+      alert('Audioguide created succesfully');
+      this.navCtrl.push('MyguidesPage', {
+        myguidesSegment: 'created'
+      })
+    }).catch(error => console.log(error))    
     
     // reset the audioguide object
     this.audioguide = new Audioguide()
+  }
+
+  modalDismiss() {
+    this.viewCtrl.dismiss();
   }
 
   // Copy the image to a local folder
@@ -156,7 +161,6 @@ export class CreateAudioguideComponent {
             this.copyFileToLocalDir(sourceDirectory, currentName);
           });
       } else {
-        
         /* TODO*/
         var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
         var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);

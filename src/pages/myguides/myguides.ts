@@ -6,6 +6,7 @@ import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-s
 import { Component } from '@angular/core';
 import { NavController, NavParams, IonicPage, AlertController, ActionSheetController, Platform, ModalController } from 'ionic-angular';
 import { File } from '@ionic-native/file';
+import { CreatePoiComponent } from '../../components/create-poi/create-poi';
 
 @IonicPage({
   name: 'MyguidesPage'
@@ -136,11 +137,11 @@ export class MyguidesPage {
   showNewAudioguide() {
     let modal = this.modalCtrl.create(CreateAudioguideComponent);
     modal.present();
-    // this.newAudioguide = !this.newAudioguide;
   }
 
   showNewPoi() {
-    this.newPoi = !this.newPoi;
+    let modal = this.modalCtrl.create(CreatePoiComponent);
+    modal.present();
   }
   
   startRecordPoi(idAudioguide: string) {

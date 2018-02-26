@@ -29,8 +29,7 @@
                         </div>
                         <div *ngIf="isAuthor">
                                 <button ion-button primary (click)="showNewAudioguide()">New guide</button>
-                                <create-audioguide *ngIf="newAudioguide"></create-audioguide>
-                                
+                                                                
                                 <p *ngIf="createdAudioguidesList?.length < 1">You have not created any audioguide yet</p>
                                 <li *ngFor="let audioguide of createdAudioguidesList" (click)="getPoisByAudioguide(audioguide.id)">
                                         <img src="{{storageDirectory + audioguide.image}}">
@@ -41,8 +40,7 @@
                                         <ion-icon name="trash" (click)="delete(audioguide.id)"></ion-icon>        
                                         <!-- <button ion-button primary (click)="stopRecordPoi(audioguide.id)">Stop POI</button>
                                         <button ion-button primary (click)="playRecordPoi(audioguide.id)">Play POI</button>  -->
-                                        <!-- <ion-icon name="add-circle" (click)="showNewPoi(audioguide.id)"></ion-icon>
-                                        <create-poi [idAudioguide]="audioguide.id" *ngIf="newPoi"></create-poi> -->
+                                        <ion-icon name="add-circle" (click)="showNewPoi(audioguide.id)"></ion-icon>
                                         <accordion [elements]="poiList" class="accordion"></accordion>   
                                 </li>
                         </div>
