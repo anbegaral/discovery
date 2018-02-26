@@ -1,15 +1,17 @@
 import { TranslateService } from '@ngx-translate/core';
 import { SqliteServiceProvider } from './../../providers/sqlite-service/sqlite-service';
 import { FilesServiceProvider } from './../../providers/files-service/files-service';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform, ViewController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Audioguide, Upload, Location, Country } from './../../model/models';
 import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { File } from '@ionic-native/file';
+import { Camera } from '@ionic-native/camera';
+import { FilePath } from '@ionic-native/file-path';
 
 @Component({
-  selector: 'create-audioguide',
   templateUrl: 'create-audioguide.html'
 })
 export class CreateAudioguideComponent {
@@ -18,6 +20,9 @@ export class CreateAudioguideComponent {
   currentUpload: Upload;
   storageImageRef: any;
   url: string = null;
+  lastImage: string = '';
+  storageDirectory: any;
+  pictureName: string = null;
 
   @ViewChild('title') title:string;
   @ViewChild('description') description:string;
@@ -26,7 +31,7 @@ export class CreateAudioguideComponent {
   @ViewChild('country') country: string;
   @ViewChild('location') location:string;
   @ViewChild('idlocation') idlocation:string;
-  @ViewChild('image') image: File;
+  @ViewChild('image') image: any;
   showInputs: boolean = false;
   showLocationInput: boolean = false;
 
@@ -38,7 +43,13 @@ export class CreateAudioguideComponent {
     private storage: Storage,
     private filesService: FilesServiceProvider,
     private sqliteService: SqliteServiceProvider,
-    private translateService: TranslateService) {
+    private translateService: TranslateService,
+    private file: File,
+    private platform: Platform,
+    private camera: Camera,
+    private filePath: FilePath,
+    public viewCtrl: ViewController
+  ) {
 
     this.createAudioguideForm = formBuilder.group({
       title: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -50,24 +61,25 @@ export class CreateAudioguideComponent {
       idlocation: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
       image: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
     });
-    console.log(this.storage.get('useremail'))
     
-    this.storage.get('useremail').then(useremail => {
-      console.log(useremail)
-      
-      this.firebaseService.getUsers({
-      orderByChild: 'email',
-      equalTo: useremail
-        }).subscribe(idAuthor => {
-          console.log('isAuthor ' +idAuthor)
-          this.idAuthor = idAuthor[0].$key
-          this.storage.set('idAuthor', this.idAuthor)
-        })})
-    .catch(error => console.log(error))
+    this.storage.get('idAuthor').then(idAuthor => {
+      console.log('idAuthor ' +idAuthor)
+      this.idAuthor = idAuthor;
+    });
+
+    this.platform.ready().then(() => {
+      if(this.platform.is('ios')) {
+        this.storageDirectory = this.file.dataDirectory;
+      } else if(this.platform.is('android')) {
+        this.storageDirectory = this.file.dataDirectory;
+      } else {
+        // exit otherwise, but you could add further types here e.g. Windows
+        return false;
+      }
+    });
   }
 
-  getLocation($event?) {
-    console.log($event)    
+  getLocation($event?) {  
     this.location = $event
   }
 
@@ -78,31 +90,20 @@ export class CreateAudioguideComponent {
 
   creatingLocationEvent($event) {
     this.showLocationInput = $event.event;
-    this.country = $event.idcountry
-  }
-
-  detectFile(event) {
-    this.image = event.target.files[0];
+    this.country = $event.idcountry;
   }
 
   uploadFile() {
     this.currentUpload = new Upload(this.image);
     return this.filesService.uploadFile('images', this.currentUpload).then(url => {
-      console.log(url)
       return this.audioguide.imageUrl = url
     }).catch(error => {
-      console.log('Error ' + error)
       return error
     })
   }
 
   // create the audioguide on local
   createAudioguide() {
-    console.log('this.idAuthor '+this.idAuthor)
-    if(this.idAuthor === null) {
-      this.navCtrl.push('RegisterContributorPage')
-      return
-    }
 
     if(!this.showInputs) {
       this.audioguide.idLocation = this.location;
@@ -116,22 +117,59 @@ export class CreateAudioguideComponent {
     this.audioguide.title = this.title;
     this.audioguide.description = this.description;
     this.audioguide.lang = this.lang;
-    this.audioguide.price = this.price; 
-    this.audioguide.image = 'images/'+this.image.name;
-    this.audioguide.imageUrl = this.image.name;
+    this.audioguide.price = this.price;
+    console.log(this.audioguide);
     this.sqliteService.createAudioguide(this.audioguide).then(() => {
-      console.log(new Upload(this.image))
-      this.filesService.downloadFile(this.image.name, this.image.name)
-        .then(() => {
-          alert('Audioguide created succesfully');
-          this.navCtrl.push('MyguidesPage', {
-            myguidesSegment: 'created'
-          })
-        }).catch(error => console.log(error))
-    })    
+      this.modalDismiss();
+      alert('Audioguide created succesfully');
+      this.navCtrl.push('MyguidesPage', {
+        myguidesSegment: 'created'
+      })
+    }).catch(error => console.log(error))    
     
     // reset the audioguide object
     this.audioguide = new Audioguide()
+  }
+
+  modalDismiss() {
+    this.viewCtrl.dismiss();
+  }
+
+  // Copy the image to a local folder
+  copyFileToLocalDir(filePath, currentName) {
+    this.audioguide.image = currentName;        
+    this.file.copyFile(filePath, currentName, this.storageDirectory, currentName).then(success => {
+      this.pictureName = currentName;
+    }, error => {
+      console.log('Error while storing file.' + error.message);
+    });
+  }
+
+  takePicture() {
+    var options = {
+      quality: 100,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      saveToPhotoAlbum: false,
+      correctOrientation: true
+    };
+
+    this.camera.getPicture(options).then((imagePath) => {
+      if (this.platform.is('android')) {
+        this.filePath.resolveNativePath(imagePath).then(filePath => {
+            var sourceDirectory = filePath.substring(0, filePath.lastIndexOf('/') + 1);
+            let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
+            this.copyFileToLocalDir(sourceDirectory, currentName);
+          });
+      } else {
+        /* TODO*/
+        var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+        var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+        this.audioguide.image = currentName;
+        this.copyFileToLocalDir(correctPath, currentName);
+      }
+    }, (err) => {
+      console.log('Error while selecting image.');
+    });
   }
 
   createLocation() {
@@ -161,27 +199,27 @@ export class CreateAudioguideComponent {
     })
   }
 
-  completeAudioguide() {
-    // add the audioguide to firebase
-    this.uploadFile().then(() => {
-      this.audioguide.reviewed = false;
-      this.audioguide.idAuthor = this.idAuthor;
-      if(!this.showInputs) {
-        this.audioguide.idLocation = this.location;
-      } else {
-        // this.firebaseService.addCountry(this.country)
-      }
-      this.audioguide.title = this.title;
-      this.audioguide.description = this.description;
-      this.audioguide.lang = this.lang;
-      this.audioguide.price = this.price; 
-      this.audioguide.image = 'images/'+this.image.name;
+  // completeAudioguide() {
+  //   // add the audioguide to firebase
+  //   this.uploadFile().then(() => {
+  //     this.audioguide.reviewed = false;
+  //     this.audioguide.idAuthor = this.idAuthor;
+  //     if(!this.showInputs) {
+  //       this.audioguide.idLocation = this.location;
+  //     } else {
+  //       // this.firebaseService.addCountry(this.country)
+  //     }
+  //     this.audioguide.title = this.title;
+  //     this.audioguide.description = this.description;
+  //     this.audioguide.lang = this.lang;
+  //     this.audioguide.price = this.price; 
+  //     this.audioguide.image = 'images/'+this.image.name;
       
-      // this.firebaseService.createAudioguide(this.audioguide).then(key => this.createAudioguideToSqlite(key))
-    });
+  //     // this.firebaseService.createAudioguide(this.audioguide).then(key => this.createAudioguideToSqlite(key))
+  //   });
     
-    this.audioguide = new Audioguide()
-  }
+  //   this.audioguide = new Audioguide()
+  // }
 
   // getImageUrl(fileName: string) {
   //   this.storageImageRef = firebase.storage().ref().child(fileName);

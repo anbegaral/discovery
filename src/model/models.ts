@@ -1,3 +1,4 @@
+import { File } from '@ionic-native/file';
 export class Audioguide {
     $key: string;
     idAuthor: string;
@@ -21,7 +22,9 @@ export class POI {
     title: string;
     lat: string;
     lon: string;
+    isPreview: boolean;
     image: string;
+    imageUrl: string;
     file: string;
     duration: string;
 }
