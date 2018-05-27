@@ -1,5 +1,5 @@
+import { UserService } from './../../providers/user.service';
 import { User } from './../../model/models';
-import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
 import { Storage } from '@ionic/storage';
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, AlertController, LoadingController, NavParams } from 'ionic-angular';
@@ -29,7 +29,7 @@ export class LoginPage {
     private alertCtrl: AlertController,
     private storage: Storage, 
     private sqliteService: SqliteServiceProvider,
-    private firebaseService: FirebaseServiceProvider) {
+    private userService: UserService) {
 
       this.loginForm = formBuilder.group({
         email: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
@@ -45,23 +45,25 @@ export class LoginPage {
     loader.present();
 
     this.fireAuth.auth.signInWithEmailAndPassword(this.email, this.password).then(
-      (data) => {
-        
+      (data) => {        
         this.storage.set('isLoggedin', true);
         this.isLoggedin = true;
 
-        this.firebaseService.getUsers({
-          orderByChild: 'email',
-          equalTo: this.email
-        }).subscribe(user => {
-          this.user = user[0]
-          console.log(this.user)
-          this.storage.set('isAuthor', this.user.isAuthor);
-          if(this.user.isAuthor) {
-            this.storage.set('idAuthor', this.user.$key);
-          }
-          this.isAuthor = this.user.isAuthor;
-        
+        this.userService.getUsers(this.email).subscribe(user => {
+          console.log(user)
+          user.forEach(element => {        
+            var user = element.payload.toJSON();        
+            user["$key"] = element.key;
+            this.user = user as User; 
+            console.log(this.user)
+            this.isAuthor = this.user.isAuthor;
+                  
+            this.storage.set('isAuthor', this.user.isAuthor);
+            if(this.user.isAuthor) {
+              console.log(this.user.$key)            
+              this.storage.set('idAuthor', this.user.$key);
+            }
+          });        
         });
 
         loader.dismiss();

@@ -1,3 +1,4 @@
+import { PoiService } from './../providers/poi.service';
 import { CreateAudioguideComponentModule } from './../components/create-audioguide/create-audioguide.module';
 import { CreateAudioguideComponent } from './../components/create-audioguide/create-audioguide';
 import { Camera } from '@ionic-native/camera';
@@ -15,7 +16,6 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
-import { HttpModule, Http } from '@angular/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -29,8 +29,10 @@ import { DiscoveryAudioguides } from './app.component';
 import { TabsModule } from "../pages/tabs/tabs.module";
 import { CreatePoiComponent } from '../components/create-poi/create-poi';
 import { CreatePoiComponentModule } from '../components/create-poi/create-poi.module';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AudioguideService } from '../providers/audioguide.service';
 
-export function HttpLoaderFactory(http: Http) {
+export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/','.json');
 }
 
@@ -49,12 +51,12 @@ export const firebaseConfig = {
   ],
   imports: [
     BrowserModule,
-    HttpModule,
+    HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [Http]
+        deps: [HttpClient]
       }
     }),
     TabsModule,
@@ -77,6 +79,7 @@ export const firebaseConfig = {
   ],
   providers: [
     StatusBar,
+    HttpClientModule,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SqliteServiceProvider,
@@ -88,7 +91,9 @@ export const firebaseConfig = {
     PlayGuideProvider,
     Media,
     FirebaseServiceProvider,
-    Camera
+    Camera,
+    AudioguideService,
+    PoiService,
   ],
   exports: [
     TranslateModule,

@@ -5,7 +5,7 @@
         </button>
     
         <ion-title>
-            {{audioguide.title}}
+            <!-- {{audioguide.title}} -->
         </ion-title>
     
         <!-- <ion-buttons end>
@@ -17,7 +17,24 @@
 
 </ion-header>
 <ion-content padding cache-view="false">
-  <div>
+    <ion-list no-lines>
+    <ion-item *ngFor="let audioguide of audioguides" (click)="viewGuide(audioguide)">
+      <ion-thumbnail item-start class="thumbnail">
+        <img src="{{audioguide.imageUrl}}"/>
+      </ion-thumbnail>
+      <h2>{{ audioguide.title }}</h2>
+      <p>
+        {{ 'home.pois' | translate }}{{audioguide.pois}}
+      </p>
+      <p>
+        {{ 'home.duration' | translate }}{{audioguide.duration}} mins
+      </p>
+      <p>
+        {{ 'home.price' | translate }}{{audioguide.price | currency}}
+      </p>
+    </ion-item>
+  </ion-list>
+  <!-- <div>
     <img src="{{audioguide.imageUrl}}" alt=" ">
     <h1>{{audioguide.title}}</h1>
     <p>{{audioguide.description}}</p>
@@ -27,5 +44,5 @@
     <p>{{'guides.language' | translate}}{{audioguide.lang}}</p>
     <button ion-button (click)="getAccount($event)">Download <i-download-cloud></i-download-cloud></button>
     <accordion [elements]="pois"></accordion>
-  </div>
+  </div> -->
 </ion-content>

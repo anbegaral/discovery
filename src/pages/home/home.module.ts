@@ -1,9 +1,9 @@
+import { LocationsService } from './../../providers/locations.service';
 import { LocationsDropdownComponentModule } from './../../components/locations-dropdown/locations-dropdown.module';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { HomePage } from "./home";
 import { IonicPageModule } from "ionic-angular";
-
 
 @NgModule({
   declarations: [HomePage],
@@ -13,6 +13,6 @@ import { IonicPageModule } from "ionic-angular";
     LocationsDropdownComponentModule,
   ],
   exports: [HomePage],
-  providers: []
+  providers: [LocationsService]
 })
 export class HomePageModule {}

@@ -38,8 +38,10 @@ export class MyguidesPage {
       private sqliteService: SqliteServiceProvider,
       private storage: Storage, 
       private playService: PlayGuideProvider,
-      private modalCtrl: ModalController ) {
-
+      private modalCtrl: ModalController ) {}
+  
+  ionViewWillEnter() {
+    console.log('ionviewwillenter')
     this.storage.get('isLoggedin').then(isLoggedin => {
       console.log('isLoggedin ' +isLoggedin)
       this.isLoggedin = isLoggedin;

@@ -46,7 +46,7 @@ export class RegisterUserPage implements OnInit{
   }
 
   ngOnInit() {
-     this.firebaseService.getUsers({}).subscribe(users => this.users = users)
+     this.firebaseService.getUsers({}).valueChanges().subscribe(users => this.users = users)
   }
 
   registerUser(){

@@ -60,7 +60,8 @@ export class Location {
             code: string; 
             name: string;
         }
-    ]
+    ];
+    numberOfAudioguides: number;
 }
 
 export class Upload {

@@ -1,27 +1,21 @@
 <ion-header>
   <ion-navbar>
-    <ion-searchbar placeholder="{{ 'home.search' | translate }}" type="text" spellcheck="true" (ionInput)="searchAudioguides($event)"></ion-searchbar>
+    <ion-searchbar placeholder="{{ 'home.search' | translate }}" type="text" spellcheck="true" (ionInput)="searchLocations($event)"></ion-searchbar>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   
-  <h3>{{ 'home.welcome' | translate }}</h3>
-  <h6>{{ 'home.description' | translate }}</h6>
+  <h1>{{ 'home.welcome' | translate }}</h1>
+  <locations-dropdown (idLocationEvent)="getLocations($event)"></locations-dropdown>
 
-  <div class="combos">
-    <locations-dropdown (idLocationEvent)="getAudioguides($event)"></locations-dropdown>
-  </div>
-
-  <div *ngIf="audioguides?.length < 1">
-    <hr>
+  <div *ngIf="locations?.length < 1">
     <p>
       {{'home.noresults' | translate}}
     </p>
   </div>
-
-  <ion-list no-lines>
-    <ion-item *ngFor="let audioguide of audioguides" (click)="viewGuide(audioguide.$key)">
+  <!-- <ion-list no-lines>
+    <ion-item *ngFor="let audioguide of audioguides" (click)="viewGuide(audioguide)">
       <ion-thumbnail item-start class="thumbnail">
         <img src="{{audioguide.imageUrl}}"/>
       </ion-thumbnail>
@@ -36,6 +30,17 @@
         {{ 'home.price' | translate }}{{audioguide.price | currency}}
       </p>
     </ion-item>
-  </ion-list>
+  </ion-list> -->
 
+  <div *ngFor="let location of locations" class="location-card" (click)="openLocation(location)">
+    <img src="{{location.imageUrl}}" class="location-card-image">
+    <div class="location-card-content">     
+      <h1>
+        <ng-container *ngFor="let language of location.language">
+          <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
+        </ng-container>
+      </h1>
+      <p>{{location.numberOfAudioguides}} audioguides</p>
+    </div>
+  </div>
 </ion-content>
