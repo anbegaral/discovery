@@ -1,4 +1,4 @@
-import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
+import { LocationsService } from './../../providers/locations.service';
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Country, Location } from '../../model/models';
@@ -17,33 +17,51 @@ export class LocationsDropdownComponent {
   
   @Output() idLocationEvent = new EventEmitter<string>();
 
-  countries: Country[] = [];
-  locations: Location[] = [];
+  countries: Country[];
+  locations: Location[];
 
   placesDisabled = true;
 
-  constructor(private firebaseService: FirebaseServiceProvider, public translate: TranslateService) {   
+  constructor(public translate: TranslateService,
+    private locationService: LocationsService) {   
     this.getCountries();
     this.lang = this.translate.getDefaultLang();
   }
 
   getCountries() {
-    this.firebaseService.getCountries({}).subscribe(countries => {
-      this.countries = countries
-    })
+    this.locationService.getCountries().subscribe(countries => {
+      this.countries = [];
+      countries.forEach(element => { 
+        var y = element.payload.toJSON();
+        y['language'] = Object.values(y['language']);                
+        y["$key"] = element.key;           
+
+        this.countries.push(y as Country);
+
+      });
+    console.log(this.countries)
+    }); 
+    return this.countries;
   }
 
-  getLocations(idCountry: string) { 
+  getLocations(idCountry: string) {
+    
     if(idCountry === 'other') {
       this.showInputs();
     } else {
       this.placesDisabled = false; 
-      this.firebaseService.getLocations({
-            orderByChild: 'idCountry',
-            equalTo: idCountry
-      }).subscribe(locations => this.locations = locations)
+      this.locationService.getLocationsByCountry(idCountry).subscribe(locations => {
+        this.locations = [];
+        locations.forEach(element => {          
+          var y = element.payload.toJSON();
+          y['language'] = Object.values(y['language']);               
+          y["$key"] = element.key;           
+  
+          this.locations.push(y as Location);
+        });
+        return this.locations;
+      });
     }
-    
   }
 
   sendLocation(idLocation) {
@@ -58,7 +76,7 @@ export class LocationsDropdownComponent {
     this.creatingEvent.emit(true);
   }
 
-  showLocationInput(idcountry: string) {
-    this.creatingLocationEvent.emit({event, idcountry});
+  showLocationInput(idCountry: string) {
+    this.creatingLocationEvent.emit({event, idCountry});
   }
 }

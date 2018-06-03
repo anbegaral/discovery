@@ -6,7 +6,8 @@
         "settings": "Settings"
     },
     "home": {
-        "welcome": "Welcome to Discovery Audioguides",
+        "welcome": "Discovery Audioguides",
+        "audioguide": "audioguide",
         "description": "With this app you will be able to download the audioguide you are looking for and, as well, to contribute creating and uploading your own audioguides.",
         "search": "Search by place",
         "continent": "Continent",

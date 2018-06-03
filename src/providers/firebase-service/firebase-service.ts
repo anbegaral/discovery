@@ -1,25 +1,28 @@
 import { POI, User } from './../../model/models';
 import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from 'angularfire2/database';
 import { Audioguide, Country, Location } from '../../model/models';
+import { Observable } from 'rxjs/Observable';
 
 
 @Injectable()
 export class FirebaseServiceProvider {
 
-  audioguides: FirebaseListObservable<Audioguide[]> = null;
-  audioguide: Audioguide = null;
+  audioguides: AngularFireList<Audioguide> = null;
+  audioguides$: Observable<any[]> = null;
+  audioguide$: Observable<any[]> = null;
+  audioguide: AngularFireObject<Audioguide> = null;
   storageImageRef: any;
 
-  pois: FirebaseListObservable<POI[]> = null;
+  pois: AngularFireList<POI> = null;
 
-  countries: FirebaseListObservable<Country[]> = null;
-  country: FirebaseObjectObservable<Location> = null;
-  locations: FirebaseListObservable<Location[]> = null;
-  location: FirebaseObjectObservable<Location> = null;
+  countries: AngularFireList<Country> = null;
+  country: AngularFireObject<Country> = null;
+  locations: AngularFireList<Location> = null;
+  // location: AngularFireObject<Location> = null;
   
-  users: FirebaseListObservable<User[]> = null;
+  users: AngularFireList<User> = null;
 
   constructor(private angFireDatabase: AngularFireDatabase, private alertCtrl: AlertController) {
     this.countries = this.getCountries({})
@@ -28,89 +31,72 @@ export class FirebaseServiceProvider {
   }
 
   getCountries(query:{}) {
-    this.countries = this.angFireDatabase.list('countries', {
-      query: query
-    });
+    this.countries = this.angFireDatabase.list('countries', query => query);
     return this.countries
   }
 
   // Return a single observable Audioguide
   getCountry(key: string) {
-    return this.angFireDatabase.object(`countries/${key}`)
+    this.country = this.angFireDatabase.object(`countries/${key}`)
+    return this.country;
   }
 
   addCountry(country: Country) {
     return this.countries.push(country).then(snapshot => {
       console.log(snapshot.key)
       return snapshot.key
-    }).catch(error => this.handleError(error))
+    })
   }
 
   getLocations(query:{}) { 
-    this.locations = this.angFireDatabase.list('locations', {
-        query: query
-    });
-    return this.locations
+    return this.locations = this.angFireDatabase.list('locations', query => query)
   }
 
   addLocation(location: Location) {
     return this.locations.push(location).then(snapshot => {
       console.log(snapshot.key)
       return snapshot.key
-    }).catch(error => this.handleError(error))
+    })
   }
 
-  getAudioguidesList(query:{}): FirebaseListObservable<Audioguide[]> {
-    this.audioguides = this.angFireDatabase.list('audioguides', {
-      query: query
-    });
-    
-    return this.audioguides
+  getAudioguidesList(): Observable<any[]> {
+    return this.audioguides$ = this.angFireDatabase.list('audioguides').valueChanges();
   }
 
   // Return a single observable Audioguide
-  getAudioguide(key: string): Audioguide {
-    this.angFireDatabase.object(`audioguides/${key}`).subscribe((audioguide) => {
-      this.audioguide = audioguide;
-    })    
-    return this.audioguide
+  // getAudioguide(key: string) {
+  //   // this.audioguide = this.angFireDatabase.object(`audioguides/${key}`)
+  //   this.audioguide = this.angFireDatabase.object(`audioguide/${key}`).valueChanges();
+  //   // this.audioguide = this.angFireDatabase.list('audioguides', query => query.orderByChild('id').equalTo('id'))
+  //   console.log(this.audioguide)
+  //   return this.audioguide;
+  // }
+
+  createAudioguide(audioguide: Audioguide) {
+    // this.audioguides.push(audioguide).then(idAudioguide => {
+    //   return idAudioguide.key
+    // })
   }
 
-  createAudioguide(audioguide: Audioguide): string {
-    return this.audioguides.push(audioguide).then(idAudioguide => {
-      return idAudioguide.key
-    }).catch(error => this.handleError(error))
-  }
-
-  getPoisList(query:{}): FirebaseListObservable<POI[]> {
-    this.pois = this.angFireDatabase.list('poi', {
-      query: query
-    });
-    return this.pois
-  }
+  // getPoisList(query:{}): AngularFireList<POI> {
+  //   this.pois = this.angFireDatabase.list('poi', query => query);
+  //   return this.pois;
+  // }
   
-  searchGuides(start, end): FirebaseListObservable<Audioguide[]> {
-    return this.angFireDatabase.list('audioguides', {
-      query: {
-        orderByChild: 'title',
-        startAt: start,
-        endAt: end
-      }
-    });
-  }
+  // searchGuides(start, end): AngularFireList<Audioguide> {
+  //   return this.angFireDatabase.list('audioguides', query => query.orderByChild('title').startAt(start).endAt(end));
+  // }
 
-  getUsers(query:{}) {
-    this.users = this.angFireDatabase.list('users', {
-      query: query
-    })
-    return this.users
+  getUsers(query:{}): AngularFireList<User> {
+    this.users = this.angFireDatabase.list('users', query => query);
+    return this.users;
   }
 
   addUser(user: User) {
     return this.users.push(user).then(idAuthor => {
       console.log(idAuthor.key)
       return idAuthor.key
-    }).catch(err => this.handleError(err))
+    })
   }
 
   updateUser(key: string, user: User) {

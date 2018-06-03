@@ -7,6 +7,7 @@
     },
     "home": {
         "welcome": "Bienvenue a Discovery Audioguides",
+        "audioguide": "audioguia",
         "description": "Con esta app, podras descargarte la audioguia que estas buscando y, ademas, contribuir creando y subiendo tus propias audioguias.",
         "search": "Rechercher",
         "continent": "Continente",

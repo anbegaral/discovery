@@ -173,9 +173,9 @@ export class CreateAudioguideComponent {
   }
 
   createLocation() {
-    this.firebaseService.getCountry(this.country).subscribe(idCountry => {
-    // if the country already exists      
-      if(idCountry.$key === this.country && idCountry.$value !== null && idCountry.$value !== 'undefined') {
+    this.firebaseService.getCountry(this.country).valueChanges().subscribe(country => {
+      console.log(country)   
+      if(country.$key === this.country && country.language !== null) {
         let newLocation = new Location();
           newLocation.idCountry = this.country;
           newLocation.language = [{code: this.translateService.getDefaultLang(), name: this.location}];
@@ -197,6 +197,7 @@ export class CreateAudioguideComponent {
         });
       }
     })
+    // if the country already exists   
   }
 
   // completeAudioguide() {

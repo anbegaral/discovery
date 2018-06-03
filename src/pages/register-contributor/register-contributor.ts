@@ -1,4 +1,4 @@
-import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
+import { UserService } from './../../providers/user.service';
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { FormGroup, Validators, FormBuilder } from "@angular/forms";
@@ -40,7 +40,7 @@ export class RegisterContributorPage {
     public formBuilder: FormBuilder,
     private loadingCtrl: LoadingController, 
     private storage: Storage, 
-    private firebaseService: FirebaseServiceProvider  ) {
+    private userService: UserService  ) {
     this.registerContributorForm = formBuilder.group({
       firstName: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
       lastName: ['', Validators.compose([Validators.maxLength(20), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -62,13 +62,14 @@ export class RegisterContributorPage {
           console.log('useremail' +useremail)
           this.email = useremail;
 
-          this.firebaseService.getUsers({
-            orderByChild: 'email',
-            equalTo: useremail
-          }).subscribe(idAuthor => {
-            console.log(idAuthor)
-            console.log(idAuthor[0].$key)
-            this.idAuthor = idAuthor[0].$key
+          this.userService.getUsers(useremail).subscribe(users => {
+            users.forEach(element => {
+              let user = element.payload.toJson();
+              user["$key"] = element.key;
+              this.user = element[0];
+              this.idAuthor = user.$key;
+            console.log(this.idAuthor)
+            })
           })
         })
       }
@@ -102,14 +103,13 @@ export class RegisterContributorPage {
         this.user.country = this.country;
         this.user.bankaccount = this.bankaccount;
         this.user.email = this.email;
-        this.firebaseService.addUser(this.user).then((idAuthor) => {
-          console.log(idAuthor)
-          
+        this.userService.addUser(this.user).then(user => {
+          console.log(user);
           this.storage.set('isAuthor', true);
-          this.storage.set('idAuthor', idAuthor);
-          this.storage.set('useremail', this.email)
+          this.storage.set('idAuthor', user.$key);
+          this.storage.set('useremail', this.email);
           this.storage.set('isLoggedin', true);
-        });
+        })
 
         this.loader.dismiss();
         // this.navCtrl.pop();
@@ -139,7 +139,8 @@ export class RegisterContributorPage {
     this.user.country = this.country;
     this.user.bankaccount = this.bankaccount;
 
-    this.firebaseService.updateUser(this.idAuthor, this.user).then((idAuthor) => {
+    this.userService.updateUser(this.user).then((idAuthor) => {
+      console.log(idAuthor)
       this.storage.set('isAuthor', true);
       this.storage.set('idAuthor', idAuthor);
       this.storage.set('useremail', this.email)

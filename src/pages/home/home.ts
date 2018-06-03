@@ -1,8 +1,9 @@
-import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
+import { LocationsService } from './../../providers/locations.service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, IonicPage, NavParams, LoadingController } from 'ionic-angular';
 import { TranslateService } from "@ngx-translate/core";
-import { Audioguide } from '../../model/models';
+import { Audioguide, Location } from '../../model/models';
+import { AudioguideService } from '../../providers/audioguide.service';
 
 @IonicPage()
 @Component({
@@ -11,8 +12,11 @@ import { Audioguide } from '../../model/models';
 })
 export class HomePage implements OnInit {
 
-  audioguides: Audioguide[];
+  audioguides: Audioguide[] = [];
   audioguidesSearched: Audioguide[];
+  locations: Location[] = [];
+  locationsSearched: Location[];
+  numberOfAudioguides = 0;
   storageImageRef: any;
   loader: any;
 
@@ -23,52 +27,74 @@ export class HomePage implements OnInit {
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
-    private firebaseService: FirebaseServiceProvider, 
+    private audioguideService: AudioguideService,
+    private locationService: LocationsService,
     public translate: TranslateService,
     private loadingCtrl: LoadingController) {
       this.lang = this.translate.getDefaultLang();
   }
 
   ngOnInit() {
-    this.getAudioguides();
+    this.getLocations();
   }
 
-  getAudioguides($event?) {
+  getLocations($event?) {
     this.loader = this.loadingCtrl.create({
-      content: `Loading audioguides...`
+      content: `Loading locations...`
     });
-    this.loader.present()
-    let idLocation = $event
-    this.firebaseService.getAudioguidesList({
-          orderByChild: 'idLocation',
-          equalTo: idLocation
-    }).subscribe(audioguides => {
-      this.audioguides = audioguides;
-      this.audioguides = this.audioguides.filter(audioguide => {
-        return audioguide.reviewed === true;
-      })
-      this.audioguidesSearched = this.audioguides
+    this.loader.present();
+    let idLocation = $event;
+    this.locationService.getLocations().subscribe(locations => {
+      this.locations = [];
+      locations.forEach(element => {          
+        var y = element.payload.toJSON();
+        y['language'] = Object.values(y['language']);               
+        y["$key"] = element.key;
+
+        this.audioguideService.getAudioguideListByLocation(element.key).subscribe(audioguides => {
+          this.audioguides = [];
+          audioguides.forEach(element => {        
+            var y = element.payload.toJSON();        
+            y["$key"] = element.key;
+            this.audioguides.push(y as Audioguide);       
+          });
+          this.audioguides = this.audioguides.filter(audioguide => {
+            return audioguide.reviewed === true;
+          })
+          if(idLocation !== undefined) {
+              this.audioguides = this.audioguides.filter(audioguide => {
+                return audioguide.idLocation === idLocation;
+              })
+          }
+          y['numberOfAudioguides'] = this.audioguides.length;
+          if(y['numberOfAudioguides'] > 0) {
+            this.locations.push(y as Location);            
+          }
+        });
+      });
+      this.locationsSearched = this.locations; 
       this.loader.dismiss();
-    })
+    });
   }
 
   initializeList(): void {
-    this.audioguides = this.audioguidesSearched;
+    this.locations = this.locationsSearched;
   }
 
-  searchAudioguides($event) {
+  searchLocations($event) {
     this.initializeList();
-
     let val = $event.target.value;
     
     if (val && val.trim() !== '') {
-      this.audioguides = this.audioguides.filter((item) => {
-        return (item.title.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
+      this.locations = this.locations.filter(location => location.language.filter(language => language.name.toLowerCase().indexOf(val.toLowerCase()) > -1).length > 0);
     }
   }
 
-  viewGuide(idGuide: string) {
-    this.navCtrl.push('ViewGuidePage', idGuide);
+  viewGuide(audioguide: Audioguide) {
+    this.navCtrl.push('ViewGuidePage', audioguide);
+  }
+
+  openLocation(location: Location) {
+    this.navCtrl.push('ViewGuidePage', location);
   }
 }
