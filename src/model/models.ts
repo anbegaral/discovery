@@ -43,7 +43,7 @@ export class User {
 }
 
 export class Country {
-    $key: string;
+    key: string;
     language: [
         {
             code: string; 
@@ -53,7 +53,7 @@ export class Country {
 }
 
 export class Location {
-    $key: string;
+    key: string;
     idCountry: string;
     language: [
         {
@@ -61,7 +61,9 @@ export class Location {
             name: string;
         }
     ];
+    locationName: string;
     numberOfAudioguides: number;
+    countryName: string;
 }
 
 export class Upload {

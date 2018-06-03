@@ -3,7 +3,7 @@ import { MediaObject, Media } from '@ionic-native/media';
 import { FirebaseApp } from 'angularfire2';
 import { File } from '@ionic-native/file';
 import { LoadingController, Platform } from 'ionic-angular';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 
 @Injectable()

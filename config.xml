@@ -85,6 +85,7 @@
     <allow-navigation href="http://192.168.1.11:8100" />
     <allow-navigation href="http://192.168.1.12:8100" />
     <allow-navigation href="http://192.168.1.70:8100" />
+    <allow-navigation href="http://192.168.1.82:8100" />
     <engine name="android" spec="^7.1.0" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />
@@ -107,5 +108,4 @@
         <variable name="CAMERA_USAGE_DESCRIPTION" value=" " />
         <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value=" " />
     </plugin>
-    <allow-navigation href="http://192.168.1.82:8100" />
 </widget>

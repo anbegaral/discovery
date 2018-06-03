@@ -14,10 +14,10 @@ import { AudioguideService } from '../../providers/audioguide.service';
 })
 export class ViewGuidePage {
 
-  locationName: any;
   location: Location = null;
+  locationName: string;
   audioguide: Audioguide = null;
-  audioguides: Audioguide[];
+  audioguides: Audioguide[] = [];
   pois: POI[] = [];
   loader: any;
 
@@ -30,28 +30,21 @@ export class ViewGuidePage {
     private poiService: PoiService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController ) {
-    this.location = this.navParams.data;  
+    this.location = this.navParams.data;
     this.getAudioguides();
   }
 
   getAudioguides() {
+    let idLocation = this.location.key;
+    this.locationName = this.location.locationName;
     
-    this.locationName = this.location.language.filter(language => language.code === 'es');
-    console.log(this.locationName.name);
     this.loader = this.loadingCtrl.create({
       content: `Loading audioguides...`
     });
     this.loader.present();
-    let idLocation = this.location.$key;
-    this.audioguideService.getAudioguideListByLocation(idLocation).subscribe(item => {
-      this.audioguides = [];
-      item.forEach(element => {        
-        var y = element.payload.toJSON();        
-        y["$key"] = element.key;
-        this.audioguides.push(y as Audioguide);       
-      });
+    this.audioguideService.getAudioguideListByLocation(idLocation).subscribe(audioguides => {
+      this.audioguides = audioguides
     });
-    console.log(this.audioguides)
     this.loader.dismiss();
   }
 

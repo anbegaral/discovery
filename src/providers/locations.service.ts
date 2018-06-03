@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Country, Location } from './../model/models';
 import { AngularFireDatabase } from "angularfire2/database";
 import { Injectable } from '@angular/core';
@@ -9,8 +10,8 @@ export class LocationsService {
 
     constructor(private firebase : AngularFireDatabase ) { }
 
-    getCountries(): Observable<any[]> {
-        return this.firebase.list('countries').snapshotChanges();
+    getCountries(): Observable<Country[]> {
+        return this.firebase.list('countries').snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
     }
 
     addCountry(country: Country) {
@@ -21,12 +22,16 @@ export class LocationsService {
         return this.firebase.object('countries').update(country);
     }
 
-    getLocationsByCountry(idCountry: string): Observable<any[]> {        
-        return this.firebase.list('locations', query => query.orderByChild('idCountry').equalTo(idCountry)).snapshotChanges();
+    getCountryById(id: string): Observable<Country[]> {        
+        return this.firebase.list('countries', query => query.orderByKey().equalTo(id)).snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
     }
 
-    getLocations(): Observable<any[]> {        
-        return this.firebase.list('locations').snapshotChanges();
+    getLocationsByCountry(idCountry: string): Observable<Location[]> {        
+        return this.firebase.list('locations', query => query.orderByChild('idCountry').equalTo(idCountry)).snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
+    }
+
+    getLocations(): Observable<Location[]> {        
+        return this.firebase.list('locations').snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
     }
 
     addLocation(location: Location) {

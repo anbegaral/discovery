@@ -36,11 +36,9 @@
     <img src="{{location.imageUrl}}" class="location-card-image">
     <div class="location-card-content">     
       <h1>
-        <ng-container *ngFor="let language of location.language">
-          <ng-container *ngIf="language.code === lang">{{ language.name }}</ng-container>
-        </ng-container>
+        {{location.locationName}}, {{location.countryName}}
       </h1>
-      <p>{{location.numberOfAudioguides}} audioguides</p>
+      <p>{{location.numberOfAudioguides}} audioguide<span *ngIf="location.numberOfAudioguides > 1">s</span></p>
     </div>
   </div>
 </ion-content>

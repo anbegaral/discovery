@@ -175,7 +175,7 @@ export class CreateAudioguideComponent {
   createLocation() {
     this.firebaseService.getCountry(this.country).valueChanges().subscribe(country => {
       console.log(country)   
-      if(country.$key === this.country && country.language !== null) {
+      if(country.key === this.country && country.language !== null) {
         let newLocation = new Location();
           newLocation.idCountry = this.country;
           newLocation.language = [{code: this.translateService.getDefaultLang(), name: this.location}];

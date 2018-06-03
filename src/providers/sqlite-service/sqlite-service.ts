@@ -3,7 +3,7 @@ import { FilesServiceProvider } from './../files-service/files-service';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Platform, LoadingController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Audioguide, POI } from '../../model/models';
 
 @Injectable()

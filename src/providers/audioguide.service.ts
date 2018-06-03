@@ -1,7 +1,9 @@
 import { Audioguide } from './../model/models';
 import { AngularFireList, AngularFireDatabase } from "angularfire2/database";
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable} from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 @Injectable()
 export class AudioguideService {
@@ -9,12 +11,12 @@ export class AudioguideService {
 
   constructor(private firebase : AngularFireDatabase ) { }
  
-  getAudioguideList(): Observable<any[]> {
-    return this.firebase.list('audioguides').snapshotChanges();
+  getAudioguideList(): Observable<Audioguide[]> {
+    return this.firebase.list('audioguides').snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
   }
 
-  getAudioguideListByLocation(idLocation: string): Observable<any[]> {
-    return this.firebase.list('audioguides', query => query.orderByChild('idLocation').equalTo(idLocation)).snapshotChanges();
+  getAudioguideListByLocation(idLocation: string): Observable<Audioguide[]> {
+    return this.firebase.list('audioguides', query => query.orderByChild('idLocation').equalTo(idLocation)).snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
   }
 
   getAudioguide(idAudioguide: string) {

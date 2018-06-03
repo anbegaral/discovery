@@ -2,7 +2,7 @@ import { LocationsService } from './../../providers/locations.service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, IonicPage, NavParams, LoadingController } from 'ionic-angular';
 import { TranslateService } from "@ngx-translate/core";
-import { Audioguide, Location } from '../../model/models';
+import { Location, Country } from '../../model/models';
 import { AudioguideService } from '../../providers/audioguide.service';
 
 @IonicPage()
@@ -12,10 +12,9 @@ import { AudioguideService } from '../../providers/audioguide.service';
 })
 export class HomePage implements OnInit {
 
-  audioguides: Audioguide[] = [];
-  audioguidesSearched: Audioguide[];
   locations: Location[] = [];
-  locationsSearched: Location[];
+  locationsSearched: Location[] = [];
+  country: Country;
   numberOfAudioguides = 0;
   storageImageRef: any;
   loader: any;
@@ -46,35 +45,31 @@ export class HomePage implements OnInit {
     let idLocation = $event;
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [];
-      locations.forEach(element => {          
-        var y = element.payload.toJSON();
-        y['language'] = Object.values(y['language']);               
-        y["$key"] = element.key;
-
+      locations.forEach(element => {
+        // Getting the location by selected lang
+        let locationName = element.language.find(language => language.code === this.lang);
+        element.locationName = locationName.name; 
+        // Getting the audioguides by location       
         this.audioguideService.getAudioguideListByLocation(element.key).subscribe(audioguides => {
-          this.audioguides = [];
-          audioguides.forEach(element => {        
-            var y = element.payload.toJSON();        
-            y["$key"] = element.key;
-            this.audioguides.push(y as Audioguide);       
-          });
-          this.audioguides = this.audioguides.filter(audioguide => {
-            return audioguide.reviewed === true;
-          })
+          audioguides = audioguides.filter(audioguide => audioguide.reviewed === true)
           if(idLocation !== undefined) {
-              this.audioguides = this.audioguides.filter(audioguide => {
-                return audioguide.idLocation === idLocation;
-              })
-          }
-          y['numberOfAudioguides'] = this.audioguides.length;
-          if(y['numberOfAudioguides'] > 0) {
-            this.locations.push(y as Location);            
+            audioguides = audioguides.filter(audioguide => audioguide.idLocation === idLocation)
+          }          
+          element.numberOfAudioguides = audioguides.length;          
+          if(element.numberOfAudioguides > 0) { 
+            // Getting the country by location
+            this.locationService.getCountryById(element.idCountry).subscribe(country => {
+              let countryName = country[0].language.find(language => language.code === this.lang);
+              element.countryName = countryName.name;              
+            })           
+            this.locations.push(element);            
           }
         });
       });
       this.locationsSearched = this.locations; 
       this.loader.dismiss();
-    });
+    }, error => console.log(error)
+    );
   }
 
   initializeList(): void {
@@ -82,16 +77,15 @@ export class HomePage implements OnInit {
   }
 
   searchLocations($event) {
-    this.initializeList();
-    let val = $event.target.value;
     
+    this.initializeList();
+    
+    let val = $event.target.value;
     if (val && val.trim() !== '') {
-      this.locations = this.locations.filter(location => location.language.filter(language => language.name.toLowerCase().indexOf(val.toLowerCase()) > -1).length > 0);
+      this.locations = this.locations.filter(location => {
+        return location.language.filter(language => language.name.toLowerCase().indexOf(val.toLowerCase()) > -1).length > 0
+      })
     }
-  }
-
-  viewGuide(audioguide: Audioguide) {
-    this.navCtrl.push('ViewGuidePage', audioguide);
   }
 
   openLocation(location: Location) {

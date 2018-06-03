@@ -13,6 +13,7 @@
       align-items: center;
       margin: 20px 0;
     }
+
     .location-card-image {
       position: absolute;
       width: 100%;
@@ -20,9 +21,12 @@
       opacity: 0.3;
       z-index: -1;
     }
+    
     .location-card-content {
-      p {
+      p, 
+      span {
         font-size: 18px;
+        text-align: center;
       }
     }
   }

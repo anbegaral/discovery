@@ -17,8 +17,8 @@ export class LocationsDropdownComponent {
   
   @Output() idLocationEvent = new EventEmitter<string>();
 
-  countries: Country[];
-  locations: Location[];
+  countries: Country[] = [];
+  locations: Location[] = [];
 
   placesDisabled = true;
 
@@ -30,18 +30,8 @@ export class LocationsDropdownComponent {
 
   getCountries() {
     this.locationService.getCountries().subscribe(countries => {
-      this.countries = [];
-      countries.forEach(element => { 
-        var y = element.payload.toJSON();
-        y['language'] = Object.values(y['language']);                
-        y["$key"] = element.key;           
-
-        this.countries.push(y as Country);
-
-      });
-    console.log(this.countries)
-    }); 
-    return this.countries;
+      this.countries = countries;
+    })    
   }
 
   getLocations(idCountry: string) {
@@ -50,17 +40,8 @@ export class LocationsDropdownComponent {
       this.showInputs();
     } else {
       this.placesDisabled = false; 
-      this.locationService.getLocationsByCountry(idCountry).subscribe(locations => {
-        this.locations = [];
-        locations.forEach(element => {          
-          var y = element.payload.toJSON();
-          y['language'] = Object.values(y['language']);               
-          y["$key"] = element.key;           
-  
-          this.locations.push(y as Location);
-        });
-        return this.locations;
-      });
+      this.locationService.getLocationsByCountry(idCountry).subscribe(locations => this.locations = locations);
+      return this.locations;
     }
   }
 

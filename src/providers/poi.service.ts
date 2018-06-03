@@ -1,7 +1,7 @@
 import { POI } from './../model/models';
 import { AngularFireList, AngularFireDatabase } from "angularfire2/database";
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class PoiService {
