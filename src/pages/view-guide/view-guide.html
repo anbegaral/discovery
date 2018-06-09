@@ -5,7 +5,7 @@
         </button>
     
         <ion-title>
-            {{locationName}}
+            {{location.locationName}}
         </ion-title>
     
         <!-- <ion-buttons end>
@@ -17,32 +17,42 @@
 
 </ion-header>
 <ion-content padding cache-view="false">
-    <ion-list no-lines>
-    <ion-item *ngFor="let audioguide of audioguides" (click)="viewGuide(audioguide)">
-      <ion-thumbnail item-start class="thumbnail">
-        <img src="{{audioguide.imageUrl}}"/>
-      </ion-thumbnail>
-      <h2>{{ audioguide.title }}</h2>
-      <p>
-        {{ 'home.pois' | translate }}{{audioguide.pois}}
-      </p>
-      <p>
-        {{ 'home.duration' | translate }}{{audioguide.duration}} mins
-      </p>
-      <p>
-        {{ 'home.price' | translate }}{{audioguide.price | currency}}
-      </p>
-    </ion-item>
-  </ion-list>
-  <!-- <div>
-    <img src="{{audioguide.imageUrl}}" alt=" ">
-    <h1>{{audioguide.title}}</h1>
+  <div class="card" *ngFor="let audioguide of audioguides">
+    <h2>{{audioguide.title}}</h2>      
+    <img *ngIf="audioguide.imageUrl" src="{{audioguide.imageUrl}}">
     <p>{{audioguide.description}}</p>
-    <p>{{'home.pois' | translate}}{{audioguide.pois}} 
-    <p>{{'home.duration' | translate}}{{audioguide.duration}} mins</p>
-    <p>{{'home.price' | translate}}{{audioguide.price | currency}}</p>
-    <p>{{'guides.language' | translate}}{{audioguide.lang}}</p>
-    <button ion-button (click)="getAccount($event)">Download <i-download-cloud></i-download-cloud></button>
-    <accordion [elements]="pois"></accordion>
-  </div> -->
+    <div class="card-footer">      
+      <div>
+          <ion-icon name="locate"></ion-icon> {{audioguide.pois}} POIs
+      </div>
+      <div>
+          <ion-icon name="pricetag"></ion-icon> {{audioguide.price}} $
+      </div>
+      <div>
+          <ion-icon name="time"></ion-icon> {{audioguide.duration}} mins
+      </div>      
+    </div>
+    <div class="card-arrow" (click)="viewPois()">
+        <ion-icon name="{{changeArrow ? 'arrow-up' : 'arrow-down'}}"></ion-icon>
+    </div> 
+    <ul [ngClass]="showPois ? 'card-pois-show' : 'card-pois-hide'">
+      <li *ngFor="let poi of audioguide.audioguidePois">
+        <img src="{{poi.imageUrl}}">
+        <div>
+          <h4>{{poi.title}}</h4>
+          <p>{{'home.duration' | translate}}{{poi.duration}} mins</p>
+          <p>{{'guides.size' | translate}}{{poi.size}} kb</p>
+        </div>
+        <ion-icon name="play" item-end *ngIf="poi.isPreview && !isPlaying" (click)="listen(poi.file)"></ion-icon>
+        <ion-icon name="pause" item-end *ngIf="poi.isPreview && isPlaying" (click)="pause()"></ion-icon>
+        <ion-icon name="square" item-end *ngIf="poi.isPreview && isPlaying" (click)="stop()"></ion-icon>
+      </li>
+    </ul>
+    <div>
+      <button ion-button outline icon-start>
+        <ion-icon name="cloud-download"></ion-icon>
+        {{'guides.download' | translate}}
+      </button>
+    </div>
+  </div>
 </ion-content>

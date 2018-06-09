@@ -1,4 +1,4 @@
-import { Audioguide } from './../model/models';
+import { Audioguide, POI } from './../model/models';
 import { AngularFireList, AngularFireDatabase } from "angularfire2/database";
 import { Injectable } from '@angular/core';
 import { Observable} from 'rxjs';
@@ -17,6 +17,10 @@ export class AudioguideService {
 
   getAudioguideListByLocation(idLocation: string): Observable<Audioguide[]> {
     return this.firebase.list('audioguides', query => query.orderByChild('idLocation').equalTo(idLocation)).snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
+  }
+
+  getPoiList(idAudioguide: string): Observable<POI[]> {
+    return this.firebase.list('poi', query => query.orderByChild('idAudioguide').equalTo(idAudioguide)).snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
   }
 
   getAudioguide(idAudioguide: string) {
