@@ -1,4 +1,3 @@
-import { PoiService } from './../providers/poi.service';
 import { CreateAudioguideComponentModule } from './../components/create-audioguide/create-audioguide.module';
 import { CreateAudioguideComponent } from './../components/create-audioguide/create-audioguide';
 import { Camera } from '@ionic-native/camera';
@@ -30,7 +29,6 @@ import { TabsModule } from "../pages/tabs/tabs.module";
 import { CreatePoiComponent } from '../components/create-poi/create-poi';
 import { CreatePoiComponentModule } from '../components/create-poi/create-poi.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { AudioguideService } from '../providers/audioguide.service';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/','.json');
@@ -92,8 +90,6 @@ export const firebaseConfig = {
     Media,
     FirebaseServiceProvider,
     Camera,
-    AudioguideService,
-    PoiService,
   ],
   exports: [
     TranslateModule,

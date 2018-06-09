@@ -56,6 +56,7 @@ export class ViewGuidePage {
     this.showPois = !this.showPois;
     this.changeArrow = !this.changeArrow;
   }
+  
   // getAccount() {
   //   this.storage.get('isLoggedin').then(isLoggedin => {
   //     console.log('isLoggedin' + isLoggedin)
