@@ -22,7 +22,9 @@
     "guides": {
         "download": "Comprar",
         "language": "Idiomas disponibles: ",
-        "size": "Tamano: "
+        "size": "Tamano: ",
+        "show": "Ver POIs",
+        "hide": "Ocultar POIs"
 
     },
     "login": {

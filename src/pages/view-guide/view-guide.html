@@ -2,17 +2,10 @@
     <ion-navbar>
         <button ion-button icon-only menuToggle>
           <ion-icon name="menu"></ion-icon>
-        </button>
-    
+        </button>    
         <ion-title>
             {{location.locationName}}
         </ion-title>
-    
-        <!-- <ion-buttons end>
-          <button ion-button icon-only (click)="openModal()">
-            <ion-icon name="options"></ion-icon>
-          </button>
-        </ion-buttons> -->
       </ion-navbar>
 
 </ion-header>
@@ -31,10 +24,11 @@
       <div>
           <ion-icon name="time"></ion-icon> {{audioguide.duration}} mins
       </div>      
-    </div>
-    <div class="card-arrow" (click)="viewPois()">
-        <ion-icon name="{{changeArrow ? 'arrow-up' : 'arrow-down'}}"></ion-icon>
-    </div> 
+    </div>    
+    <button ion-button outline icon-start (click)="viewPois()">
+      <ion-icon name="eye"></ion-icon>
+      {{(changeArrow ? 'guides.hide' : 'guides.show') | translate}}
+    </button>
     <ul [ngClass]="showPois ? 'card-pois-show' : 'card-pois-hide'">
       <li *ngFor="let poi of audioguide.audioguidePois">
         <img src="{{poi.imageUrl}}">
@@ -48,11 +42,9 @@
         <ion-icon name="square" item-end *ngIf="poi.isPreview && isPlaying" (click)="stop()"></ion-icon>
       </li>
     </ul>
-    <div>
-      <button ion-button outline icon-start>
-        <ion-icon name="cloud-download"></ion-icon>
-        {{'guides.download' | translate}}
-      </button>
-    </div>
+    <button ion-button outline icon-start>
+      <ion-icon name="cloud-download"></ion-icon>
+      {{'guides.download' | translate}}
+    </button>
   </div>
 </ion-content>
