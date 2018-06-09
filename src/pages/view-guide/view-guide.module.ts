@@ -4,7 +4,6 @@ import { IonicPageModule } from 'ionic-angular';
 import { ViewGuidePage } from './view-guide';
 import { AccordionComponentModule } from '../../components/accordion/accordion.module';
 import { IconsModule } from '../../providers/utils/icons.module';
-
 @NgModule({
   declarations: [
     ViewGuidePage,

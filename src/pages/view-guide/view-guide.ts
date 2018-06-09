@@ -1,4 +1,3 @@
-import { PoiService } from './../../providers/poi.service';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Platform, AlertController, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
@@ -16,10 +15,11 @@ export class ViewGuidePage {
 
   location: Location = null;
   locationName: string;
-  audioguide: Audioguide = null;
   audioguides: Audioguide[] = [];
   pois: POI[] = [];
   loader: any;
+  showPois = false;
+  changeArrow = false;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -27,16 +27,15 @@ export class ViewGuidePage {
     private storage: Storage,
     // private sqliteService: SqliteServiceProvider,
     private audioguideService: AudioguideService,
-    private poiService: PoiService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController ) {
     this.location = this.navParams.data;
+    this.locationName = this.location.locationName;
     this.getAudioguides();
   }
 
   getAudioguides() {
     let idLocation = this.location.key;
-    this.locationName = this.location.locationName;
     
     this.loader = this.loadingCtrl.create({
       content: `Loading audioguides...`
@@ -44,25 +43,19 @@ export class ViewGuidePage {
     this.loader.present();
     this.audioguideService.getAudioguideListByLocation(idLocation).subscribe(audioguides => {
       this.audioguides = audioguides
+      this.audioguides.forEach(audioguide => {
+        this.audioguideService.getPoiList(audioguide.key).subscribe(pois => {
+          audioguide.audioguidePois = pois;
+        });
+      })
     });
     this.loader.dismiss();
   }
 
-  getGuide(){    
-    this.audioguide = this.navParams.data;    
-    this.audioguideService.selectedAudioguide = Object.assign({}, this.audioguide);
-    
-    this.poiService.getPoiList(this.audioguide.$key).subscribe(pois => {
-        this.pois = [];
-        pois.forEach(element => {        
-          var poi = element.payload.toJSON();        
-          poi["$key"] = element.key;
-          this.pois.push(poi as POI);       
-        });
-        console.log(this.pois)
-    });
+  viewPois() {
+    this.showPois = !this.showPois;
+    this.changeArrow = !this.changeArrow;
   }
-
   // getAccount() {
   //   this.storage.get('isLoggedin').then(isLoggedin => {
   //     console.log('isLoggedin' + isLoggedin)
