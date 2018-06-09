@@ -22,7 +22,10 @@
     "guides": {
         "download": "Buy",
         "language": "Available languages: ",
-        "size": "Size: "
+        "size": "Size: ",
+        "show": "Show POIs",
+        "hide": "Hide POIs"
+
     },
     "login": {
         "signin": "Sign in",
