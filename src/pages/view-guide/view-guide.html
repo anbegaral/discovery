@@ -42,7 +42,7 @@
         <ion-icon name="square" item-end *ngIf="poi.isPreview && isPlaying" (click)="stop()"></ion-icon>
       </li>
     </ul>
-    <button ion-button outline icon-start>
+    <button ion-button outline icon-start (click)="getAccount(audioguide.key)">
       <ion-icon name="cloud-download"></ion-icon>
       {{'guides.download' | translate}}
     </button>
