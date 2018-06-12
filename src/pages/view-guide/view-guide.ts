@@ -78,7 +78,7 @@ export class ViewGuidePage {
   getAccount(idAudioguide: string) {
     let audioguide = this.audioguides.filter(audioguide => idAudioguide === audioguide.key)[0]
     this.storage.get('isLoggedin').then(isLoggedin => {
-      console.log('isLoggedin' + isLoggedin)
+      console.log('isLoggedin ' + isLoggedin)
       if(isLoggedin) {
         // TODO sistema de compra
         this.sqliteService.getDatabaseState().subscribe(ready => {
