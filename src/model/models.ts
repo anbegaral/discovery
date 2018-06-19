@@ -31,7 +31,7 @@ export class POI {
 }
 
 export class User {
-    $key: string;
+    key: string;
     firstName?: string;
     lastName?: string
     address?: string;

@@ -1,16 +1,18 @@
+import { map } from 'rxjs/operators';
 import { AngularFireDatabase } from "angularfire2/database";
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from "../model/models";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class UserService {
-  selectedUser: User = new User();
 
   constructor(private firebase : AngularFireDatabase ) { }
 
-  getUsers(email: string): Observable<any[]> {
-    return this.firebase.list('users', query => query.orderByChild('email').equalTo(email)).snapshotChanges();
+  getUsers(email: string): Observable<User[]> {
+    return this.firebase.list('users', query => query.orderByChild('email').equalTo(email)).snapshotChanges().pipe(map(actions => actions.map(obj => ({ key: obj.payload.key, ...obj.payload.val() }))));
   }
 
   addUser(user: User) {

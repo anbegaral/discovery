@@ -89,6 +89,6 @@ export class HomePage implements OnInit {
   }
 
   openLocation(location: Location) {
-    this.navCtrl.push('ViewGuidePage', location);
+    this.navCtrl.push('ListGuidesPage', location);
   }
 }

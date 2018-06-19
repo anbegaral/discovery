@@ -63,13 +63,9 @@ export class RegisterContributorPage {
           this.email = useremail;
 
           this.userService.getUsers(useremail).subscribe(users => {
-            users.forEach(element => {
-              let user = element.payload.toJson();
-              user["$key"] = element.key;
-              this.user = element[0];
-              this.idAuthor = user.$key;
+            this.user = users[0];
+            this.idAuthor = this.user.key;
             console.log(this.idAuthor)
-            })
           })
         })
       }

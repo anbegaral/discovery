@@ -1,5 +1,5 @@
 import { UserService } from './../../providers/user.service';
-import { User } from './../../model/models';
+import { User, Audioguide } from './../../model/models';
 import { Storage } from '@ionic/storage';
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, AlertController, LoadingController, NavParams } from 'ionic-angular';
@@ -19,6 +19,7 @@ export class LoginPage {
   @ViewChild('password') password:string;
   loginForm: FormGroup;
   user: User = new User();
+  audioguide: Audioguide;
   isLoggedin: boolean;
   isAuthor: boolean;
 
@@ -30,10 +31,11 @@ export class LoginPage {
     private storage: Storage, 
     private sqliteService: SqliteServiceProvider,
     private userService: UserService) {
+      this.audioguide = this.navParams.data;
 
       this.loginForm = formBuilder.group({
         email: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
-        password: ['', Validators.compose([Validators.maxLength(20), Validators.required])],
+        password: ['', Validators.compose([Validators.maxLength(20), Validators.minLength(8), Validators.required])],
       });
   }
 
@@ -45,25 +47,20 @@ export class LoginPage {
     loader.present();
 
     this.fireAuth.auth.signInWithEmailAndPassword(this.email, this.password).then(
-      (data) => {        
+      (data) => {   
+        console.log(data)     
         this.storage.set('isLoggedin', true);
         this.isLoggedin = true;
 
         this.userService.getUsers(this.email).subscribe(user => {
           console.log(user)
-          user.forEach(element => {        
-            var user = element.payload.toJSON();        
-            user["$key"] = element.key;
-            this.user = user as User; 
-            console.log(this.user)
-            this.isAuthor = this.user.isAuthor;
-                  
-            this.storage.set('isAuthor', this.user.isAuthor);
+          this.user = user[0];
+          this.isAuthor = this.user.isAuthor;
+          this.storage.set('isAuthor', this.user.isAuthor);
             if(this.user.isAuthor) {
-              console.log(this.user.$key)            
-              this.storage.set('idAuthor', this.user.$key);
-            }
-          });        
+              console.log(this.user.key)            
+              this.storage.set('idAuthor', this.user.key);
+            }        
         });
 
         loader.dismiss();
@@ -87,7 +84,7 @@ export class LoginPage {
     // TODO sistema de compra
     this.sqliteService.getDatabaseState().subscribe(ready => {
       if(ready) {
-        this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois')).catch(error => this.handlerError(error));
+        this.sqliteService.addAudioguide(this.audioguide).catch(error => this.handlerError(error));
       }
     }) 
   }

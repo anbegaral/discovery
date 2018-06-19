@@ -97,7 +97,7 @@ export class MyguidesPage {
 
   getPoisByAudioguide(idAudioguide: string) {
     this.sqliteService.findPoisByAudioguide(idAudioguide).then(data => {
-      this.poiList = data
+      this.poiList = data;
     }).then(()=> this.expanded = true)
     .catch(error => console.log('error getPoisByAudioguide ' + error.message.toString()));
   }

@@ -1,3 +1,4 @@
+import { Audioguide } from './../../model/models';
 import { FirebaseServiceProvider } from './../../providers/firebase-service/firebase-service';
 import { OnInit } from '@angular/core';
 // import { Utils } from './../../providers/utils/utils';
@@ -8,6 +9,7 @@ import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-an
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { SqliteServiceProvider } from "../../providers/sqlite-service/sqlite-service";
 import { User } from '../../model/models';
+import { Utils } from '../../providers/utils/utils';
 
 @IonicPage()
 @Component({
@@ -19,8 +21,9 @@ export class RegisterUserPage implements OnInit{
   @ViewChild('email') email:string;
   @ViewChild('password') password:string;
   registerForm: FormGroup;
-  users: User[]
+  users: User[];
   newUser = new User();
+  audioguide: Audioguide;
   
   EMAIL_PATTERN: string = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
   PASSWORD_PATTERN: string = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})";
@@ -33,8 +36,8 @@ export class RegisterUserPage implements OnInit{
     public formBuilder: FormBuilder,
     private loadingCtrl: LoadingController, 
     private sqliteService: SqliteServiceProvider,
-    private firebaseService: FirebaseServiceProvider
-    // private utils: Utils
+    private firebaseService: FirebaseServiceProvider,
+    private utils: Utils,
   ) {
 
       this.registerForm = formBuilder.group({
@@ -42,7 +45,7 @@ export class RegisterUserPage implements OnInit{
         password: ['', Validators.compose([Validators.maxLength(20), Validators.required])],
       });
 
-     
+     this.audioguide = this.navParams.data;
   }
 
   ngOnInit() {
@@ -74,7 +77,7 @@ export class RegisterUserPage implements OnInit{
     ).catch(
       (error) => {
         this.loader.dismiss();
-        // this.utils.handlerError(error);
+        this.utils.handlerError(error);
       }
     )
   }
@@ -83,16 +86,20 @@ export class RegisterUserPage implements OnInit{
     this.newUser.isAuthor = false;
     this.newUser.email = this.email;
     this.firebaseService.addUser(this.newUser);
-    this.newUser = new User() // reset user
+    this.newUser = new User(); // reset user
   }
 
   buyAudioguide() {
         // TODO sistema de compra 
-        console.log(`buyAudioguide in register-user`)
-        this.sqliteService.addAudioguide(this.navParams.get('idGuide'), this.navParams.get('audioguide'), this.navParams.get('pois'))
+        console.log(`buyAudioguide in register-user ` + this.audioguide )
+        this.sqliteService.addAudioguide(this.audioguide)
         .then(() =>{
           this.navParams = null;
           this.navCtrl.push('MyguidesPage')
         })  
+  }
+
+  cancel() {
+    this.navCtrl.pop();
   }
 }

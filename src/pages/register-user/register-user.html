@@ -1,31 +1,25 @@
-<ion-header>
+<ion-content class="registerForm">
+  <form [formGroup]="registerForm">
 
-  <ion-navbar>
-    <ion-title>{{'login.register' | translate}}</ion-title>
-  </ion-navbar>
+    <ion-item>
+      <ion-label floating>Email</ion-label>
+      <ion-input formControlName="email" type="email"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!registerForm.controls.email.valid  && (registerForm.controls.email.dirty)">
+        <div *ngIf="registerForm.controls.email.errors.required" class="error">Email is required</div>
+        <div *ngIf="registerForm.controls.email.errors.email" class="error">Email must be a valid email address</div>
+    </ion-item>
 
-</ion-header>
-
-
-<ion-content padding>
-<form [formGroup]="registerForm">
-
-  <ion-item>
-    <ion-label floating>Email</ion-label>
-    <ion-input formControlName="email" type="email" [(ngModel)]="email"></ion-input>
-  </ion-item>
-  <ion-item *ngIf="!registerForm.controls.email.valid  && (registerForm.controls.email.dirty)">
-      <p>Please enter a valid email.</p>
-  </ion-item>
-
-  <ion-item>
-    <ion-label floating>{{'login.password' | translate}}</ion-label>
-    <ion-input formControlName="password" type="password" [(ngModel)]="password"></ion-input>
-  </ion-item>
-  <ion-item *ngIf="!registerForm.controls.password.valid  && (registerForm.controls.password.dirty)">
-      <p>Please enter a valid password.</p>
-  </ion-item>
-</form>
-  <button ion-button color="primary" full (click)="registerUser()" [disabled]="!registerForm.valid">{{'login.register' | translate}}</button>
-  
+    <ion-item>
+      <ion-label floating>{{'login.password' | translate}}</ion-label>
+      <ion-input formControlName="password" type="password"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!registerForm.controls.password.valid  && (registerForm.controls.password.dirty)">
+      <div *ngIf="registerForm.controls.password.errors.required" class="error">Password is required</div>
+      <div *ngIf="registerForm.controls.password.errors.minlength" class="error">Password must be at least 6 characters</div>
+    </ion-item>
+  </form>
+  <button ion-button color="primary" (click)="registerUser()" [disabled]="!registerForm.valid">{{'login.register' | translate}}</button>
+  <button ion-button color="primary" (click)="cancel()">{{'login.cancel' | translate}}</button>
+    
 </ion-content>

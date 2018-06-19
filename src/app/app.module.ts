@@ -86,7 +86,6 @@ export const firebaseConfig = {
     File,
     FileTransfer,
     FilePath,
-    PlayGuideProvider,
     Media,
     FirebaseServiceProvider,
     Camera,
