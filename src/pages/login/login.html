@@ -11,18 +11,21 @@
     <form [formGroup]="loginForm">
       <ion-item>
         <ion-label floating>Email</ion-label>
-        <ion-input formControlName="email" type="email" [(ngModel)]="email"></ion-input>
+        <ion-input formControlName="email" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"></ion-input>
       </ion-item>
       <ion-item *ngIf="!loginForm.controls.email.valid  && (loginForm.controls.email.dirty)">
-          <p>Please enter a valid email.</p>
-      </ion-item>    
-      <ion-item>
-        <ion-label floating>{{'login.password' | translate}}</ion-label>
-        <ion-input formControlName="password" type="password" [(ngModel)]="password"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="!loginForm.controls.password.valid  && (loginForm.controls.password.dirty)">
-          <p>Please enter a valid password.</p>
-      </ion-item>
+        <div *ngIf="loginForm.controls.email.errors.required" class="error">Email is required</div>
+        <div *ngIf="loginForm.controls.email.errors?.pattern" class="error">Email must be a valid email address</div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>{{'login.password' | translate}}</ion-label>
+      <ion-input formControlName="password" type="password"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!loginForm.controls.password.valid  && (loginForm.controls.password.dirty)">
+      <div *ngIf="loginForm.controls.password.errors.required" class="error">Password is required</div>
+      <div *ngIf="loginForm.controls.password.errors.minlength" class="error">Password must be at least 6 characters</div>
+    </ion-item>
     </form>
     <button ion-button color="primary" (click)="doLogin()" [disabled]="!loginForm.valid">{{'login.signin' | translate}}</button>
     <button ion-button color="primary" (click)="cancel()">{{'login.cancel' | translate}}</button>

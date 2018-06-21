@@ -23,6 +23,9 @@ export class UserService {
   }
 
   updateUser(user: User) {
-    return this.firebase.object('users').update(user);
+    return this.firebase.list('users').update(user.key, user).then(user => {
+      console.log(user);
+      return user 
+    });
   }
 }

@@ -1,3 +1,4 @@
+import { Utils } from './../utils/utils';
 import { FirebaseApp } from 'angularfire2';
 import { FilesServiceProvider } from './../files-service/files-service';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
@@ -17,8 +18,12 @@ export class SqliteServiceProvider {
   storageImageRef: any;
   storageAudioRef: any;
 
-  constructor(private platform: Platform, private sqlite: SQLite, private fileService: FilesServiceProvider, private firebaseStorage: FirebaseApp,
-    private loadingCtrl: LoadingController) {
+  constructor(private platform: Platform, 
+    private sqlite: SQLite, 
+    private fileService: FilesServiceProvider, 
+    private firebaseStorage: FirebaseApp,
+    private loadingCtrl: LoadingController,
+    private utils: Utils) {
 
     this.dbReady = new BehaviorSubject(false);
     this.platform.ready().then(()=>{
@@ -65,10 +70,17 @@ export class SqliteServiceProvider {
           return this.getAudioguideFiles(audioguide).then(() => {
             console.log(`audioguide.id `+ result.insertId);
             return this.addPois(audioguide.audioguidePois)
+         }).catch(error => {
+            console.log(error)
+            this.loading.dismiss();
          })
         }  
-      }).then(() => this.loading.dismiss())
-      .catch(error => console.log("Error addAudioguide:  " + error.message.toString()))   
+      })
+      .catch(error => {
+        this.loading.dismiss();
+        this.utils.handlerError(error);
+        console.log("Error addAudioguide:  " + error.message.toString())
+      })   
   }
 
   addPois(pois) {

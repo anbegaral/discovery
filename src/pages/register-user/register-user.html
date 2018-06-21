@@ -3,11 +3,11 @@
 
     <ion-item>
       <ion-label floating>Email</ion-label>
-      <ion-input formControlName="email" type="email"></ion-input>
+      <ion-input formControlName="email" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"></ion-input>
     </ion-item>
     <ion-item *ngIf="!registerForm.controls.email.valid  && (registerForm.controls.email.dirty)">
         <div *ngIf="registerForm.controls.email.errors.required" class="error">Email is required</div>
-        <div *ngIf="registerForm.controls.email.errors.email" class="error">Email must be a valid email address</div>
+        <div *ngIf="registerForm.controls.email.errors?.pattern" class="error">Email must be a valid email address</div>
     </ion-item>
 
     <ion-item>
@@ -16,7 +16,7 @@
     </ion-item>
     <ion-item *ngIf="!registerForm.controls.password.valid  && (registerForm.controls.password.dirty)">
       <div *ngIf="registerForm.controls.password.errors.required" class="error">Password is required</div>
-      <div *ngIf="registerForm.controls.password.errors.minlength" class="error">Password must be at least 6 characters</div>
+      <div *ngIf="registerForm.controls.password.errors.minlength" class="error">Password must be at least 8 characters</div>
     </ion-item>
   </form>
   <button ion-button color="primary" (click)="registerUser()" [disabled]="!registerForm.valid">{{'login.register' | translate}}</button>
