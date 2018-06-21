@@ -6,7 +6,9 @@ import { LoadingController, Platform } from 'ionic-angular';
 import { Subject } from 'rxjs';
 
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class PlayGuideProvider {
   mediaFile: MediaObject;
   storageRef: any;

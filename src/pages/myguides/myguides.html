@@ -18,7 +18,19 @@
                                         <p>{{'home.pois' | translate}}{{audioguide.pois}}</p>
                                 </div>
                                 <ion-icon item-end name="trash" (click)="delete(audioguide.id)"></ion-icon>
-                                <accordion [elements]="poiList" *ngIf="expanded"></accordion>   
+                                <ul>
+                                        <li *ngFor="let poi of audioguide.audioguidePois">
+                                          <img src="{{poi.imageUrl}}">
+                                          <div>
+                                            <h4>{{poi.title}}</h4>
+                                            <p>{{'home.duration' | translate}}{{poi.duration}} mins</p>
+                                            <p>{{'guides.size' | translate}}{{poi.size}} kb</p>
+                                          </div>
+                                          <ion-icon name="play" item-end *ngIf="poi.isPreview && !isPlaying" (click)="listen(poi.file)"></ion-icon>
+                                          <ion-icon name="pause" item-end *ngIf="poi.isPreview && isPlaying" (click)="pause()"></ion-icon>
+                                          <ion-icon name="square" item-end *ngIf="poi.isPreview && isPlaying" (click)="stop()"></ion-icon>
+                                        </li>
+                                </ul>   
                         </li>
                 </ul>
                 <ul *ngSwitchCase="'created'">

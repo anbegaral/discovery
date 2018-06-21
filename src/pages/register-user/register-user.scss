@@ -1,3 +1,20 @@
 page-register-user {
-
+    .registerForm {
+        background-color: rgb(216, 213, 213);
+        .scroll-content {
+            padding: 15px;
+            top: 25%;
+            left: 12.5%;
+            width: 75%;
+            height: 50%;
+            border: 1px solid whitesmoke;
+            border-radius: 5%;
+            background-color: white;
+            overflow: hidden;
+            button {
+                margin-top: 15px;
+                width: 100%;
+            }
+        }
+    }
 }

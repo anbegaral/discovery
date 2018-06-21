@@ -1,3 +1,4 @@
+import { Utils } from './../utils/utils';
 import { FirebaseApp } from 'angularfire2';
 import { FilesServiceProvider } from './../files-service/files-service';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
@@ -17,8 +18,12 @@ export class SqliteServiceProvider {
   storageImageRef: any;
   storageAudioRef: any;
 
-  constructor(private platform: Platform, private sqlite: SQLite, private fileService: FilesServiceProvider, private firebaseStorage: FirebaseApp,
-    private loadingCtrl: LoadingController) {
+  constructor(private platform: Platform, 
+    private sqlite: SQLite, 
+    private fileService: FilesServiceProvider, 
+    private firebaseStorage: FirebaseApp,
+    private loadingCtrl: LoadingController,
+    private utils: Utils) {
 
     this.dbReady = new BehaviorSubject(false);
     this.platform.ready().then(()=>{
@@ -52,10 +57,10 @@ export class SqliteServiceProvider {
     ).catch(error => console.log(`creating table ` + error.message.toString()))
   }
 
-  addAudioguide(idGuide, audioguide, pois) {
+  addAudioguide(audioguide) {
     return this.database.executeSql(`INSERT INTO audioguides (idFirebase, idAuthor, idLocation, title, description, duration, pois, lang, price, image, imageUrl) 
-          VALUES (?,?,?,?,?,?,?,?,?,?)`, [idGuide, audioguide.idAuthor, audioguide.idLocation, audioguide.title, audioguide.description, audioguide.duration, 
-          pois.length, audioguide.lang, audioguide.price, audioguide.image, audioguide.imageUrl])
+          VALUES (?,?,?,?,?,?,?,?,?,?,?)`, [audioguide.key, audioguide.idAuthor, audioguide.idLocation, audioguide.title, audioguide.description, audioguide.duration, 
+          audioguide.audioguidePois.length, audioguide.lang, audioguide.price, audioguide.image, audioguide.imageUrl])
       .then(result => {
         if(result.insertId){
            this.loading = this.loadingCtrl.create({
@@ -64,18 +69,25 @@ export class SqliteServiceProvider {
             this.loading.present();
           return this.getAudioguideFiles(audioguide).then(() => {
             console.log(`audioguide.id `+ result.insertId);
-            return this.addPois(pois)
+            return this.addPois(audioguide.audioguidePois)
+         }).catch(error => {
+            console.log(error)
+            this.loading.dismiss();
          })
         }  
-      }).then(() => this.loading.dismiss())
-      .catch(error => console.log("Error addAudioguide:  " + error.message.toString()))   
+      })
+      .catch(error => {
+        this.loading.dismiss();
+        this.utils.handlerError(error);
+        console.log("Error addAudioguide:  " + error.message.toString())
+      })   
   }
 
   addPois(pois) {
     console.log(pois)
     pois.forEach(element => {
-      return this.database.executeSql(`INSERT INTO pois (idFirebase, idAudioguide, title, lat, lon, image, file, duration, isPreview) VALUES (?,?,?,?,?,?,?,?,?)`,
-        [element.idFirebase, element.idAudioguide, element.title, element.lat, element.lon, element.image, element.file, element.duration, element.isPreview])
+      return this.database.executeSql(`INSERT INTO pois (idFirebase, idAudioguide, title, lat, lon, image, imageUrl, file, duration, isPreview, size) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+        [element.idFirebase, element.idAudioguide, element.title, element.lat, element.lon, element.image, element.imageUrl, element.file, element.duration, element.isPreview, element.size])
         .then(resultPois => {
             return this.getPoiFiles(element).then(() => {
               console.log('pois id' +resultPois.insertId)
@@ -88,6 +100,7 @@ export class SqliteServiceProvider {
   getAudioguideFiles(audioguide) {
     this.storageImageRef = this.firebaseStorage.storage().ref().child(audioguide.image);
     return this.storageImageRef.getDownloadURL().then(url => {
+      console.log(url)
       this.fileUrl = url;
       return this.fileService.downloadFile(this.fileUrl, audioguide.image).then(() => {
         console.log('image downloaded');  

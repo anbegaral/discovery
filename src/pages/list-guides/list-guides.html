@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar>
+      <button ion-button icon-only menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>    
+      <ion-title>
+          {{location.locationName}}
+      </ion-title>
+    </ion-navbar>
+
+</ion-header>
+<ion-content padding cache-view="false">
+    <div class="card" *ngFor="let audioguide of audioguides" (click)="viewGuide(audioguide)">
+        <h2>{{audioguide.title}}</h2>      
+        <img *ngIf="audioguide.imageUrl" src="{{audioguide.imageUrl}}">
+        <div class="card-footer">      
+            <div>
+                <ion-icon name="locate"></ion-icon> {{audioguide.pois}} POIs
+            </div>
+            <div>
+                <ion-icon name="pricetag"></ion-icon> {{audioguide.price}} $
+            </div>
+            <div>
+                <ion-icon name="time"></ion-icon> {{audioguide.duration}} mins
+            </div>      
+        </div>
+    </div>
+</ion-content>

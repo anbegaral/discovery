@@ -4,17 +4,17 @@
           <ion-icon name="menu"></ion-icon>
         </button>    
         <ion-title>
-            {{location.locationName}}
+            {{audioguide.title}}
         </ion-title>
       </ion-navbar>
 
 </ion-header>
 <ion-content padding cache-view="false">
-  <div class="card" *ngFor="let audioguide of audioguides">
+  <div class="guide">
     <h2>{{audioguide.title}}</h2>      
     <img *ngIf="audioguide.imageUrl" src="{{audioguide.imageUrl}}">
     <p>{{audioguide.description}}</p>
-    <div class="card-footer">      
+    <div class="guide-footer">      
       <div>
           <ion-icon name="locate"></ion-icon> {{audioguide.pois}} POIs
       </div>
@@ -25,11 +25,11 @@
           <ion-icon name="time"></ion-icon> {{audioguide.duration}} mins
       </div>      
     </div>    
-    <button ion-button outline icon-start (click)="viewPois()">
+    <!-- <button ion-button outline icon-start (click)="viewPois()">
       <ion-icon name="eye"></ion-icon>
       {{(changeArrow ? 'guides.hide' : 'guides.show') | translate}}
-    </button>
-    <ul [ngClass]="showPois ? 'card-pois-show' : 'card-pois-hide'">
+    </button> -->
+    <ul>
       <li *ngFor="let poi of audioguide.audioguidePois">
         <img src="{{poi.imageUrl}}">
         <div>
@@ -42,7 +42,7 @@
         <ion-icon name="square" item-end *ngIf="poi.isPreview && isPlaying" (click)="stop()"></ion-icon>
       </li>
     </ul>
-    <button ion-button outline icon-start (click)="getAccount(audioguide.key)">
+    <button ion-button outline icon-start (click)="getAccount()">
       <ion-icon name="cloud-download"></ion-icon>
       {{'guides.download' | translate}}
     </button>

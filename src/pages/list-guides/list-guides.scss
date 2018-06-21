@@ -1,0 +1,49 @@
+page-list-guides {
+    .card {
+        margin: 12px;
+        padding: 10px;
+        border-radius: 2px;
+        width: calc(100% - 24px);
+        font-size: 1.4rem;
+        background: #fff;
+        -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        
+        h2 {
+                padding: 10px;
+        }
+
+        img {
+                margin-bottom: 10px;
+        }
+
+        ul {
+                list-style: none;
+                padding-left: 0;
+                li {
+                        display: flex;
+                        img {
+                                width: 25%;
+                                height: 25%;
+                                margin-right: 10px;
+                        }
+                        div {
+                                text-align: left;
+                                flex-grow: 1;
+                        }
+                }
+        }
+        
+        &-footer {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 10px;
+        }
+
+}
+
+ion-icon {
+        font-size: 1.5em;
+        color: blue;
+} 
+}
