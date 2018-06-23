@@ -51,7 +51,7 @@ export class SqliteServiceProvider {
   }
 
   createPoisTable() {
-    this.database.executeSql(`create table if not exists pois(id integer primary key autoincrement, idFirebase CHAR(20), idAudioguide char(20),
+    this.database.executeSql(`create table if not exists pois(id integer primary key autoincrement, idFirebase CHAR(20), idAudioguide char(20), idLocation char(20),
       title CHAR(20), lat CHAR(20), lon CHAR(20), image CHAR(250), file CHAR(250), duration integer, isPreview integer)`, {}).then(
       () =>  this.dbReady.next(true)
     ).catch(error => console.log(`creating table ` + error.message.toString()))
@@ -69,9 +69,11 @@ export class SqliteServiceProvider {
             this.loading.present();
           return this.getAudioguideFiles(audioguide).then(() => {
             console.log(`audioguide.id `+ result.insertId);
+            this.loading.dismiss();
             return this.addPois(audioguide.audioguidePois)
          }).catch(error => {
             console.log(error)
+            this.utils.handlerError(error);
             this.loading.dismiss();
          })
         }  
@@ -86,14 +88,18 @@ export class SqliteServiceProvider {
   addPois(pois) {
     console.log(pois)
     pois.forEach(element => {
-      return this.database.executeSql(`INSERT INTO pois (idFirebase, idAudioguide, title, lat, lon, image, imageUrl, file, duration, isPreview, size) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-        [element.idFirebase, element.idAudioguide, element.title, element.lat, element.lon, element.image, element.imageUrl, element.file, element.duration, element.isPreview, element.size])
+      return this.database.executeSql(`INSERT INTO pois (idFirebase, idAudioguide, idLocation, title, lat, lon, image, imageUrl, file, duration, isPreview, size) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+        [element.idFirebase, element.idAudioguide, element.idLocation, element.title, element.lat, element.lon, element.image, element.imageUrl, element.file, element.duration, element.isPreview, element.size])
         .then(resultPois => {
             return this.getPoiFiles(element).then(() => {
               console.log('pois id' +resultPois.insertId)
               this.loading.dismiss();
             })
-          }).catch((error) => console.log("Error addingPois " + error.message.toString()))
+          }).catch((error) => {
+            this.utils.handlerError(error)
+            console.log("Error addingPois " + error.message.toString())
+            this.loading.dismiss();
+          })
     });
   }
 
