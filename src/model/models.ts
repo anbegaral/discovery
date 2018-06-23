@@ -20,6 +20,7 @@ export class POI {
     key: string;
     idFirebase: string;
     idAudioguide: string;
+    idLocation: string;
     title: string;
     lat: string;
     lon: string;
