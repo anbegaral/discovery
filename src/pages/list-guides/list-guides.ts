@@ -33,9 +33,11 @@ export class ListGuidesPage {
     this.audioguideService.getAudioguideListByLocation(idLocation).subscribe(audioguides => {
       this.audioguides = audioguides
       this.audioguides.forEach(audioguide => {
+        audioguide.location = this.locationName;
         this.audioguideService.getPoiList(audioguide.key).subscribe(pois => {
           audioguide.audioguidePois = pois;
         });
+        console.log(audioguide)
       })
     });
     this.loader.dismiss();

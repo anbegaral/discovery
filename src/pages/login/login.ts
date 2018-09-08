@@ -1,7 +1,7 @@
 import { UserService } from './../../providers/user.service';
 import { User, Audioguide } from './../../model/models';
 import { Storage } from '@ionic/storage';
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { IonicPage, NavController, LoadingController, NavParams } from 'ionic-angular';
 import { AngularFireAuth } from "angularfire2/auth";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";

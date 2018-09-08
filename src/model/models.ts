@@ -1,8 +1,10 @@
 import { File } from '@ionic-native/file';
 export class Audioguide {
     key: string;
+    id: number;
     idAuthor: string;
     idLocation: string;
+    location: string;
     title: string; 
     description: string;
     duration: number;
@@ -18,8 +20,9 @@ export class Audioguide {
 
 export class POI {
     key: string;
+    id: number;
     idFirebase: string;
-    idAudioguide: string;
+    idAudioguide: any;
     idLocation: string;
     title: string;
     lat: string;

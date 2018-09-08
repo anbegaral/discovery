@@ -53,7 +53,9 @@ export class HomePage implements OnInit {
         this.audioguideService.getAudioguideListByLocation(element.key).subscribe(audioguides => {
           audioguides = audioguides.filter(audioguide => audioguide.reviewed === true)
           if(idLocation !== undefined) {
-            audioguides = audioguides.filter(audioguide => audioguide.idLocation === idLocation)
+            audioguides = audioguides.filter(audioguide => {
+                audioguide.idLocation === idLocation;
+            })
           }          
           element.numberOfAudioguides = audioguides.length;          
           if(element.numberOfAudioguides > 0) { 
@@ -67,6 +69,7 @@ export class HomePage implements OnInit {
         });
       });
       this.locationsSearched = this.locations; 
+      console.log(this.locations)
       this.loader.dismiss();
     }, error => console.log(error)
     );

@@ -1,3 +1,4 @@
+import { Utils } from './../../providers/utils/utils';
 import { CreateAudioguideComponent } from './../../components/create-audioguide/create-audioguide';
 import { PlayGuideProvider } from './../../providers/play-guide/play-guide';
 import { Audioguide, POI } from './../../model/models';
@@ -18,16 +19,20 @@ import { CreatePoiComponent } from '../../components/create-poi/create-poi';
 export class MyguidesPage {
   purchasedAudioguidesList: Audioguide[] = [];
   createdAudioguidesList: Audioguide[] = [];
+  poiListComplete: POI[] = [];
   poiList: POI[] = [];
+  locationList = new Set();
+  audioguidesByLocation: Audioguide[] = [];
   myguidesSegment: string;
   isAuthor: boolean;
   isLoggedin: boolean;
   idAuthor: string = '';
   storageDirectory: any;  
   newAudioguide: boolean = false;
-  newPoi: boolean = false;  
-  expanded: boolean = false;
-
+  newPoi: boolean = false;
+  hidden: boolean = true;
+  
+  isPlaying: any = false;
 
   constructor(public navCtrl: NavController, 
       public navParams: NavParams,
@@ -38,7 +43,8 @@ export class MyguidesPage {
       private sqliteService: SqliteServiceProvider,
       private storage: Storage, 
       private playService: PlayGuideProvider,
-      private modalCtrl: ModalController ) {}
+      private modalCtrl: ModalController,
+      private utils: Utils ) {}
   
   ionViewWillEnter() {
     console.log('ionviewwillenter')
@@ -79,12 +85,42 @@ export class MyguidesPage {
     }).catch(error => console.log(error));   
   }
 
+
   listMyPurchasedAudioguides() {
     console.log(this.idAuthor)
     this.sqliteService.findPurchasedAudioguides(this.idAuthor).then(data => {
-      this.purchasedAudioguidesList = data
-    })
-    .catch(error => console.log('error listMyPurchasedAudioguides ' + error.message.toString()));
+        console.log(data)
+        if(data !== null && data !== undefined) {
+            this.purchasedAudioguidesList = data;
+            if(this.purchasedAudioguidesList.length > 0){
+                this.purchasedAudioguidesList.forEach(audioguide => this.locationList.add(audioguide.location));
+            }
+        }
+    }).catch(error => {
+        this.utils.handlerError(error);
+        console.log('error listMyPurchasedAudioguides ' + error)
+      });
+    this.sqliteService.findPois().then(pois => {
+        if(pois !== null && pois !== undefined){
+            this.poiList = pois;
+            this.poiListComplete = this.poiList;
+        }
+    }).catch(error => this.utils.handlerError(error));
+    
+    // this.audioguidesByLocation = this.purchasedAudioguidesList;
+  }
+
+    initializeAudioguideList() {
+        this.audioguidesByLocation = this.purchasedAudioguidesList;
+        this.poiList = this.poiListComplete;
+    }
+
+  listAudioguidesByLocation(location: string) {
+    this.initializeAudioguideList();
+    this.audioguidesByLocation = this.audioguidesByLocation.filter(audioguide => audioguide.location === location);
+    Array.from(document.querySelectorAll('.openable' + location)).forEach(element => {
+        element.classList.toggle('hidden');
+    });
   }
 
   listMyCreatedAudioguides() {
@@ -92,17 +128,21 @@ export class MyguidesPage {
       this.createdAudioguidesList = data
       this.newAudioguide = false;
     })
-    .catch(error => console.log('error listMyCreatedAudioguides ' + error.message.toString()));
+    .catch(error => {
+      this.utils.handlerError(error);
+      console.log('error listMyCreatedAudioguides ' + error.message.toString())
+    });
   }
 
-  getPoisByAudioguide(idAudioguide: string) {
-    this.sqliteService.findPoisByAudioguide(idAudioguide).then(data => {
-      this.poiList = data;
-    }).then(()=> this.expanded = true)
-    .catch(error => console.log('error getPoisByAudioguide ' + error.message.toString()));
+  toggleExpanded(id: number) {
+    this.initializeAudioguideList();
+    this.poiList = this.poiListComplete.filter(poi => poi.idAudioguide === id);
+    Array.from(document.querySelectorAll('.openable' + id)).forEach(element => {
+            element.classList.toggle('hidden');
+    });
   }
 
-  delete(id: string) {
+  delete(id: number) {
     this.alertCtrl.create({
       title: 'Delete audioguide',
       message: 'Are you sure you want to delete the selected audioguide?',
@@ -157,6 +197,22 @@ export class MyguidesPage {
   playRecordPoi(idAudioguide: string) {
     this.playService.listen('malaga1.mp3');
   }
+
+  listen(filename){
+    this.playService.listenStreaming(filename)
+    this.playService.isPlaying.subscribe(isPlaying => this.isPlaying = isPlaying)
+  }
+
+  pause() { 
+    this.playService.pause()
+    this.playService.isPlaying.subscribe(isPlaying => this.isPlaying = isPlaying)
+  }
+
+  stop() {
+    this.playService.stop()
+    this.playService.isPlaying.subscribe(isPlaying => this.isPlaying = isPlaying)
+  }
  }
+ 
 
  

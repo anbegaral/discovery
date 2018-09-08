@@ -62,7 +62,6 @@
     "cordova-sqlite-storage": "^2.3.2",
     "crypto-js": "^3.1.9-1",
     "firebase": "^4.13.1",
-    "ionic": "^3.20.0",
     "ionic-angular": "^3.9.2",
     "ionic-plugin-keyboard": "^2.2.1",
     "ionicons": "3.0.0",
@@ -82,6 +81,7 @@
     "@angular-devkit/build-angular": "^0.7.0-beta.2",
     "@angular/cli": "^6.1.0-beta.2",
     "@ionic/app-scripts": "^3.1.10",
+    "ionic": "3.20.0",
     "typescript": "^2.9.1"
   },
   "description": "Discovery Audio Guides",

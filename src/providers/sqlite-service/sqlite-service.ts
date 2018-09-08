@@ -4,7 +4,7 @@ import { FilesServiceProvider } from './../files-service/files-service';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Platform, LoadingController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Audioguide, POI } from '../../model/models';
 
 @Injectable()
@@ -17,6 +17,8 @@ export class SqliteServiceProvider {
   private dbReady: BehaviorSubject<boolean>;
   storageImageRef: any;
   storageAudioRef: any;
+
+  location$ = new Subject<string>();
 
   constructor(private platform: Platform, 
     private sqlite: SQLite, 
@@ -33,7 +35,6 @@ export class SqliteServiceProvider {
       })
       .then((db: SQLiteObject) => {
         this.database = db;
-        console.log(this.database)
         this.createAudioguidesTable();
         this.createPoisTable();
         this.dbReady.next(true);
@@ -44,22 +45,23 @@ export class SqliteServiceProvider {
   }
 
   createAudioguidesTable() {
-    this.database.executeSql(`create table if not exists audioguides(id integer primary key autoincrement, idFirebase CHAR(20), idAuthor CHAR(20), idLocation CHAR(20), 
+    this.database.executeSql(`create table if not exists audioguides(id integer primary key autoincrement, idFirebase CHAR(20), idAuthor CHAR(20), idLocation CHAR(20), location CHAR(255), 
       title CHAR(255), description CHAR(255), duration INTEGER, pois INTEGER, lang CHAR(20), price FLOAT, image CHAR(255), imageUrl CHAR(255))`, {}).then(
       () =>  this.dbReady.next(true)
     ).catch(error => console.log(`creating table ` +error.message.toString()))
   }
 
   createPoisTable() {
-    this.database.executeSql(`create table if not exists pois(id integer primary key autoincrement, idFirebase CHAR(20), idAudioguide char(20), idLocation char(20),
-      title CHAR(20), lat CHAR(20), lon CHAR(20), image CHAR(250), file CHAR(250), duration integer, isPreview integer)`, {}).then(
+    this.database.executeSql(`create table if not exists pois(id integer primary key autoincrement, idFirebase CHAR(20), idAudioguide integer, idLocation char(20),
+      title CHAR(20), lat CHAR(20), lon CHAR(20), image CHAR(250), imageUrl CHAR(250), file CHAR(250), duration integer, isPreview integer, size integer)`, {}).then(
       () =>  this.dbReady.next(true)
     ).catch(error => console.log(`creating table ` + error.message.toString()))
   }
 
   addAudioguide(audioguide) {
-    return this.database.executeSql(`INSERT INTO audioguides (idFirebase, idAuthor, idLocation, title, description, duration, pois, lang, price, image, imageUrl) 
-          VALUES (?,?,?,?,?,?,?,?,?,?,?)`, [audioguide.key, audioguide.idAuthor, audioguide.idLocation, audioguide.title, audioguide.description, audioguide.duration, 
+      console.log(audioguide)
+    return this.database.executeSql(`INSERT INTO audioguides (idFirebase, idAuthor, idLocation, location, title, description, duration, pois, lang, price, image, imageUrl) 
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, [audioguide.key, audioguide.idAuthor, audioguide.idLocation, audioguide.location, audioguide.title, audioguide.description, audioguide.duration, 
           audioguide.audioguidePois.length, audioguide.lang, audioguide.price, audioguide.image, audioguide.imageUrl])
       .then(result => {
         if(result.insertId){
@@ -70,26 +72,28 @@ export class SqliteServiceProvider {
           return this.getAudioguideFiles(audioguide).then(() => {
             console.log(`audioguide.id `+ result.insertId);
             this.loading.dismiss();
-            return this.addPois(audioguide.audioguidePois)
+            return this.addPois(result.insertId, audioguide.audioguidePois)
          }).catch(error => {
             console.log(error)
             this.utils.handlerError(error);
-            this.loading.dismiss();
+            // this.loading.dismiss();
+            return [];
          })
         }  
       })
       .catch(error => {
-        this.loading.dismiss();
-        this.utils.handlerError(error);
+        // this.loading.dismiss();
+        // this.utils.handlerError(error);
         console.log("Error addAudioguide:  " + error.message.toString())
+        return [];
       })   
   }
 
-  addPois(pois) {
+  addPois(idAudioguide, pois) {
     console.log(pois)
     pois.forEach(element => {
       return this.database.executeSql(`INSERT INTO pois (idFirebase, idAudioguide, idLocation, title, lat, lon, image, imageUrl, file, duration, isPreview, size) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-        [element.idFirebase, element.idAudioguide, element.idLocation, element.title, element.lat, element.lon, element.image, element.imageUrl, element.file, element.duration, element.isPreview, element.size])
+        [element.idFirebase, idAudioguide, element.idLocation, element.title, element.lat, element.lon, element.image, element.imageUrl, element.file, element.duration, element.isPreview, element.size])
         .then(resultPois => {
             return this.getPoiFiles(element).then(() => {
               console.log('pois id' +resultPois.insertId)
@@ -100,6 +104,7 @@ export class SqliteServiceProvider {
             console.log("Error addingPois " + error.message.toString())
             this.loading.dismiss();
           })
+
     });
   }
 
@@ -201,18 +206,34 @@ export class SqliteServiceProvider {
   //   });
   // }
 
-  findPoisByAudioguide(idAudioguide: string) {
+  findPois() {
+    return this.database.executeSql(`SELECT * FROM pois`, []).then(
+        (data) => {
+          console.log("data.rows.length " +data.rows.length)
+          let poisList: POI[] = [];         
+          if(data.rows.length > 0) {
+              for(var i = 0; i < data.rows.length; i++) {
+                poisList.push(data.rows.item(i));  
+              }
+              console.log(`this.poisList.length ` + poisList.length)
+              return poisList;
+            }
+        })
+  }
+  findPoisByAudioguide(idAudioguide: number) {
     console.log('findPois '+idAudioguide)
-    return this.database.executeSql(`SELECT * FROM pois WHERE idAudioguide = '${idAudioguide}'`, []).then(
+    return this.database.executeSql(`SELECT * FROM pois WHERE idAudioguide = ${idAudioguide}`, []).then(
       (data) => {
-        console.log(data)
-        let poisList = Array<POI>();         
+        console.log("data.rows.length " +data.rows.length)
+        let poisList: POI[] = [];         
         if(data.rows.length > 0) {
             for(var i = 0; i < data.rows.length; i++) {
               poisList.push(data.rows.item(i));  
             }
             console.log(`this.poisList.length ` + poisList.length)
             return poisList;
+        } else {
+            return [];
         }
     }, (error) => {
         console.log("Error findPoisByAudioguide: " + error.message.toString());
@@ -220,7 +241,7 @@ export class SqliteServiceProvider {
     });
   }
 
-  deleteAudioguide(idAudioguide: string){
+  deleteAudioguide(idAudioguide: number){
     this.findPoisByAudioguide(idAudioguide).then(poiList => {
       if(poiList) {
         let poisList: POI[] = [];
@@ -229,14 +250,14 @@ export class SqliteServiceProvider {
           this.fileService.deleteFile(element.file)
           this.fileService.deleteFile(element.image)
         });
-        this.database.executeSql(`DELETE FROM pois WHERE idAudioguide = '${idAudioguide}'`, []).then(() => {
+        this.database.executeSql(`DELETE FROM pois WHERE idAudioguide = ${idAudioguide}`, []).then(() => {
           console.log("pois deleted successfully");
         })
         .catch(error => console.log("Error deletePois: " + error.message.toString()))
       }
       
     })
-    return this.database.executeSql(`DELETE FROM audioguides WHERE id = '${idAudioguide}'`, []).then(() => {
+    return this.database.executeSql(`DELETE FROM audioguides WHERE id = ${idAudioguide}`, []).then(() => {
       console.log("audioguide deleted successfully");
     })
       .catch(error => console.log("Error deleteAudioguides: " + error.message.toString()))

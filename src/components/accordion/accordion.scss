@@ -6,13 +6,16 @@ accordion {
 
     li {
         display: flex;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: center;
         margin: 10px 0 10px 0;
 
         img {
             width: 25%;
             height: 25%;
-            margin: 0;
+            margin: 0 10px;
+            align-self: flex-start;
+            flex-shrink: 1;
         }
 
         div {
@@ -22,10 +25,10 @@ accordion {
         }
 
         &:nth-child(odd) {
-            background-color: limegreen
+            background-color: pink;
         }
         &:nth-child(even) {
-            background-color: green
+            background-color: blueviolet;
         }   
     }
 }

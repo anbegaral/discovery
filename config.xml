@@ -3,7 +3,7 @@
     <name>Discovery Audioguides</name>
     <description>An awesome app when you can download and create your own audioguides of your favourite places in the world.</description>
     <author email="anab.garciauk@gmail.com" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.1.100:8100" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-intent href="http://*/*" />
@@ -87,6 +87,7 @@
     <allow-navigation href="http://192.168.1.70:8100" />
     <allow-navigation href="http://192.168.1.82:8100" />
     <allow-navigation href="http://192.168.1.78:8100" />
+    <allow-navigation href="http://192.168.1.100:8100" />
     <engine name="ios" spec="^4.4.0" />
     <engine name="android" spec="6.3.0" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />

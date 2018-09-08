@@ -75,11 +75,9 @@ export class ViewGuidePage {
     this.sqliteService.getAudioguide(audioguide.key).then(data => {
       console.log(`buy ` +data)
       if(data === null) {  // it does not exist
-        this.sqliteService.addAudioguide(audioguide)
-        .then(() => {
+        this.sqliteService.addAudioguide(audioguide).then(() => {
               this.navCtrl.push('MyguidesPage');
-        })
-        .catch(error => console.log('error addAudioguide ' + error.toString()));
+        }).catch(error => console.log('error addAudioguide ' + error));
       } else{
         this.alertCtrl.create({
           title: 'Error',
